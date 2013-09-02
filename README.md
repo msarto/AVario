@@ -1,4 +1,0 @@
-AVario
-======
-
-AVario main

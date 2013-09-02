@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="AVario">AVario</string>
+    <string name="preferences">Settings</string>
+    <string name="tracks">Tracks</string>
+    <string name="exit">Exit</string>
+    <string name="tracks_list">Tracks List</string>
+    <string name="tracks_del">Delete track</string>
+    <string name="alt">Altitude:</string>
+    <string name="gspeed">Ground Speed:</string>
+    <string name="gspeedvaluekmh">%1$s</string>
+    <string name="gainedlastmin">%1$s sec altitude gain:</string>
+    <string name="lastgainvalue">%1$s</string>    
+    <string name="nan"><b>--</b></string>
+    <string name="ms">m/s</string>
+    <string name="fs">f/m</string>
+    <string name="rec">Rec</string>
+    <string name="starttracking">Start tracking</string>
+    <string name="stoptracking">Stop tracking</string>
+    <string name="poi">Places</string>
+    <string name="delpoi">Delete place</string>
+    <string name="addpoi">Add place</string>
+    <string name="add_from_web">Look around</string>
+    <string name="poiadded">Place %1$s added</string>
+    <string name="poiactive">ACTIVE -> %1$s</string>
+    <string name="poinotactive">%1$s</string>
+    <string name="poidetail">Latitude: %1$s \r\nLongitude: %2$s \r\nDistance from here: %3$s</string>
+    <string name="poideleted">Place %1$s deleted</string>    
+    <string name="setactivepoi">Set ACTIVE</string>
+    <string name="thermal_marked">Thermal marked</string>
+    <string name="trkstart">Flight Start: %1$s</string>
+    <string name="trkdur">Flight Duration: %1$s</string>
+    <string name="trkdist">Flight Distance: %1$s %2$s</string>
+    <string name="trkstartalt">Start Alt: %1$s %2$s</string>
+    <string name="trkendalt">End Alt: %1$s %2$s</string>
+    <string name="trkmaxalt">Max Alt: %1$s %2$s</string>
+    <string name="trkmaxvario">Max Vario: %1$s %2$s/s</string>
+    <string name="trkminvario">Min Vario: %1$s %2$s/s</string>
+    <string name="trkmaxspeed">Max Speed: %1$s %2$s/h</string>
+    <string name="barosensorna">Baro sensor is not available</string>
+    <string name="gpsensorna">GPS sensor is not available</string>
+    <string name="compsensorna">Compass sensor is not available</string>
+    <string name="trkdeleted">Track was deleted</string>
+    <string name="exit_from_menu">Use Exit from menu &#8230;</string>        
+    <string name="speaker_fail">The speaker is not available</string>
+    <string name="span">00h00m00s</string>
+    <string name="north">N</string>
+    <string name="south">S</string>
+    <string name="east">E</string>
+    <string name="west">W</string>
+    <string name="poi_name">Point name:</string>
+    <string name="poilatitude">Latitude:</string>
+    <string name="poilongitude">Longitude:</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="kmh">km/h</string>
+    <string name="meters">meters</string>
+    <string name="feet">feet</string>
+	<string name="units_system_summary">Chose units system</string>
+    <string name="units_system">Units system</string>
+    <string name="prefs_title">Preferences</string>
+    <string name="sound_prefs_s">Vario sounds settings</string>
+    <string name="sound_prefs_t">Sounds</string>
+    <string name="volume_t">Volume</string>
+    <string name="volume_s">Vario sound volume</string>
+    <string name="use_speach_s">Use speech for vario speed</string>
+    <string name="use_speach_t">Use speech</string>
+    <string name="beep_interval_s">Beep sound interval</string>
+    <string name="beep_interval_t">Beep interval</string>
+    <string name="prenotify_interval_t">Prenotify interval</string>
+    <string name="prenotify_interval_s">Discrete sound around thermal interval</string>
+    <string name="sink_start_s">Sink speed to start vario beep</string>
+    <string name="sink_start_t">Sink start</string>
+    <string name="lift_start_s">List speed to start vario beep</string>
+    <string name="lift_start_t">Lift start</string>
+    <string name="lift_hz_s">Lift tone in Hz</string>
+    <string name="lift_hz_t">Lift tone</string>
+    <string name="sink_hz_s">Sink tone in Hz</string>
+    <string name="sink_hz_t">Sink tone</string>
+    <string name="tone_variation_s">Tone variation for beeps (Hz)</string>
+    <string name="tone_variation_t">Tone variation</string>
+    <string name="thermal_prefs_s">Thermaling settings</string>
+    <string name="thermal_prefs_t">Thermal</string>
+    <string name="max_last_thermal_distance_s">Distance to keep thermal track (meters)</string>
+    <string name="max_last_thermal_distance_t">Thermal distance</string>
+    <string name="min_thermal_interval_s">Time to measure a thermal</string>
+    <string name="min_thermal_interval_t">Thermal time</string>
+    <string name="min_thermal_gain_s">Vertical gain to consider a thermal</string>
+    <string name="min_thermal_gain_t">Thermal gain</string>
+    <string name="filters_s">Sensor filters</string>
+    <string name="filters_t">Filters</string>
+    <string name="baro_filter_sensitivity_s">Barometer sensitivity [1;50]</string>
+    <string name="baro_filter_sensitivity_t">Baro sensitivity</string>
+    <string name="compass_filter_sensitivity_s">Compass sensitivity [1;10]</string>
+    <string name="compass_filter_sensitivity_t">Compass sensitivity</string>
+    <string name="location_history_s">Seconds to keep vario history</string>
+    <string name="location_history_t">Location history</string>
+    <string name="heading_interval_s">Interval to recompute heading</string>
+    <string name="heading_interval_t">Heading interval</string>
+    <string-array name="units_system_names">
+        <item>Metric</item>
+        <item>Imperial</item>
+    </string-array>
+
+    <string-array name="units_system_vals">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    
+</resources>
