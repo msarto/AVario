@@ -113,7 +113,7 @@
             android:title="@string/units_system" />
 
         <org.avario.ui.prefs.EditTextPreferenceWithValue
-            android:defaultValue="10"
+            android:defaultValue="5"
             android:inputType="numberDecimal"
             android:key="location_history"
             android:singleLine="true"

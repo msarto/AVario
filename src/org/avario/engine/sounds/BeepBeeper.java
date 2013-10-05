@@ -32,7 +32,6 @@ public class BeepBeeper extends AsyncTask<Integer, Float, Integer> {
 
 	public static void clear() {
 		THIS.stop();
-		THIS.cancel(true);
 	}
 
 	@Override

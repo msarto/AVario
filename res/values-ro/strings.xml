@@ -98,6 +98,9 @@
     <string name="location_history_t">Secunde istoric</string>
     <string name="heading_interval_s">Interval de recalculare directie</string>
     <string name="heading_interval_t">Recalculare directie</string>
+    <string name="reference_altitude_s">Selectare altitudine referinta</string>
+    <string name="reference_altitude_t">Setare altitudine</string>
+    
     <string-array name="units_system_names">
         <item>Metric</item>
         <item>Imperial</item>

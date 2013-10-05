@@ -28,7 +28,8 @@ public class BaroSensorFilter implements LocationConsumer {
 	public float toAltitude(float currentPresure) {
 		lastPresureNotified = currentPresure;
 		lastPresureNotified = baroFilter.doFilter(lastPresureNotified)[0];
-		float sensorAlt = SensorManager.getAltitude(referrence, lastPresureNotified);
+		float sensorAlt = SensorManager.getAltitude(referrence,
+				lastPresureNotified);
 		return altitudeFilter.doFilter(sensorAlt)[0];
 	}
 
@@ -43,7 +44,9 @@ public class BaroSensorFilter implements LocationConsumer {
 			double h = DataAccessObject.get().getGpsAltitude();
 			// adjust the reference pressure until the pressure sensor
 			// altitude match the gps altitude +-5m
-			while (Math.abs(SensorManager.getAltitude(ref, lastPresureNotified) - h) > 5 && ref > 0) {
+			while (Math.abs(SensorManager.getAltitude(ref, lastPresureNotified)
+					- h) > 5
+					&& ref > 0) {
 				ref -= 0.5;
 			}
 			baroFilter.reset();

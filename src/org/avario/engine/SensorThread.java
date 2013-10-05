@@ -14,6 +14,7 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 	protected final Activity activity;
 	protected int[] sensors;
 	protected int sensorSpeed;
+	protected boolean retry = false;
 
 	protected SensorThread(Activity activity) {
 		this.activity = activity;
@@ -25,7 +26,8 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 	}
 
 	public void stop() {
-		SensorManager sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
+		SensorManager sensorManager = (SensorManager) activity
+				.getSystemService(Context.SENSOR_SERVICE);
 		sensorManager.unregisterListener(this);
 	}
 
@@ -33,10 +35,16 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 	public void run() {
 		try {
 			if (sensors != null) {
-				SensorManager sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
+				do {
+					SensorManager sensorManager = (SensorManager) activity
+							.getSystemService(Context.SENSOR_SERVICE);
 				for (int sensor : sensors) {
-					sensorManager.registerListener(this, sensorManager.getDefaultSensor(sensor), sensorSpeed);
+						sensorManager.registerListener(this,
+								sensorManager.getDefaultSensor(sensor),
+								sensorSpeed);
 				}
+					Thread.sleep(500);
+				} while (retry);
 			}
 		} catch (Exception e) {
 			Logger.get().log("Sensors initialization fail ", e);

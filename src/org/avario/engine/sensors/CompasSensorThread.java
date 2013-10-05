@@ -19,7 +19,7 @@ public class CompasSensorThread extends SensorThread<Float> {
 	public CompasSensorThread(Activity activity) {
 		super(activity);
 		sensors = new int[] { Sensor.TYPE_MAGNETIC_FIELD, Sensor.TYPE_ACCELEROMETER };
-		sensorSpeed = SensorManager.SENSOR_DELAY_NORMAL;
+		sensorSpeed = SensorManager.SENSOR_DELAY_UI;
 		compassTask.startCompasss();
 	}
 

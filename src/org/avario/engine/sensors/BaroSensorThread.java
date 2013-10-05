@@ -19,16 +19,19 @@ public class BaroSensorThread extends SensorThread<Float> {
 		super(activity);
 		sensors = new int[] { Sensor.TYPE_PRESSURE };
 		sensorSpeed = SensorManager.SENSOR_DELAY_FASTEST;
+		retry = true;
 	}
 
 	@Override
 	public synchronized void notifySensorChanged(SensorEvent sensorEvent) {
+		retry = false;
 		float currentPresure = sensorEvent.values.clone()[0];
 		final float diff = Math.abs(prevPresure - currentPresure);
 		if (diff > (Preferences.baro_sensitivity * 0.003f)) {
 			// We will skip big consecutive differences to filter the big noise
 			// Logger.get().log("Skip " + diff);
-			currentPresure = prevPresure > 0 ? (prevPresure + currentPresure) / 2f : currentPresure;
+			currentPresure = prevPresure > 0 ? (prevPresure + currentPresure) / 2f
+					: currentPresure;
 		} else {
 			final float altitude = baroFilter.toAltitude(currentPresure);
 			if (altitude >= 0) {
