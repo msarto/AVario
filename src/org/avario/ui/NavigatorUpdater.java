@@ -82,8 +82,8 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 
 	public void draw(Canvas navCanvas, int xCenter, int yCenter) {
 
-		this.xCenter = xCenter - 5;
-		this.yCenter = yCenter - 5;
+		this.xCenter = xCenter;
+		this.yCenter = yCenter;
 		if (navView == null) {
 			navView = (NavigationView) context.findViewById(R.id.navLayout);
 			radius = (int) Math.round(navView.getWidth() / 3);
@@ -121,14 +121,14 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		cardinals.setTextAlign(Paint.Align.CENTER);
 		cardinals.setTypeface(font);
 
-		navigationCanvas.drawText(context.getString(R.string.north), xCenter, yCenter - Math.round(radius + 5 * densityMultiplier),
-				cardinals);
-		navigationCanvas.drawText(context.getString(R.string.south), xCenter, yCenter + Math.round(radius + 25 * densityMultiplier),
-				cardinals);
-		navigationCanvas.drawText(context.getString(R.string.west), xCenter - Math.round(radius + 15 * densityMultiplier), yCenter,
-				cardinals);
-		navigationCanvas.drawText(context.getString(R.string.east), xCenter + Math.round(radius + 15 * densityMultiplier), yCenter,
-				cardinals);
+		navigationCanvas.drawText(context.getString(R.string.north), xCenter,
+				yCenter - Math.round(radius + 5 * densityMultiplier), cardinals);
+		navigationCanvas.drawText(context.getString(R.string.south), xCenter,
+				yCenter + Math.round(radius + 25 * densityMultiplier), cardinals);
+		navigationCanvas.drawText(context.getString(R.string.west),
+				xCenter - Math.round(radius + 15 * densityMultiplier), yCenter, cardinals);
+		navigationCanvas.drawText(context.getString(R.string.east),
+				xCenter + Math.round(radius + 15 * densityMultiplier), yCenter, cardinals);
 		poiView = new PoiView(context, navigationCanvas, xCenter, yCenter);
 	}
 
@@ -195,7 +195,8 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 
 	@Override
 	public void notifyNorth(float bearing) {
-		if (navView != null && Math.abs(prevBearing - DataAccessObject.get().getBearing()) >= Preferences.compass_filter_sensitivity) {
+		if (navView != null
+				&& Math.abs(prevBearing - DataAccessObject.get().getBearing()) >= Preferences.compass_filter_sensitivity) {
 			prevBearing = DataAccessObject.get().getBearing();
 			navView.invalidate();
 		}

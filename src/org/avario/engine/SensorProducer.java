@@ -37,7 +37,6 @@ public class SensorProducer {
 	}
 
 	public static SensorProducer get() {
-		Logger.get().log("" + THIS);
 		return THIS;
 	}
 

@@ -38,11 +38,12 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 				do {
 					SensorManager sensorManager = (SensorManager) activity
 							.getSystemService(Context.SENSOR_SERVICE);
-				for (int sensor : sensors) {
+					for (int sensor : sensors) {
+						Logger.get().log("Try initializing sensor " + sensor);
 						sensorManager.registerListener(this,
 								sensorManager.getDefaultSensor(sensor),
 								sensorSpeed);
-				}
+					}
 					Thread.sleep(500);
 				} while (retry);
 			}
