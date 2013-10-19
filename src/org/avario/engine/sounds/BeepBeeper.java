@@ -65,6 +65,7 @@ public class BeepBeeper extends AsyncTask<Integer, Float, Integer> {
 					Thread.sleep(Math.round(250 - 30 * beepSpeed));
 				}
 			} catch (InterruptedException e) {
+				THIS.cancel(false);
 				break;
 			} catch (Exception ex) {
 				Logger.get().log("Fail in beep: ", ex);
