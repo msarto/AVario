@@ -20,7 +20,7 @@
                 android:title="@string/use_speach_t" />
 
             <org.avario.ui.prefs.EditTextPreferenceWithValue
-                android:defaultValue="0.7"
+                android:defaultValue="0.5"
                 android:inputType="numberDecimal"
                 android:key="beep_interval"
                 android:singleLine="true"

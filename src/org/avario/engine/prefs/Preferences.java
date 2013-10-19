@@ -16,7 +16,7 @@ import android.preference.PreferenceManager;
 public class Preferences {
 	public static boolean use_speach = true;
 
-	public static int beep_interval = 2000;
+	public static int beep_interval = 500;
 	public static float sink_start = -1.5f;
 	public static float lift_start = 0.2f;
 	public static int tone_variation = 100;
@@ -40,12 +40,10 @@ public class Preferences {
 
 	private static void checkForUpdateVersion() {
 		try {
-			PackageInfo pInfo = context.getPackageManager().getPackageInfo(
-					context.getPackageName(), 0);
+			PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 			String version = pInfo.versionName;
 			Logger.get().log("Current version " + version);
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(context);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			String prefVersion = prefs.getString("appVersion", "");
 			Logger.get().log("pref version " + prefVersion);
 
@@ -62,11 +60,8 @@ public class Preferences {
 
 	private static void setAppSoundVolume(int appVolume) {
 		try {
-			AudioManager audio = (AudioManager) Preferences.context
-					.getSystemService(Context.AUDIO_SERVICE);
-			int mediaVal = Math.round((audio
-					.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 100f)
-					* appVolume);
+			AudioManager audio = (AudioManager) Preferences.context.getSystemService(Context.AUDIO_SERVICE);
+			int mediaVal = Math.round((audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 100f) * appVolume);
 			audio.setStreamVolume(AudioManager.STREAM_MUSIC, mediaVal, 0);
 		} catch (Exception e) {
 			Logger.get().log("Unable o set app volume...", e);
@@ -77,7 +72,7 @@ public class Preferences {
 		Preferences.context = context;
 		checkForUpdateVersion();
 		use_speach = getBool("use_speach", use_speach);
-		beep_interval = Math.round(1000f * getFloat("beep_interval", 0.2f));
+		beep_interval = Math.round(1000f * getFloat("beep_interval", 0.5f));
 		sink_start = -1f * getFloat("sink_start", 1.5f);
 		lift_start = getFloat("lift_start", lift_start);
 		int appVolume = getInt("app_volume", 100);
@@ -86,28 +81,22 @@ public class Preferences {
 		lift_hz = getInt("lift_hz", lift_hz);
 		sink_hz = -1 * getInt("sink_hz", sink_hz);
 
-		prenotify_interval = Math.round(1000f * getFloat("prenotify_interval",
-				0.3f));
+		prenotify_interval = Math.round(1000f * getFloat("prenotify_interval", 0.3f));
 		location_history = getInt("location_history", location_history);
 		heading_interval = Math.round(1000f * getFloat("heading_interval", 2f));
 		tone_variation = getInt("tone_variation", tone_variation);
 		baro_sensitivity = getInt("baro_sensitivity", 25);
-		compass_filter_sensitivity = getFloat("compass_filter_sensitivity",
-				compass_filter_sensitivity);
+		compass_filter_sensitivity = getFloat("compass_filter_sensitivity", compass_filter_sensitivity);
 		units_system = getInt("units_system", units_system);
-		max_last_thermal_distance = getInt("max_last_thermal_distance",
-				max_last_thermal_distance);
-		min_thermal_interval = 1000 * getFloat("min_thermal_interval",
-				min_thermal_interval / 1000f);
+		max_last_thermal_distance = getInt("max_last_thermal_distance", max_last_thermal_distance);
+		min_thermal_interval = 1000 * getFloat("min_thermal_interval", min_thermal_interval / 1000f);
 		min_thermal_gain = getFloat("min_thermal_gain", min_thermal_gain);
 	}
 
 	private static float getFloat(String name, float defaultValue) {
 		try {
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(context);
-			return Float.valueOf(prefs.getString(name,
-					String.valueOf(defaultValue)));
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			return Float.valueOf(prefs.getString(name, String.valueOf(defaultValue)));
 		} catch (Exception ex) {
 			Logger.get().log("Fail getting " + name);
 		}
@@ -116,10 +105,8 @@ public class Preferences {
 
 	private static int getInt(String name, int defaultValue) {
 		try {
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(context);
-			return Integer.valueOf(prefs.getString(name,
-					String.valueOf(defaultValue)));
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			return Integer.valueOf(prefs.getString(name, String.valueOf(defaultValue)));
 		} catch (Exception ex) {
 			Logger.get().log("Fail getting " + name);
 		}
@@ -128,8 +115,7 @@ public class Preferences {
 
 	private static String getString(String name, String defaultValue) {
 		try {
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(context);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			return prefs.getString(name, defaultValue);
 		} catch (Exception ex) {
 			Logger.get().log("Fail getting " + name);
@@ -139,8 +125,7 @@ public class Preferences {
 
 	private static boolean getBool(String name, boolean defaultValue) {
 		try {
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(context);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			return prefs.getBoolean(name, defaultValue);
 		} catch (Exception ex) {
 			Logger.get().log("Fail getting " + name);
@@ -150,10 +135,9 @@ public class Preferences {
 
 	public static void updateVersion(PreferencesMenu preferencesMenu) {
 		try {
-			Preference appVersionPreference = preferencesMenu
-					.findPreference("appVersionName");
-			PackageInfo pInfo = AVarioActivity.CONTEXT.getPackageManager()
-					.getPackageInfo(AVarioActivity.CONTEXT.getPackageName(), 0);
+			Preference appVersionPreference = preferencesMenu.findPreference("appVersionName");
+			PackageInfo pInfo = AVarioActivity.CONTEXT.getPackageManager().getPackageInfo(
+					AVarioActivity.CONTEXT.getPackageName(), 0);
 			String version = pInfo.versionName + "." + pInfo.versionCode;
 			appVersionPreference.setSummary(version);
 		} catch (NameNotFoundException e) {
