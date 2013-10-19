@@ -43,6 +43,7 @@
     <string name="trkdeleted">Trace effacée</string>
     <string name="exit_from_menu">Utilisez Sortie depuis le menu …</string>
     <string name="speaker_fail">Haut-parleurs non disponibles</string>
+    <string name="gps_fail">GPS non disponible</string>
     <string name="span">00h00m00s</string>
     <string name="north">N</string>
     <string name="south">S</string>

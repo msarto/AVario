@@ -44,6 +44,7 @@
     <string name="trkdeleted">Zborul a fost sters</string>
     <string name="exit_from_menu">Foloseste iesirea din meniu …</string>
     <string name="speaker_fail">Vocea nu-i disponibila</string>
+    <string name="gps_fail">GPS-ul nu este disponibil</string>
     <string name="span">00h00m00s</string>
     <string name="north">N</string>
     <string name="south">S</string>

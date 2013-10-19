@@ -1,9 +1,9 @@
 package org.avario.engine.sensors;
 
+import org.avario.R;
 import org.avario.engine.DataAccessObject;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.SensorThread;
-import org.avario.utils.Logger;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.widget.Toast;
 
 public class LocationThread extends SensorThread<Location> implements LocationListener {
 
@@ -24,17 +25,20 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 
 	@Override
 	public void run() {
-		try {
-			activity.runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
+
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				try {
 					locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, LocationThread.this);
+				} catch (Exception e) {
+					Toast.makeText(activity, activity.getApplicationContext().getString(R.string.gps_fail),
+							Toast.LENGTH_LONG).show();
 				}
-			});
-			locationManager.removeUpdates(LocationThread.this);
-		} catch (Exception e) {
-			Logger.get().log("GPS initialization fail ", e);
-		}
+			}
+		});
+		locationManager.removeUpdates(LocationThread.this);
+
 	}
 
 	@Override

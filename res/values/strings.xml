@@ -44,6 +44,7 @@
     <string name="trkdeleted">Track was deleted</string>
     <string name="exit_from_menu">Use Exit from menu &#8230;</string>        
     <string name="speaker_fail">The speaker is not available</string>
+    <string name="gps_fail">The GPS is not available</string>
     <string name="span">00h00m00s</string>
     <string name="north">N</string>
     <string name="south">S</string>
