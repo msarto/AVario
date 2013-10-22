@@ -13,6 +13,9 @@ import android.os.AsyncTask;
 
 public class AltitudeUpdater extends AsyncTask<Object, Object, Object> {
 	private AltitudeView altView;
+	private final int height;
+	private final int width;
+	private final int lineWidth;
 	private static final float maxAplitude = 2;
 	private static final Paint upPaint = new Paint();
 	private static final Paint downPaint = new Paint();
@@ -28,47 +31,64 @@ public class AltitudeUpdater extends AsyncTask<Object, Object, Object> {
 		downPaint.setAntiAlias(true);
 	}
 
-	private ArrayDeque<Float> varioSpeed;
+	private volatile ArrayDeque<Float> varioSpeed;
 	private int maxAltitudeCount = 0;
 
-	public AltitudeUpdater(AltitudeView altView) {
+	public AltitudeUpdater(AltitudeView altView, int height, int width, float densityMultiplier) {
 		super();
+		this.height = height;
+		this.width = width;
 		this.altView = altView;
+		this.lineWidth = Math.round(densityMultiplier * 10);
+		upPaint.setStrokeWidth(lineWidth);
+		downPaint.setStrokeWidth(lineWidth);
 	}
 
-	public void drawAltitudes(Canvas canvas) {
+	public synchronized void drawAltitudes(Canvas canvas) {
 		canvas.save();
-		if (maxAltitudeCount == 0) {
-			maxAltitudeCount = Math.round(canvas.getWidth() / 12);
-			varioSpeed = new ArrayDeque<Float>(maxAltitudeCount);
-		}
+		try {
+			if (maxAltitudeCount == 0) {
+				maxAltitudeCount = Math.round(canvas.getWidth() / (lineWidth + 2));
+				varioSpeed = new ArrayDeque<Float>(maxAltitudeCount);
+			}
 
-		int height = canvas.getHeight();
-		float middle = height / 2f;
-		int offset = canvas.getWidth();
-		for (Float vSpeed : varioSpeed) {
-			float alt = middle - vSpeed * middle / maxAplitude;
-			Paint paint = vSpeed < 0 ? downPaint : upPaint;
-			canvas.drawLine(offset, middle, offset, alt, paint);
-			offset -= 12;
+			float middle = height / 2f;
+			int offset = width;
+			for (Float vSpeed : varioSpeed) {
+				float alt = middle - vSpeed * middle / maxAplitude;
+				Paint paint = vSpeed < 0 ? downPaint : upPaint;
+				canvas.drawLine(offset, middle, offset, alt, paint);
+				offset -= (lineWidth + 2);
+			}
+		} catch (Exception ex) {
+			Logger.get().log("Fail drawing altitudes ", ex);
+		} finally {
+			canvas.restore();
 		}
-		// canvas.restore();
 	}
 
 	@Override
 	protected Object doInBackground(Object... arg0) {
 		boolean cancel = false;
+
 		while (!cancel) {
-			float vSpeed = DataAccessObject.get().getLastVSpeed();
-			if (maxAplitude < Math.abs(vSpeed)) {
-				varioSpeed.push(vSpeed < 0 ? -maxAplitude : maxAplitude);
-			} else {
-				varioSpeed.push(vSpeed);
-			}
-			publishProgress();
 			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
+				float vSpeed = DataAccessObject.get().getLastVSpeed();
+				if (varioSpeed.size() >= maxAltitudeCount) {
+					varioSpeed.pollLast();
+				}
+				if (maxAplitude < Math.abs(vSpeed)) {
+					varioSpeed.push(vSpeed < 0 ? -maxAplitude : maxAplitude);
+				} else {
+					varioSpeed.push(vSpeed);
+				}
+				publishProgress();
+				try {
+					Thread.sleep(800);
+				} catch (InterruptedException e) {
+					cancel = true;
+				}
+			} catch (Exception e) {
 				cancel = true;
 			}
 		}

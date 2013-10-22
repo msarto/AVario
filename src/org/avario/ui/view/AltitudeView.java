@@ -19,12 +19,14 @@ public class AltitudeView extends LinearLayout {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		try {
+			int hScroll = computeHorizontalScrollRange();
 			int vScroll = computeVerticalScrollRange();
+			float densityMultiplier =  getContext().getResources().getDisplayMetrics().density;
 			LayoutParams params = (LayoutParams) getLayoutParams();
 			// Changes the height
 			params.height = vScroll;
 			if (viewUpdater == null) {
-				viewUpdater = new AltitudeUpdater(this);
+				viewUpdater = new AltitudeUpdater(this,vScroll,hScroll, densityMultiplier);
 				viewUpdater.execute();
 			}
 			viewUpdater.drawAltitudes(canvas);
