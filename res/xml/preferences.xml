@@ -55,7 +55,7 @@
                 android:summary="@string/lift_hz_s"
                 android:title="@string/lift_hz_t" />
             <org.avario.ui.prefs.EditTextPreferenceWithValue
-                android:defaultValue="330"
+                android:defaultValue="350"
                 android:inputType="numberDecimal"
                 android:key="sink_hz"
                 android:singleLine="true"

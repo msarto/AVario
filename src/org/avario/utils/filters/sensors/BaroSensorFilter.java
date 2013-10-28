@@ -53,16 +53,16 @@ public class BaroSensorFilter implements LocationConsumer {
 	}
 
 	private synchronized void adjustAltitude(Location location) {
-			float ref = SensorManager.PRESSURE_STANDARD_ATMOSPHERE + 100;
+		float ref = SensorManager.PRESSURE_STANDARD_ATMOSPHERE + 100;
 		double h = location.getAltitude();
-			// adjust the reference pressure until the pressure sensor
-			// altitude match the gps altitude +-5m
+		// adjust the reference pressure until the pressure sensor
+		// altitude match the gps altitude +-5m
 		while (Math.abs(SensorManager.getAltitude(ref, lastPresureNotified) - h) > 5 && ref > 0) {
-				ref -= 0.5;
-			}
-			baroFilter.reset();
-			altitudeFilter.reset();
-			DataAccessObject.get().resetVSpeed();
-			referrence = ref;
+			ref -= 0.5;
+		}
+		baroFilter.reset();
+		altitudeFilter.reset();
+		DataAccessObject.get().resetVSpeed();
+		referrence = ref;
 	}
 }

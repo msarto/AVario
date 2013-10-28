@@ -21,5 +21,4 @@ public class LiftTone extends AsyncTone {
 			isPlaying = false;
 		}
 	}
-
 }

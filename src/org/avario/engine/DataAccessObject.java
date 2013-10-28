@@ -17,7 +17,7 @@ public class DataAccessObject {
 
 	protected volatile float bearing = 0f;
 	protected volatile float heading = 0f;
-	protected boolean gpsFix = false;
+	protected boolean baroFix = false;
 	protected volatile float lastAltitude = -1;
 
 	private volatile float windDirectionBearing = -1f;
@@ -89,9 +89,17 @@ public class DataAccessObject {
 		return lastAltitude;
 	}
 
-	public void setLastAltitude(float lastAltitude) {
+	public synchronized void setBaroLastAltitude(float lastAltitude) {
+		baroFix = true;
 		this.lastAltitude = lastAltitude;
 		vSpeedRegression.addSample(SystemClock.elapsedRealtime(), lastAltitude);
+	}
+
+	public synchronized void setGpsLastAltitude(float lastAltitude) {
+		if (!baroFix) {
+			this.lastAltitude = lastAltitude;
+			vSpeedRegression.addSample(SystemClock.elapsedRealtime(), lastAltitude);
+		}
 	}
 
 	public float getBearing() {
@@ -141,7 +149,8 @@ public class DataAccessObject {
 		public void run() {
 			try {
 				Logger.get().log(
-						"Start thermal interval: " + Preferences.min_thermal_interval + "; min gain: " + Preferences.min_thermal_gain);
+						"Start thermal interval: " + Preferences.min_thermal_interval + "; min gain: "
+								+ Preferences.min_thermal_gain);
 				blinker = Thread.currentThread();
 				while (blinker == Thread.currentThread()) {
 					float startAltitude = getLastAltitude();
@@ -181,7 +190,8 @@ public class DataAccessObject {
 			try {
 				blinker = Thread.currentThread();
 				while (blinker == Thread.currentThread()) {
-					if (headingReferrence != null && lastlocation != null && headingReferrence.getTime() < lastlocation.getTime()) {
+					if (headingReferrence != null && lastlocation != null
+							&& headingReferrence.getTime() < lastlocation.getTime()) {
 						heading = headingReferrence.bearingTo(lastlocation);
 					}
 					headingReferrence = lastlocation;

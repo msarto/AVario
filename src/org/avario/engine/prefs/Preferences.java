@@ -34,7 +34,7 @@ public class Preferences {
 	public static int units_system = 1; // 1-metric; 2-imperial
 
 	public static int lift_hz = 600;
-	public static int sink_hz = -250;
+	public static int sink_hz = 350;
 
 	private static Context context;
 

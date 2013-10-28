@@ -21,6 +21,7 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 	public LocationThread(Activity activity) {
 		super(activity);
 		locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+
 	}
 
 	@Override
@@ -38,7 +39,6 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 			}
 		});
 		locationManager.removeUpdates(LocationThread.this);
-
 	}
 
 	@Override
@@ -49,6 +49,9 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 	@Override
 	public synchronized void onLocationChanged(Location newLocation) {
 		DataAccessObject.get().setLastlocation(newLocation);
+		if (newLocation.hasAltitude()) {
+			DataAccessObject.get().setGpsLastAltitude((float) newLocation.getAltitude());
+		}
 		activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {

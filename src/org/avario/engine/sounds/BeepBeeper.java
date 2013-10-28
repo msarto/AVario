@@ -5,17 +5,16 @@ import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sounds.tones.LiftTone;
 import org.avario.engine.sounds.tones.PrenotifyTone;
 import org.avario.engine.sounds.tones.SinkTone;
-import org.avario.ui.VarioMeterScaleUpdater;
 import org.avario.utils.Logger;
 import org.avario.utils.Speaker;
 import org.avario.utils.StringFormatter;
 import org.avario.utils.UnitsConverter;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 
-public class BeepBeeper extends AsyncTask<Integer, Float, Integer> {
+public class BeepBeeper implements Runnable {
 
+	private Thread thr;
 	private static BeepBeeper THIS;
 
 	private final AsyncTone liftBeep = new LiftTone();
@@ -23,11 +22,12 @@ public class BeepBeeper extends AsyncTask<Integer, Float, Integer> {
 	private final AsyncTone prenotifyBeep = new PrenotifyTone();
 
 	protected BeepBeeper() {
+		thr = new Thread(this);
 	}
 
 	public static void init(Activity context) {
 		THIS = new BeepBeeper();
-		THIS.execute();
+		THIS.start();
 	}
 
 	public static void clear() {
@@ -35,11 +35,10 @@ public class BeepBeeper extends AsyncTask<Integer, Float, Integer> {
 	}
 
 	@Override
-	protected Integer doInBackground(Integer... beeps) {
-		while (!THIS.isCancelled()) {
+	public void run() {
+		while (thr.isAlive()) {
 			try {
 				float beepSpeed = DataAccessObject.get().getLastVSpeed();
-				publishProgress(beepSpeed);
 				beepSpeed = beepSpeed > 5 ? 5 : beepSpeed;
 				beepSpeed = beepSpeed < -5 ? -5 : beepSpeed;
 				if (!validateThisSpeed(beepSpeed)) {
@@ -58,30 +57,17 @@ public class BeepBeeper extends AsyncTask<Integer, Float, Integer> {
 					}
 					if (Preferences.use_speach) {
 						float saySpeed = UnitsConverter.toPreferredVSpeed(beepSpeed);
-						Speaker.get()
-								.say(Preferences.units_system == 2 ? StringFormatter.noDecimals(saySpeed) : StringFormatter
+						Speaker.get().say(
+								Preferences.units_system == 2 ? StringFormatter.noDecimals(saySpeed) : StringFormatter
 										.oneDecimal(saySpeed));
 					}
 					Thread.sleep(Math.round(250 - 30 * beepSpeed));
 				}
 			} catch (InterruptedException e) {
-				THIS.cancel(false);
 				break;
 			} catch (Exception ex) {
 				Logger.get().log("Fail in beep: ", ex);
 			}
-		}
-
-		return null;
-	}
-
-	@Override
-	protected void onProgressUpdate(final Float... speed) {
-		try {
-			float vSpeed = Math.abs(speed[0]) > Preferences.lift_start ? speed[0] : 0.0f;
-			VarioMeterScaleUpdater.getInstance().updateSpeed(vSpeed);
-		} catch (Exception ex) {
-			Logger.get().log("Fail async beep progress: ", ex);
 		}
 	}
 
@@ -116,8 +102,11 @@ public class BeepBeeper extends AsyncTask<Integer, Float, Integer> {
 		}
 	}
 
-	public void stop() {
-		this.cancel(true);
+	private void start() {
+		thr.start();
 	}
 
+	public void stop() {
+		thr.interrupt();
+	}
 }

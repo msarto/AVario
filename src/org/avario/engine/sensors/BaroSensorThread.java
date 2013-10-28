@@ -30,12 +30,11 @@ public class BaroSensorThread extends SensorThread<Float> {
 		if (diff > (Preferences.baro_sensitivity * 0.003f)) {
 			// We will skip big consecutive differences to filter the big noise
 			// Logger.get().log("Skip " + diff);
-			currentPresure = prevPresure > 0 ? (prevPresure + currentPresure) / 2f
-					: currentPresure;
+			currentPresure = prevPresure > 0 ? (prevPresure + currentPresure) / 2f : currentPresure;
 		} else {
 			final float altitude = baroFilter.toAltitude(currentPresure);
 			if (altitude >= 0) {
-				DataAccessObject.get().setLastAltitude(altitude);
+				DataAccessObject.get().setBaroLastAltitude(altitude);
 				activity.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
@@ -48,5 +47,4 @@ public class BaroSensorThread extends SensorThread<Float> {
 
 		prevPresure = currentPresure;
 	}
-
 }

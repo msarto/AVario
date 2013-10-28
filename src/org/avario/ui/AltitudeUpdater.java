@@ -3,6 +3,7 @@ package org.avario.ui;
 import java.util.ArrayDeque;
 
 import org.avario.engine.DataAccessObject;
+import org.avario.engine.prefs.Preferences;
 import org.avario.ui.view.AltitudeView;
 import org.avario.utils.Logger;
 
@@ -84,7 +85,7 @@ public class AltitudeUpdater extends AsyncTask<Object, Object, Object> {
 				}
 				publishProgress();
 				try {
-					Thread.sleep(800);
+					Thread.sleep(100 + Preferences.beep_interval);
 				} catch (InterruptedException e) {
 					cancel = true;
 				}
