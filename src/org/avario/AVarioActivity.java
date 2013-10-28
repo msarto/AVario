@@ -7,7 +7,6 @@ import org.avario.engine.poi.PoiManager;
 import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sounds.BeepBeeper;
 import org.avario.engine.tracks.Tracker;
-import org.avario.ui.AltitudeUpdater;
 import org.avario.ui.NavigatorUpdater;
 import org.avario.ui.NumericViewUpdater;
 import org.avario.ui.VarioMeterScaleUpdater;
@@ -77,8 +76,7 @@ public class AVarioActivity extends Activity {
 		// Keep the screen awake
 		try {
 			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-			wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK,
-					"AVario lock");
+			wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "AVario lock");
 			wakeLock.acquire();
 		} catch (Exception ex) {
 			Logger.get().log("Fail keeping awake " + ex.getMessage());
@@ -88,25 +86,20 @@ public class AVarioActivity extends Activity {
 
 	private void addNotification() {
 		try {
-			Notification notification = new Notification(R.drawable.icon,
-					"AVario", System.currentTimeMillis());
-			notification.flags |= Notification.FLAG_NO_CLEAR
-					| Notification.FLAG_ONGOING_EVENT;
+			Notification notification = new Notification(R.drawable.icon, "AVario", System.currentTimeMillis());
+			notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
 			NotificationManager notifier = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 			Intent intent = new Intent(this, AVarioActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-			PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-					intent, 0);
+			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 			// Set the info for the views that show in the notification panel.
-			notification.setLatestEventInfo(this, "AVario", "AVario",
-					contentIntent);
+			notification.setLatestEventInfo(this, "AVario", "AVario", contentIntent);
 
 			notifier.notify(22313, notification);
 		} catch (Exception ex) {
-			Logger.get().log(
-					"Fail placing notification icon " + ex.getMessage());
+			Logger.get().log("Fail placing notification icon " + ex.getMessage());
 		}
 	}
 
@@ -151,8 +144,7 @@ public class AVarioActivity extends Activity {
 	@Override
 	public void onBackPressed() {
 		// To disable back button
-		Toast.makeText(this, R.string.exit_from_menu, Toast.LENGTH_SHORT)
-				.show();
+		Toast.makeText(this, R.string.exit_from_menu, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
