@@ -65,4 +65,20 @@ public class LinearRegression {
 		}
 		return 0;
 	}
+
+	public float getLastDelta() {
+		synchronized (sync) {
+			if (samples.size() > 0) {
+				Sample last = null;
+				Sample prev = null;
+				while (samples.size() > 0) {
+					prev = last;
+					last = samples.remove();
+				}
+				samples.add(last);
+				// xxx
+			}
+		}
+		return 0;
+	}
 }
