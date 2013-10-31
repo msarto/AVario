@@ -47,7 +47,7 @@ public class SensorProducer {
 	protected void close() {
 		gspConsumers.clear();
 		baroConsumers.clear();
-		
+
 		if (compasThread != null) {
 			compasThread.stop();
 		}
@@ -85,6 +85,12 @@ public class SensorProducer {
 		compasThread.startSensor();
 		baroThread.startSensor();
 		locationThread.startSensor();
+
+		try {
+			Thread.sleep(300);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void notifyGpsConsumers(Location location) {
