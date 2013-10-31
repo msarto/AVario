@@ -26,7 +26,7 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 	protected int scaleHeight = 6;
 	private Activity context;
 	private int currentUnitsMark = 0;
-	
+
 	private volatile boolean updatingUI = false;
 
 	protected VarioMeterScaleUpdater(Activity context) {
@@ -156,10 +156,11 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 
 	@Override
 	protected Integer doInBackground(Integer... arg0) {
+		Logger.get().log("Start scale updater ");
 		while (!THIS.isCancelled()) {
 			try {
-				float beepSpeed = DataAccessObject.get().getLastVSpeed();
 				Thread.sleep(300);
+				float beepSpeed = DataAccessObject.get().getLastVSpeed();
 				publishProgress(beepSpeed);
 			} catch (InterruptedException e) {
 				THIS.cancel(false);
@@ -168,6 +169,7 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 				Logger.get().log("Fail in update scale: ", ex);
 			}
 		}
+		Logger.get().log("End Start scale updater ");
 		return null;
 	}
 

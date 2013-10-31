@@ -65,7 +65,8 @@ public class DataAccessObject {
 	public void setLastlocation(Location nowlocation) {
 		lastlocation = nowlocation;
 		gpsaltitude = nowlocation.hasAltitude() ? nowlocation.getAltitude() : gpsaltitude;
-		if (lastAltitude > 0) {
+		if (baroFix && lastAltitude > 0) {
+			// -- set the altitude from the barometrer
 			lastlocation.setAltitude(lastAltitude);
 		}
 		lastlocationTimestamp = SystemClock.elapsedRealtime();
@@ -92,13 +93,13 @@ public class DataAccessObject {
 	public synchronized void setBaroLastAltitude(float lastAltitude) {
 		baroFix = true;
 		this.lastAltitude = lastAltitude;
-		vSpeedRegression.addSample(SystemClock.elapsedRealtime(), lastAltitude);
+		vSpeedRegression.addSample(SystemClock.elapsedRealtime(), lastAltitude, baroFix);
 	}
 
 	public synchronized void setGpsLastAltitude(float lastAltitude) {
 		if (!baroFix) {
 			this.lastAltitude = lastAltitude;
-			vSpeedRegression.addSample(SystemClock.elapsedRealtime(), lastAltitude);
+			vSpeedRegression.addSample(SystemClock.elapsedRealtime(), lastAltitude, baroFix);
 		}
 	}
 

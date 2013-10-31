@@ -32,19 +32,20 @@ public class LinearRegression {
 		}
 	}
 
-	public void addSample(long x, float y) {
+	public void addSample(long x, float y, boolean replaceOld) {
 		synchronized (sync) {
 			Sample newSample = new Sample(x, y);
 			sumx += x;
 			sumy += y;
 			samples.add(newSample);
-
-			// Cull old entries
-			long oldest = x - (50 * Preferences.baro_sensitivity);
-			while (samples.peek().x < oldest) {
-				Sample s = samples.remove();
-				sumx -= s.x;
-				sumy -= s.y;
+			if (replaceOld) {
+				// Cull old entries
+				long oldest = x - (50 * Preferences.baro_sensitivity);
+				while (samples.peek().x < oldest) {
+					Sample s = samples.remove();
+					sumx -= s.x;
+					sumy -= s.y;
+				}
 			}
 		}
 	}
@@ -75,8 +76,10 @@ public class LinearRegression {
 					prev = last;
 					last = samples.remove();
 				}
-				samples.add(last);
+
 				if (prev != null && last != null) {
+					samples.add(prev);
+					samples.add(last);
 					float deltaT = last.x - prev.x;
 					float deltaD = last.y - prev.y;
 					return deltaD / deltaT;

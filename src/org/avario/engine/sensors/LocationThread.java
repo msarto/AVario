@@ -48,15 +48,15 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 
 	@Override
 	public synchronized void onLocationChanged(final Location newLocation) {
-		DataAccessObject.get().setLastlocation(newLocation);
 		if (newLocation.hasAltitude()) {
 			DataAccessObject.get().setGpsLastAltitude((float) newLocation.getAltitude());
 		}
+		DataAccessObject.get().setLastlocation(newLocation);
 		activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				SensorProducer.get().notifyGpsConsumers(DataAccessObject.get().getLastlocation());
-				SensorProducer.get().notifyBaroConsumers((float) newLocation.getAltitude());
+				SensorProducer.get().notifyBaroConsumers(DataAccessObject.get().getLastAltitude());
 			}
 		});
 	}
