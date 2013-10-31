@@ -25,6 +25,7 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 	private static Paint lastThermalPaint = new Paint();
 	private static Paint windMarkPaint = new Paint();
 	private static Paint headingMarkPaint = new Paint();
+	private float densityMultiplier = 1;
 
 	static {
 		lastThermalPaint.setAntiAlias(true);
@@ -69,6 +70,7 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		thermal = BitmapFactory.decodeResource(context.getResources(), R.drawable.spiral);
 		heading = BitmapFactory.decodeResource(context.getResources(), R.drawable.heading);
 		font = StringFormatter.getLargeFont(context.getApplicationContext());
+		densityMultiplier = context.getResources().getDisplayMetrics().density;
 	}
 
 	public static void init(Activity context) {
@@ -104,8 +106,6 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 	}
 
 	private void initDrawings(Canvas navigationCanvas) {
-		final float densityMultiplier = context.getResources().getDisplayMetrics().density;
-
 		Paint circlePaint = new Paint();
 		circlePaint.setColor(DataAccessObject.get().isGPSFix() ? Color.BLACK : Color.RED);
 		circlePaint.setStyle(Paint.Style.STROKE);
@@ -136,9 +136,9 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		final float bearing = DataAccessObject.get().getWindDirectionBearing();
 		if (bearing != 0.0f) {
 			float angle = (float) (bearing * Math.PI / 180f);
-			angle = (float) (Math.PI - angle);
-			float theX = (float) ((radius + 15) * Math.cos(angle) + xCenter);
-			float theY = (float) ((radius + 15) * Math.sin(angle) + yCenter);
+			// angle = (float) (Math.PI - angle);
+			float theX = (float) ((radius + 15) * Math.cos(angle) * densityMultiplier + xCenter);
+			float theY = (float) ((radius + 15) * Math.sin(angle) * densityMultiplier + yCenter);
 			navCanvas.save();
 			// navCanvas.rotate(360 - DataAccessObject.get().getBearing(),
 			// xCenter, yCenter);

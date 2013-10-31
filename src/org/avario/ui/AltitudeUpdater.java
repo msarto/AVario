@@ -35,11 +35,12 @@ public class AltitudeUpdater extends AsyncTask<Object, Object, Object> {
 	private volatile ArrayDeque<Float> varioSpeed;
 	private int maxAltitudeCount = 0;
 
-	public AltitudeUpdater(AltitudeView altView, int height, int width, float densityMultiplier) {
+	public AltitudeUpdater(AltitudeView altView, int height, int width) {
 		super();
 		this.height = height;
 		this.width = width;
 		this.altView = altView;
+		float densityMultiplier = altView.getContext().getResources().getDisplayMetrics().density;
 		this.lineWidth = Math.round(densityMultiplier * 10);
 		upPaint.setStrokeWidth(lineWidth);
 		downPaint.setStrokeWidth(lineWidth);

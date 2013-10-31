@@ -54,7 +54,7 @@ public class DataAccessObject {
 	}
 
 	public float getLastVSpeed() {
-		return vSpeedRegression.getSlope() * 1000.0f;
+		return (baroFix ? vSpeedRegression.getSlope() : vSpeedRegression.getLastDelta()) * 1000.0f;
 	}
 
 	public void resetVSpeed() {

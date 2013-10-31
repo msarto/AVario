@@ -68,7 +68,7 @@ public class LinearRegression {
 
 	public float getLastDelta() {
 		synchronized (sync) {
-			if (samples.size() > 0) {
+			if (samples.size() > 1) {
 				Sample last = null;
 				Sample prev = null;
 				while (samples.size() > 0) {
@@ -76,7 +76,11 @@ public class LinearRegression {
 					last = samples.remove();
 				}
 				samples.add(last);
-				// xxx
+				if (prev != null && last != null) {
+					float deltaT = last.x - prev.x;
+					float deltaD = last.y - prev.y;
+					return deltaD / deltaT;
+				}
 			}
 		}
 		return 0;
