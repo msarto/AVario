@@ -10,9 +10,8 @@ public class TonePlayer {
 	private final float duration = 0.400f; // seconds
 	private final int sampleRate = 8000;
 	private final int numSamples = (int) (duration * sampleRate);
-	private AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate, AudioFormat.CHANNEL_OUT_MONO,
-			AudioFormat.ENCODING_PCM_16BIT, numSamples * 2, AudioTrack.MODE_STATIC);
-	private boolean initialized = false;
+	private AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_DTMF, sampleRate,
+			AudioFormat.CHANNEL_OUT_DEFAULT, AudioFormat.ENCODING_PCM_16BIT, numSamples * 2, AudioTrack.MODE_STATIC);
 	private final int highTone = 32767;
 	private final int lowTone = 65533;
 
@@ -46,34 +45,41 @@ public class TonePlayer {
 			toneSound[idx++] = (byte) ((val & 0xff00) >>> 8);
 		}
 		try {
-			createNative(toneSound, numSamples);
-			play();
+			play(toneSound, numSamples);
 		} catch (Exception ex) {
 			Logger.get().log("Fail playing track ", ex);
 		}
 	}
 
-	private void createNative(byte[] toneSound, int samples) {
+	private void play(byte[] toneSound, int samples) {
 		if (audioTrack != null) {
+
+			switch (audioTrack.getPlayState()) {
+			case AudioTrack.PLAYSTATE_PAUSED:
+			case AudioTrack.PLAYSTATE_PLAYING:
+				audioTrack.stop();
+				break;
+			}
+
+			audioTrack.reloadStaticData();
+			audioTrack.setPlaybackHeadPosition(0);
 			audioTrack.write(toneSound, 0, toneSound.length);
 			audioTrack.setStereoVolume(AudioTrack.getMaxVolume(), AudioTrack.getMaxVolume());
 			// audioTrack.setNotificationMarkerPosition(samples - 1);
-			initialized = true;
-		}
-	}
-
-	private void play() {
-		if (audioTrack != null && initialized) {
-			audioTrack.stop();
-			audioTrack.reloadStaticData();
 			audioTrack.play();
 		}
 	}
 
 	public void stop() {
 		try {
-			if (initialized && audioTrack != null)
-				audioTrack.stop();
+			if (audioTrack != null) {
+				switch (audioTrack.getPlayState()) {
+				case AudioTrack.PLAYSTATE_PAUSED:
+				case AudioTrack.PLAYSTATE_PLAYING:
+					audioTrack.stop();
+					break;
+				}
+			}
 		} catch (Exception ex) {
 			Logger.get().log("Fail stopping track ", ex);
 		}
