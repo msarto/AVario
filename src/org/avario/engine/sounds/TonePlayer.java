@@ -15,6 +15,10 @@ public class TonePlayer {
 	private final int highTone = 32767;
 	private final int lowTone = 65533;
 
+	public TonePlayer() {
+		audioTrack.setStereoVolume(AudioTrack.getMaxVolume(), AudioTrack.getMaxVolume());
+	}
+
 	public static enum ToneType {
 		HIGH, LOW
 	};
@@ -45,13 +49,13 @@ public class TonePlayer {
 			toneSound[idx++] = (byte) ((val & 0xff00) >>> 8);
 		}
 		try {
-			play(toneSound, numSamples);
+			playTone(toneSound, numSamples);
 		} catch (Exception ex) {
 			Logger.get().log("Fail playing track ", ex);
 		}
 	}
 
-	private void play(byte[] toneSound, int samples) {
+	private void playTone(byte[] toneSound, int samples) {
 		if (audioTrack != null) {
 
 			switch (audioTrack.getPlayState()) {
@@ -62,9 +66,8 @@ public class TonePlayer {
 			}
 
 			audioTrack.reloadStaticData();
-			audioTrack.setPlaybackHeadPosition(0);
+			// -- audioTrack.setPlaybackHeadPosition(0);
 			audioTrack.write(toneSound, 0, toneSound.length);
-			audioTrack.setStereoVolume(AudioTrack.getMaxVolume(), AudioTrack.getMaxVolume());
 			// audioTrack.setNotificationMarkerPosition(samples - 1);
 			audioTrack.play();
 		}

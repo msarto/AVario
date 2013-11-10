@@ -14,7 +14,7 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 
 public class Preferences {
-	public static boolean use_speach = true;
+	public static boolean use_speach = false;
 
 	public static int beep_interval = 500;
 	public static float sink_start = -1.5f;

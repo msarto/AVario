@@ -4,6 +4,7 @@ public abstract class AsyncTone {
 	protected TonePlayer tonePlayer = new TonePlayer();
 	protected float beepSpeed;
 	protected float beepHz;
+	protected static volatile boolean isPlaying = false;
 
 	public abstract void beep();
 
