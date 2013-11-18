@@ -94,9 +94,9 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		initDrawings(navCanvas);
 
 		drawPOIInfo(navCanvas);
-		drawWindSpeed(navCanvas);
+		drawIcon(navCanvas, DataAccessObject.get().getWindDirectionBearing(), windsock);
 		// Disable drawing heading this version
-		// drawHeading(navCanvas);
+		drawIcon(navCanvas, DataAccessObject.get().getHeading(), heading);
 		if (DataAccessObject.get().isGPSFix()) {
 			drawThermal(navCanvas);
 		} else {
@@ -132,30 +132,14 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		poiView = new PoiView(context, navigationCanvas, xCenter, yCenter);
 	}
 
-	private void drawWindSpeed(Canvas navCanvas) {
-		final float bearing = DataAccessObject.get().getWindDirectionBearing();
-		if (bearing != 0.0f) {
-			float angle = (float) (bearing * Math.PI / 180f);
-			// angle = (float) (Math.PI - angle);
-			float theX = (float) ((radius + 15) * Math.cos(angle) * densityMultiplier + xCenter);
-			float theY = (float) ((radius + 15) * Math.sin(angle) * densityMultiplier + yCenter);
+	private void drawIcon(Canvas navCanvas, float bearing, Bitmap bitmap) {
+		if (bearing != -1) {
+			bearing = bearing % 360;
+			float angle = (float) (bearing * Math.PI / 180f - Math.PI / 2);
+			float theX = (float) ((radius + 5 * densityMultiplier) * Math.cos(angle) * densityMultiplier + xCenter);
+			float theY = (float) ((radius + 5 * densityMultiplier) * Math.sin(angle) * densityMultiplier + yCenter);
 			navCanvas.save();
-			// navCanvas.rotate(360 - DataAccessObject.get().getBearing(),
-			// xCenter, yCenter);
-			navCanvas.drawBitmap(windsock, theX, theY, windMarkPaint);
-			navCanvas.restore();
-		}
-	}
-
-	private void drawHeading(Canvas navCanvas) {
-		final float heading = DataAccessObject.get().getHeading();
-		if (heading != 0.0f) {
-			float angle = (float) (heading * Math.PI / 180f);
-			angle = (float) (Math.PI - angle);
-			float theX = (float) (95 * Math.cos(angle) + xCenter);
-			float theY = (float) (95 * Math.sin(angle) + yCenter);
-			navCanvas.save();
-			navCanvas.drawBitmap(this.heading, theX, theY, headingMarkPaint);
+			navCanvas.drawBitmap(bitmap, theX, theY, windMarkPaint);
 			navCanvas.restore();
 		}
 	}
@@ -165,19 +149,17 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		final Location lastThermal = DataAccessObject.get().getLastThermal();
 		if (lastThermal != null && lastLocation != null) {
 			float thermalBearing = lastLocation.bearingTo(lastThermal);
-			float angle = (float) ((thermalBearing % 360) * Math.PI / 180f);
+			float angle = (float) ((thermalBearing % 360) * Math.PI / 180f - Math.PI / 2);
 			float distanceToThermal = lastLocation.distanceTo(lastThermal);
 			if (distanceToThermal < Preferences.max_last_thermal_distance) {
-				distanceToThermal = distanceToThermal > 100 ? 100 : distanceToThermal;
+				float maxThermalUIDistance = radius + 15 * densityMultiplier;
+				distanceToThermal = distanceToThermal > maxThermalUIDistance ? maxThermalUIDistance : distanceToThermal;
 				angle = (float) (Math.PI - angle);
 				float theX = (float) (distanceToThermal * Math.cos(angle) + xCenter);
 				float theY = (float) (distanceToThermal * Math.sin(angle) + yCenter);
 				navCanvas.save();
-				// navCanvas.rotate(360 - DataAccessObject.get().getBearing(),
-				// xCenter, yCenter);
 				navCanvas.drawBitmap(thermal, theX, theY, lastThermalPaint);
 				navCanvas.restore();
-				// navCanvas.drawCircle(theY, theX, 8, lastThermalPaint);
 			}
 		}
 	}

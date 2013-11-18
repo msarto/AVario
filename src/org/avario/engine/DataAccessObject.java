@@ -16,11 +16,12 @@ public class DataAccessObject {
 	protected volatile long lastlocationTimestamp = 0;
 
 	protected volatile float bearing = 0f;
-	protected volatile float heading = 0f;
 	protected boolean baroFix = false;
 	protected volatile float lastAltitude = -1;
 
+	private volatile float heading = -1f;
 	private volatile float windDirectionBearing = -1f;
+	
 	private volatile float maxSpeed = 0f;
 
 	private LinearRegression vSpeedRegression = new LinearRegression();
