@@ -120,6 +120,12 @@
             android:summary="@string/location_history_s"
             android:title="@string/location_history_t" />
 
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="auto_track"
+            android:summary="@string/auto_track_s"
+            android:title="@string/auto_track_t" />
+
         <android.preference.Preference
             android:defaultValue=""
             android:key="appVersionName"

@@ -57,23 +57,21 @@ public class TonePlayer {
 
 	private void playTone(byte[] toneSound, int samples) {
 		if (audioTrack != null) {
-
 			switch (audioTrack.getPlayState()) {
 			case AudioTrack.PLAYSTATE_PAUSED:
 			case AudioTrack.PLAYSTATE_PLAYING:
 				audioTrack.stop();
 				break;
 			}
-
-			audioTrack.reloadStaticData();
-			// -- audioTrack.setPlaybackHeadPosition(0);
-			audioTrack.write(toneSound, 0, toneSound.length);
-			// audioTrack.setNotificationMarkerPosition(samples - 1);
-			audioTrack.play();
 		}
+
+		audioTrack = new AudioTrack(AudioManager.STREAM_DTMF, sampleRate, AudioFormat.CHANNEL_OUT_DEFAULT,
+				AudioFormat.ENCODING_PCM_16BIT, numSamples * 2, AudioTrack.MODE_STATIC);
+		audioTrack.write(toneSound, 0, toneSound.length);
+		audioTrack.play();
 	}
 
-	public void stop() {
+	public synchronized void stop() {
 		try {
 			if (audioTrack != null) {
 				switch (audioTrack.getPlayState()) {

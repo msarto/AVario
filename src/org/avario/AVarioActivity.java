@@ -17,10 +17,12 @@ import org.avario.utils.Logger;
 import org.avario.utils.Speaker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -73,6 +75,10 @@ public class AVarioActivity extends Activity {
 		PoiManager.init();
 		Speaker.init(this);
 
+		if (Preferences.auto_track && !Tracker.get().isTracking()) {
+			startAutoTrack();
+		}
+
 		// Keep the screen awake
 		try {
 			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -82,6 +88,33 @@ public class AVarioActivity extends Activity {
 			Logger.get().log("Fail keeping awake " + ex.getMessage());
 		}
 		addNotification();
+	}
+
+	private void startAutoTrack() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+
+				AVarioActivity.this.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Tracker.get().startTracking();
+					}
+				});
+
+			}
+		});
+
+		builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
+
+		builder.setCancelable(false);
+		builder.setMessage(R.string.recordTrack_q);
+		AlertDialog dialog = builder.create();
+		dialog.show();
 	}
 
 	private void addNotification() {
@@ -105,9 +138,15 @@ public class AVarioActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		boolean bRet = super.onCreateOptionsMenu(menu);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main, menu);
-		return true;
+
+		MenuItem trackingMenu = menu.findItem(R.id.ontrack);
+		if (trackingMenu != null) {
+			trackingMenu.setTitle(Tracker.get().isTracking() ? R.string.stoptracking : R.string.starttracking);
+		}
+		return bRet;
 	}
 
 	@Override
@@ -167,6 +206,7 @@ public class AVarioActivity extends Activity {
 			VarioMeterScaleUpdater.clear();
 			NumericViewUpdater.clear();
 			DataAccessObject.clear();
+
 			Logger.get().log("App terminated...");
 			Logger.get().close();
 		} catch (Exception ex) {

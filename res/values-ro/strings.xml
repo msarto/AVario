@@ -99,6 +99,12 @@
     <string name="location_history_t">Secunde istoric</string>
     <string name="heading_interval_s">Interval de recalculare directie</string>
     <string name="heading_interval_t">Recalculare directie</string>
+    <string name="auto_track_s">Porneste inregistrarea automat</string>
+    <string name="auto_track_t">Inregistrare automata</string>
+    <string name="yes">Da</string>
+    <string name="no">Nu</string>
+    <string name="recordTrack_q">Pornesc inregistratea traseului?</string>    
+    
     <string name="reference_altitude_s">Selectare altitudine referinta</string>
     <string name="reference_altitude_t">Setare altitudine</string>
     

@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 
 public class Preferences {
 	public static boolean use_speach = false;
+	public static boolean auto_track = false;
 
 	public static int beep_interval = 500;
 	public static float sink_start = -1.5f;
@@ -72,6 +73,7 @@ public class Preferences {
 		Preferences.context = context;
 		checkForUpdateVersion();
 		use_speach = getBool("use_speach", use_speach);
+		auto_track = getBool("auto_track", auto_track);
 		beep_interval = Math.round(1000f * getFloat("beep_interval", 0.5f));
 		sink_start = -1f * getFloat("sink_start", 1.5f);
 		lift_start = getFloat("lift_start", lift_start);
