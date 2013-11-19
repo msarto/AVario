@@ -17,6 +17,10 @@ public class BaroSensorThread extends SensorThread<Float> {
 
 	public BaroSensorThread(Activity activity) {
 		super(activity);
+		init();
+	}
+
+	protected void init() {
 		sensors = new int[] { Sensor.TYPE_PRESSURE };
 		sensorSpeed = SensorManager.SENSOR_DELAY_FASTEST;
 		retry = true;

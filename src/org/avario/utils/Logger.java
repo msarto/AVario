@@ -1,9 +1,11 @@
 package org.avario.utils;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Date;
 
 import android.os.Environment;
@@ -13,7 +15,7 @@ public class Logger {
 	private static boolean USE_LOG = false;
 	private static final String LOG_TAG = "AVARIO";
 	private static Logger THIS = new Logger();
-	private FileOutputStream logStream = null;
+	private OutputStream logStream = null;
 
 	public static void init() {
 		if (!USE_LOG) {
@@ -21,12 +23,13 @@ public class Logger {
 		}
 		try {
 			THIS.close();
-			File logFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario" + File.separator + "AVario.log");
+			File logFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
+					+ File.separator + "AVario.log");
 			if (!logFile.getParentFile().exists()) {
 				logFile.getParentFile().mkdirs();
 			}
 			THIS = new Logger();
-			THIS.logStream = new FileOutputStream(logFile, true);
+			THIS.logStream = new BufferedOutputStream(new FileOutputStream(logFile, true));
 		} catch (FileNotFoundException e) {
 		}
 	}
@@ -76,13 +79,11 @@ public class Logger {
 		try {
 			if (logStream != null) {
 				synchronized (LOG_TAG) {
-					logStream
-							.write((new Date().toString() + " - " + ex.getClass().getName() + " - " + msg + " - " + ex.getMessage() + "\r\n<br>")
-									.getBytes());
+					logStream.write((new Date().toString() + " - " + ex.getClass().getName() + " - " + msg + " - "
+							+ ex.getMessage() + "\r\n<br>").getBytes());
 					for (StackTraceElement stack : ex.getStackTrace()) {
-						logStream
-								.write((" \t" + stack.getClassName() + "#" + stack.getMethodName() + "#" + stack.getLineNumber() + "\r\n<br>")
-										.getBytes());
+						logStream.write((" \t" + stack.getClassName() + "#" + stack.getMethodName() + "#"
+								+ stack.getLineNumber() + "\r\n<br>").getBytes());
 					}
 				}
 			}
