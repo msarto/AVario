@@ -94,13 +94,13 @@ public class DataAccessObject {
 	public synchronized void setBaroLastAltitude(float lastAltitude) {
 		baroFix = true;
 		this.lastAltitude = lastAltitude;
-		vSpeedRegression.addSample(SystemClock.elapsedRealtime(), lastAltitude, baroFix);
+		vSpeedRegression.addSample(System.nanoTime() / 1000000d, lastAltitude, baroFix);
 	}
 
 	public synchronized void setGpsLastAltitude(float lastAltitude) {
 		if (!baroFix) {
 			this.lastAltitude = lastAltitude;
-			vSpeedRegression.addSample(SystemClock.elapsedRealtime(), lastAltitude, baroFix);
+			vSpeedRegression.addSample(System.nanoTime() / 1000000d, lastAltitude, baroFix);
 		}
 	}
 
@@ -117,7 +117,7 @@ public class DataAccessObject {
 	}
 
 	public boolean isGPSFix() {
-		return ((SystemClock.elapsedRealtime() - lastlocationTimestamp) < 6000);
+		return ((SystemClock.elapsedRealtime() - lastlocationTimestamp) < 5000);
 	}
 
 	protected void makeWind(Location location) {

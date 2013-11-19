@@ -8,10 +8,10 @@ import org.avario.engine.prefs.Preferences;
 public class LinearRegression {
 
 	static class Sample {
-		public long x;
+		public double x;
 		public float y;
 
-		public Sample(long x, float y) {
+		public Sample(double x, float y) {
 			this.x = x;
 			this.y = y;
 		}
@@ -21,7 +21,7 @@ public class LinearRegression {
 	private static final Object sync = new Object();
 
 	// / Invariants
-	private long sumx;
+	private double sumx;
 	private float sumy;
 
 	public void reset() {
@@ -32,7 +32,7 @@ public class LinearRegression {
 		}
 	}
 
-	public void addSample(long x, float y, boolean replaceOld) {
+	public void addSample(double x, float y, boolean replaceOld) {
 		synchronized (sync) {
 			Sample newSample = new Sample(x, y);
 			sumx += x;
@@ -40,7 +40,7 @@ public class LinearRegression {
 			samples.add(newSample);
 			if (replaceOld) {
 				// Cull old entries
-				long oldest = x - (50 * Preferences.baro_sensitivity);
+				double oldest = x - (50 * Preferences.baro_sensitivity);
 				while (samples.peek().x < oldest) {
 					Sample s = samples.remove();
 					sumx -= s.x;
@@ -53,7 +53,7 @@ public class LinearRegression {
 	public float getSlope() {
 		synchronized (sync) {
 			if (samples.size() > 0) {
-				float xbar = sumx / (float) samples.size();
+				double xbar = sumx / (double) samples.size();
 				float ybar = sumy / (float) samples.size();
 				float xxbar = 0.0f, xybar = 0.0f;
 				for (Sample s : samples) {
@@ -80,9 +80,9 @@ public class LinearRegression {
 				if (prev != null && last != null) {
 					samples.add(prev);
 					samples.add(last);
-					float deltaT = last.x - prev.x;
+					double deltaT = last.x - prev.x;
 					float deltaD = last.y - prev.y;
-					return deltaD / deltaT;
+					return (float) (deltaD / deltaT);
 				}
 			}
 		}
