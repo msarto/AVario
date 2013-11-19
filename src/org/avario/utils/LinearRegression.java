@@ -40,7 +40,7 @@ public class LinearRegression {
 			samples.add(newSample);
 			if (replaceOld) {
 				// Cull old entries
-				double oldest = x - (50 * Preferences.baro_sensitivity);
+				double oldest = x - (45 * Preferences.baro_sensitivity);
 				while (samples.peek().x < oldest) {
 					Sample s = samples.remove();
 					sumx -= s.x;
