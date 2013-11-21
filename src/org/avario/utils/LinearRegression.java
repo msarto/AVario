@@ -20,6 +20,8 @@ public class LinearRegression {
 
 	private volatile Queue<Sample> samples = new ArrayDeque<Sample>();
 	private StabiloFilter filter = new StabiloFilter();
+	private boolean needNewSlope = false;
+	private float currentSlope = 0f;
 
 	// / Invariants
 	private double sumx;
@@ -36,9 +38,10 @@ public class LinearRegression {
 		sumx += x;
 		sumy += y;
 		samples.add(newSample);
+		needNewSlope = true;
 		if (replaceOld) {
 			// Cull old entries
-			double oldest = x - (45 * Preferences.baro_sensitivity);
+			double oldest = x - (30 * Preferences.baro_sensitivity);
 			while (samples.peek().x < oldest) {
 				Sample s = samples.remove();
 				sumx -= s.x;
@@ -48,19 +51,22 @@ public class LinearRegression {
 	}
 
 	public synchronized float getSlope() {
-		if (samples.size() > 0) {
-			double xbar = sumx / (double) samples.size();
-			float ybar = sumy / (float) samples.size();
-			float xxbar = 0.0f, xybar = 0.0f;
-			for (Sample s : samples) {
-				xxbar += (s.x - xbar) * (s.x - xbar);
-				xybar += (s.x - xbar) * (s.y - ybar);
-			}
-			float beta1 = xybar / xxbar;
-
-			return filter.doFilter(beta1)[0];
+		if (!needNewSlope) {
+			return currentSlope;
 		}
-		return 0;
+
+		needNewSlope = false;
+		double xbar = sumx / (double) samples.size();
+		float ybar = sumy / (float) samples.size();
+		float xxbar = 0.0f, xybar = 0.0f;
+		for (Sample s : samples) {
+			xxbar += (s.x - xbar) * (s.x - xbar);
+			xybar += (s.x - xbar) * (s.y - ybar);
+		}
+		float beta1 = xybar / xxbar;
+		currentSlope = filter.doFilter(beta1)[0];
+		return currentSlope;
+		// return beta1;
 	}
 
 	public synchronized float getLastDelta() {

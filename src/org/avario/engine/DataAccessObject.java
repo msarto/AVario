@@ -21,7 +21,7 @@ public class DataAccessObject {
 
 	private volatile float heading = -1f;
 	private volatile float windDirectionBearing = -1f;
-	
+
 	private volatile float maxSpeed = 0f;
 
 	private LinearRegression vSpeedRegression = new LinearRegression();
