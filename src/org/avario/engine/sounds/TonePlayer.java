@@ -10,7 +10,7 @@ public class TonePlayer {
 	private final float duration = 0.400f; // seconds
 	private final int sampleRate = 8000;
 	private final int numSamples = (int) (duration * sampleRate);
-	private AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_DTMF, sampleRate,
+	private AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate,
 			AudioFormat.CHANNEL_OUT_DEFAULT, AudioFormat.ENCODING_PCM_16BIT, numSamples * 2, AudioTrack.MODE_STATIC);
 	private final int highTone = 32767;
 	private final int lowTone = 65533;
@@ -65,8 +65,7 @@ public class TonePlayer {
 			}
 		}
 
-		audioTrack = new AudioTrack(AudioManager.STREAM_DTMF, sampleRate, AudioFormat.CHANNEL_OUT_DEFAULT,
-				AudioFormat.ENCODING_PCM_16BIT, numSamples * 2, AudioTrack.MODE_STATIC);
+		audioTrack.reloadStaticData();
 		audioTrack.write(toneSound, 0, toneSound.length);
 		audioTrack.play();
 	}

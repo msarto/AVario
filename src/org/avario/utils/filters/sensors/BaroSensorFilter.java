@@ -5,7 +5,7 @@ import org.avario.engine.SensorProducer;
 import org.avario.engine.consumerdef.LocationConsumer;
 import org.avario.engine.prefs.Preferences;
 import org.avario.utils.Logger;
-import org.avario.utils.filters.impl.IIRFilter;
+import org.avario.utils.filters.Filter;
 import org.avario.utils.filters.impl.MedianFixFilter;
 
 import android.hardware.SensorManager;
@@ -13,8 +13,9 @@ import android.location.Location;
 
 public class BaroSensorFilter implements LocationConsumer {
 	private volatile float referrence = SensorManager.PRESSURE_STANDARD_ATMOSPHERE;
-	private MedianFixFilter baroFilter = new MedianFixFilter();
-	private IIRFilter altitudeFilter = new IIRFilter();
+	// private MedianFixFilter baroFilter = new MedianFixFilter();
+	private Filter baroFilter = new MedianFixFilter();
+	// private IIRFilter altitudeFilter = new IIRFilter();
 
 	private volatile float lastPresureNotified = -1f;
 	private volatile boolean goodAccuracy = false;
@@ -30,7 +31,8 @@ public class BaroSensorFilter implements LocationConsumer {
 		lastPresureNotified = currentPresure;
 		lastPresureNotified = baroFilter.doFilter(lastPresureNotified)[0];
 		float sensorAlt = SensorManager.getAltitude(referrence, lastPresureNotified);
-		return altitudeFilter.doFilter(sensorAlt)[0];
+		return sensorAlt;
+		// return altitudeFilter.doFilter(sensorAlt)[0];
 	}
 
 	public float getReferrence() {
@@ -61,7 +63,7 @@ public class BaroSensorFilter implements LocationConsumer {
 			ref -= 0.5;
 		}
 		baroFilter.reset();
-		altitudeFilter.reset();
+		// altitudeFilter.reset();
 		DataAccessObject.get().resetVSpeed();
 		referrence = ref;
 	}

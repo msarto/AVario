@@ -9,17 +9,17 @@ public class ProgressiveFilter implements Filter {
 	public ProgressiveFilter(float step) {
 		this.step = step;
 	}
-	
+
 	public void setStep(float step) {
 		this.step = step;
 	}
 
 	@Override
-	public float[] doFilter(float... value) {
+	public synchronized float[] doFilter(float... value) {
 		float[] ret = new float[value.length];
 		if (prev != null) {
 			for (int i = 0; i < value.length; i++) {
-				//Logger.get().log("Diff " + (prev[i] - value[i]));
+				// Logger.get().log("Diff " + (prev[i] - value[i]));
 				if (prev[i] > value[i]) {
 					ret[i] = Math.abs(prev[i] - value[i]) > step ? prev[i] - step : value[i];
 				} else {
@@ -30,4 +30,12 @@ public class ProgressiveFilter implements Filter {
 		prev = ret;
 		return ret;
 	}
+
+	@Override
+	public synchronized void reset() {
+		prev = null;
+		// TODO Auto-generated method stub
+
+	}
+
 }

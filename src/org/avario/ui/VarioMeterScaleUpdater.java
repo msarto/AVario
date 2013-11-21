@@ -1,8 +1,5 @@
 package org.avario.ui;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.avario.R;
 import org.avario.engine.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
@@ -14,14 +11,14 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.util.SparseArray;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 	private static VarioMeterScaleUpdater THIS;
-
-	protected final Map<Integer, LinearLayout> scaleView = new HashMap<Integer, LinearLayout>();
+	protected final SparseArray<LinearLayout> scaleView = new SparseArray<LinearLayout>();
 	protected TextView varioView = null;
 	protected int scaleHeight = 6;
 	private Activity context;
@@ -85,10 +82,13 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 		final float density = context.getResources().getDisplayMetrics().density;
 		final float screenH = context.getResources().getDisplayMetrics().heightPixels;
 		scaleHeight = Math.round((screenH - density * 30 - density * 140) / 40);
-		for (LinearLayout layout : scaleView.values()) {
-			LayoutParams scaleParams = (LayoutParams) layout.getLayoutParams();
-			scaleParams.height = scaleHeight;
-			layout.setLayoutParams(scaleParams);
+		for (int i = -20; i < 21; i++) {
+			LinearLayout scaleItem = scaleView.get(i);
+			if (scaleItem != null) {
+				LayoutParams scaleParams = (LayoutParams) scaleItem.getLayoutParams();
+				scaleParams.height = scaleHeight;
+				scaleItem.setLayoutParams(scaleParams);
+			}
 		}
 	}
 

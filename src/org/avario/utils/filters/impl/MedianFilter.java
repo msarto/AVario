@@ -45,4 +45,9 @@ public class MedianFilter implements Filter {
 		return median / (float) history.size();
 	}
 
+	public synchronized void reset() {
+		historyTime = 0;
+		history.clear();
+	}
+
 }

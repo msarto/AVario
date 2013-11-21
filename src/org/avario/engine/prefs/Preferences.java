@@ -62,8 +62,8 @@ public class Preferences {
 	private static void setAppSoundVolume(int appVolume) {
 		try {
 			AudioManager audio = (AudioManager) Preferences.context.getSystemService(Context.AUDIO_SERVICE);
-			int mediaVal = Math.round((audio.getStreamMaxVolume(AudioManager.STREAM_DTMF) / 100f) * appVolume);
-			audio.setStreamVolume(AudioManager.STREAM_DTMF, mediaVal, 0);
+			int mediaVal = Math.round((audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 100f) * appVolume);
+			audio.setStreamVolume(AudioManager.STREAM_MUSIC, mediaVal, 0);
 		} catch (Exception e) {
 			Logger.get().log("Unable o set app volume...", e);
 		}
