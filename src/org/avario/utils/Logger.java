@@ -12,7 +12,7 @@ import android.os.Environment;
 import android.util.Log;
 
 public class Logger {
-	private static boolean USE_LOG = false;
+	public static boolean USE_LOG = false;
 	private static final String LOG_TAG = "AVARIO";
 	private static Logger THIS = new Logger();
 	private OutputStream logStream = null;

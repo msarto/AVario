@@ -11,6 +11,24 @@
             unless="sdk.dir"
     />
 
+    <target name="-pre-build">
+		<copy todir="./src.release" preservelastmodified="true" overwrite="true">
+            <fileset dir="./src">
+                <include name="**/*.*" />
+            </fileset>
+		</copy>
+		<echo>Optimize logger...</echo>
+		<replaceregexp byline="true" match="Logger\.get\(\).log" replace="if \(!Logger\.get\(\).USE_LOG\); else Logger\.get\(\).log" flags="g">
+            <fileset dir="./src.release" includes="**/*.java" />
+		</replaceregexp>
+	</target>
+
+	<target name="-pre-clean">
+		<delete includeemptydirs="true" dir="./src.release" quiet="true"/>
+	</target>
+	<target name="-post-build">
+		<delete includeemptydirs="true" dir="./src.release" quiet="true"/>
+	</target>
     <!--
         Import per project custom build rules if present at the root of the project.
         This is the place to put custom intermediary targets such as:
