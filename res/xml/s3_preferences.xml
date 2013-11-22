@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/prefs_title" >
+        <PreferenceScreen
+            android:key="sound_prefs"
+            android:summary="@string/sound_prefs_s"
+            android:title="@string/sound_prefs_t" >
+            <org.avario.ui.prefs.SeekBarPreference
+                android:defaultValue="100"
+                android:key="app_volume"
+                android:max="100"
+                android:summary="@string/volume_s"
+                android:title="@string/volume_t" />
+
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="use_speach"
+                android:summary="@string/use_speach_s"
+                android:title="@string/use_speach_t" />
+
+            <org.avario.ui.prefs.EditTextPreferenceWithValue
+                android:defaultValue="0.5"
+                android:inputType="numberDecimal"
+                android:key="beep_interval"
+                android:singleLine="true"
+                android:summary="@string/beep_interval_s"
+                android:title="@string/beep_interval_t" />
+            <org.avario.ui.prefs.EditTextPreferenceWithValue
+                android:defaultValue="0"
+                android:inputType="numberDecimal"
+                android:key="prenotify_interval"
+                android:singleLine="true"
+                android:summary="@string/prenotify_interval_s"
+                android:title="@string/prenotify_interval_t" />
+            <org.avario.ui.prefs.EditTextPreferenceWithValue
+                android:defaultValue="1.5"
+                android:inputType="numberDecimal"
+                android:key="sink_start"
+                android:singleLine="true"
+                android:summary="@string/sink_start_s"
+                android:title="@string/sink_start_t" />
+            <org.avario.ui.prefs.EditTextPreferenceWithValue
+                android:defaultValue="0.2"
+                android:inputType="numberDecimal"
+                android:key="lift_start"
+                android:singleLine="true"
+                android:summary="@string/lift_start_s"
+                android:title="@string/lift_start_t" />
+            <org.avario.ui.prefs.EditTextPreferenceWithValue
+                android:defaultValue="650"
+                android:inputType="numberDecimal"
+                android:key="lift_hz"
+                android:singleLine="true"
+                android:summary="@string/lift_hz_s"
+                android:title="@string/lift_hz_t" />
+            <org.avario.ui.prefs.EditTextPreferenceWithValue
+                android:defaultValue="350"
+                android:inputType="numberDecimal"
+                android:key="sink_hz"
+                android:singleLine="true"
+                android:summary="@string/sink_hz_s"
+                android:title="@string/sink_hz_t" />
+            <org.avario.ui.prefs.EditTextPreferenceWithValue
+                android:defaultValue="80"
+                android:inputType="numberDecimal"
+                android:key="tone_variation"
+                android:singleLine="true"
+                android:summary="@string/tone_variation_s"
+                android:title="@string/tone_variation_t" />
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="thermal_prefs"
+            android:summary="@string/thermal_prefs_s"
+            android:title="@string/thermal_prefs_t" >
+            <org.avario.ui.prefs.EditTextPreferenceWithValue
+                android:defaultValue="200"
+                android:inputType="numberDecimal"
+                android:key="max_last_thermal_distance"
+                android:singleLine="true"
+                android:summary="@string/max_last_thermal_distance_s"
+                android:title="@string/max_last_thermal_distance_t" />
+            <org.avario.ui.prefs.EditTextPreferenceWithValue
+                android:defaultValue="3"
+                android:inputType="numberDecimal"
+                android:key="min_thermal_interval"
+                android:singleLine="true"
+                android:summary="@string/min_thermal_interval_s"
+                android:title="@string/min_thermal_interval_t" />
+            <org.avario.ui.prefs.EditTextPreferenceWithValue
+                android:defaultValue="3"
+                android:inputType="numberDecimal"
+                android:key="min_thermal_gain"
+                android:singleLine="true"
+                android:summary="@string/min_thermal_gain_s"
+                android:title="@string/min_thermal_gain_t" />
+        </PreferenceScreen>
+
+        <org.avario.ui.prefs.SeekBarPreference
+            android:defaultValue="40"
+            android:key="baro_sensitivity"
+            android:max="50"
+            android:summary="@string/baro_filter_sensitivity_s"
+            android:title="@string/baro_filter_sensitivity_t" />
+
+        <ListPreference
+            android:capitalize="words"
+            android:defaultValue="1"
+            android:entries="@array/units_system_names"
+            android:entryValues="@array/units_system_vals"
+            android:key="units_system"
+            android:summary="@string/units_system_summary"
+            android:title="@string/units_system" />
+
+        <org.avario.ui.prefs.EditTextPreferenceWithValue
+            android:defaultValue="5"
+            android:inputType="numberDecimal"
+            android:key="location_history"
+            android:singleLine="true"
+            android:summary="@string/location_history_s"
+            android:title="@string/location_history_t" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="auto_track"
+            android:summary="@string/auto_track_s"
+            android:title="@string/auto_track_t" />
+
+        <android.preference.Preference
+            android:defaultValue=""
+            android:key="appVersionName"
+            android:singleLine="true"
+            android:summary="@string/versionName"
+            android:title="@string/AVario" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

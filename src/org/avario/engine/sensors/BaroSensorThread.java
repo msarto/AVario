@@ -31,26 +31,23 @@ public class BaroSensorThread extends SensorThread<Float> {
 		retry = false;
 		float currentPresure = sensorEvent.values.clone()[0];
 		final float diff = Math.abs(prevPresure - currentPresure);
-		if (diff > ((50 - Preferences.baro_sensitivity) * 0.003f)) {
+		if (diff > ((50 - Preferences.baro_sensitivity) * 0.002f)) {
 			// We will skip big consecutive differences to filter the big noise
 			// Logger.get().log("Skip " + diff);
 			int filterSensitivity = (100 - Preferences.baro_sensitivity);
 			currentPresure = prevPresure > 0 ? ((prevPresure * filterSensitivity + currentPresure
 					* (100 - filterSensitivity)) / 100) : currentPresure;
-		} else {
-			final float altitude = baroFilter.toAltitude(currentPresure);
-			if (altitude >= 0) {
-				DataAccessObject.get().setBaroLastAltitude(altitude);
-				activity.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						SensorProducer.get().notifyBaroConsumers(altitude);
-					}
-				});
-
-			}
 		}
-
+		final float altitude = baroFilter.toAltitude(currentPresure);
+		if (altitude >= 0) {
+			DataAccessObject.get().setBaroLastAltitude(altitude);
+			activity.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					SensorProducer.get().notifyBaroConsumers(altitude);
+				}
+			});
+		}
 		prevPresure = currentPresure;
 	}
 }

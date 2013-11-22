@@ -6,7 +6,7 @@ import org.avario.engine.consumerdef.LocationConsumer;
 import org.avario.engine.prefs.Preferences;
 import org.avario.utils.Logger;
 import org.avario.utils.filters.Filter;
-import org.avario.utils.filters.impl.MedianFixFilter;
+import org.avario.utils.filters.impl.KalmanFilter;
 
 import android.hardware.SensorManager;
 import android.location.Location;
@@ -14,7 +14,7 @@ import android.location.Location;
 public class BaroSensorFilter implements LocationConsumer {
 	private volatile float referrence = SensorManager.PRESSURE_STANDARD_ATMOSPHERE;
 	// private MedianFixFilter baroFilter = new MedianFixFilter();
-	private Filter baroFilter = new MedianFixFilter();
+	private Filter baroFilter = new KalmanFilter();
 	// private IIRFilter altitudeFilter = new IIRFilter();
 
 	private volatile float lastPresureNotified = -1f;

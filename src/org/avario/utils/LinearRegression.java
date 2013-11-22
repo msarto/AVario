@@ -41,7 +41,7 @@ public class LinearRegression {
 		needNewSlope = true;
 		if (replaceOld) {
 			// Cull old entries
-			double oldest = x - (30 * Preferences.baro_sensitivity);
+			double oldest = x - (40 * Preferences.baro_sensitivity);
 			while (samples.peek().x < oldest) {
 				Sample s = samples.remove();
 				sumx -= s.x;

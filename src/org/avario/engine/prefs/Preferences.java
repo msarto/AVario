@@ -1,6 +1,7 @@
 package org.avario.engine.prefs;
 
 import org.avario.AVarioActivity;
+import org.avario.R;
 import org.avario.ui.prefs.PreferencesMenu;
 import org.avario.utils.Logger;
 
@@ -10,8 +11,8 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.AudioManager;
+import android.os.Build;
 import android.preference.Preference;
-import android.preference.PreferenceManager;
 
 public class Preferences {
 	public static boolean use_speach = false;
@@ -38,13 +39,25 @@ public class Preferences {
 	public static int sink_hz = 350;
 
 	private static Context context;
+	private static String preferencesResource = "default_preferences";
+	static {
+		int getCurrentPreferencesResourceId = getCurrentPreferencesResource();
+		switch (getCurrentPreferencesResourceId) {
+		case R.xml.s3_preferences:
+			preferencesResource = "s3_preferences";
+			break;
+		default:
+			preferencesResource = "default_preferences";
+			break;
+		}
+	}
 
 	private static void checkForUpdateVersion() {
 		try {
 			PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 			String version = pInfo.versionName;
 			Logger.get().log("Current version " + version);
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			SharedPreferences prefs = context.getSharedPreferences(preferencesResource, Context.MODE_PRIVATE);
 			String prefVersion = prefs.getString("appVersion", "");
 			Logger.get().log("pref version " + prefVersion);
 
@@ -97,7 +110,7 @@ public class Preferences {
 
 	private static float getFloat(String name, float defaultValue) {
 		try {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			SharedPreferences prefs = context.getSharedPreferences(preferencesResource, Context.MODE_PRIVATE);
 			return Float.valueOf(prefs.getString(name, String.valueOf(defaultValue)));
 		} catch (Exception ex) {
 			Logger.get().log("Fail getting " + name);
@@ -107,7 +120,7 @@ public class Preferences {
 
 	private static int getInt(String name, int defaultValue) {
 		try {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			SharedPreferences prefs = context.getSharedPreferences(preferencesResource, Context.MODE_PRIVATE);
 			return Integer.valueOf(prefs.getString(name, String.valueOf(defaultValue)));
 		} catch (Exception ex) {
 			Logger.get().log("Fail getting " + name);
@@ -117,7 +130,7 @@ public class Preferences {
 
 	private static String getString(String name, String defaultValue) {
 		try {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			SharedPreferences prefs = context.getSharedPreferences(preferencesResource, Context.MODE_PRIVATE);
 			return prefs.getString(name, defaultValue);
 		} catch (Exception ex) {
 			Logger.get().log("Fail getting " + name);
@@ -127,7 +140,7 @@ public class Preferences {
 
 	private static boolean getBool(String name, boolean defaultValue) {
 		try {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			SharedPreferences prefs = context.getSharedPreferences(preferencesResource, Context.MODE_PRIVATE);
 			return prefs.getBoolean(name, defaultValue);
 		} catch (Exception ex) {
 			Logger.get().log("Fail getting " + name);
@@ -145,5 +158,14 @@ public class Preferences {
 		} catch (NameNotFoundException e) {
 			Logger.get().log("Fail getting version ", e);
 		}
+	}
+
+	public static int getCurrentPreferencesResource() {
+		// String manufacturer = Build.MANUFACTURER;
+		String model = Build.MODEL;
+		if (model.equals("GT-I9300") || model.equals("T999")) {
+			return R.xml.s3_preferences;
+		}
+		return R.xml.default_preferences;
 	}
 }

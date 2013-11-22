@@ -10,6 +10,7 @@ import org.avario.engine.consumerdef.VarioConsumer;
 import org.avario.engine.sensors.BaroSensorThread;
 import org.avario.engine.sensors.CompasSensorThread;
 import org.avario.engine.sensors.LocationThread;
+import org.avario.engine.sensors.LogBaroThread;
 import org.avario.utils.Logger;
 
 import android.app.Activity;
@@ -79,7 +80,7 @@ public class SensorProducer {
 
 	private void initSensorsListners(Activity activity) {
 		compasThread = new CompasSensorThread(activity);
-		baroThread = new BaroSensorThread(activity);
+		baroThread = new LogBaroThread(activity);
 		locationThread = new LocationThread(activity);
 
 		compasThread.startSensor();
@@ -87,7 +88,7 @@ public class SensorProducer {
 		locationThread.startSensor();
 
 		try {
-			Thread.sleep(300);
+			Thread.sleep(100);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

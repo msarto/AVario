@@ -14,10 +14,11 @@ public class StabiloFilter implements Filter {
 	public float[] doFilter(float... value) {
 		float ret = value[0];
 		float delta = Math.abs(ret - previousValue);
-		if (delta > 0.02f) {
+		if (delta > 0.01f) {
 			return new float[] { 0 };
 		}
-		stabiloMaxNoise = Math.max(0.2f, 0.02f * Preferences.baro_sensitivity) / 1000f;
+
+		stabiloMaxNoise = Math.max(0.1f, 0.02f * Preferences.baro_sensitivity) / 1000f;
 		float deltaSign = (ret - previousValue) < 0 ? -1 : 1;
 		if (previousValue != 0.0f && stabiloMinNoise < delta) {
 			// noise > MIN
@@ -29,7 +30,7 @@ public class StabiloFilter implements Filter {
 				ret = previousValue + deltaSign * delta
 						* (1 - (delta - stabiloMinNoise) / (stabiloMaxNoise - stabiloMinNoise));
 			}
-			Logger.get().log("Filter " + (value[0] * 1000) + " to " + (ret * 1000));
+			Logger.get().log("Filter " + (value[0] * 1000) + " to " + (ret * 1000) + " delta " + delta);
 		}
 		previousValue = ret;
 		return new float[] { ret };

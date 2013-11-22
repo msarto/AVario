@@ -54,7 +54,6 @@ public class AVarioActivity extends Activity {
 			return;
 		}
 		viewCreated = true;
-
 		AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		startVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
 
