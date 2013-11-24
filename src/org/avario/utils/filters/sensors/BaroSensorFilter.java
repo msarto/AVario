@@ -1,15 +1,20 @@
 package org.avario.utils.filters.sensors;
 
+import org.avario.AVarioActivity;
+import org.avario.R;
 import org.avario.engine.DataAccessObject;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.consumerdef.LocationConsumer;
 import org.avario.engine.prefs.Preferences;
 import org.avario.utils.Logger;
+import org.avario.utils.StringFormatter;
+import org.avario.utils.UnitsConverter;
 import org.avario.utils.filters.Filter;
 import org.avario.utils.filters.impl.KalmanFilter;
 
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.widget.Toast;
 
 public class BaroSensorFilter implements LocationConsumer {
 	private volatile float referrence = SensorManager.PRESSURE_STANDARD_ATMOSPHERE;
@@ -57,6 +62,10 @@ public class BaroSensorFilter implements LocationConsumer {
 	private synchronized void adjustAltitude(Location location) {
 		float ref = SensorManager.PRESSURE_STANDARD_ATMOSPHERE + 100;
 		double h = location.getAltitude();
+		String altitudeChangeNotif = AVarioActivity.CONTEXT.getApplicationContext().getString(
+				R.string.altitude_from_gps, StringFormatter.noDecimals(UnitsConverter.toPreferredShort((float) h)));
+
+		Toast.makeText(AVarioActivity.CONTEXT, altitudeChangeNotif, Toast.LENGTH_LONG).show();
 		// adjust the reference pressure until the pressure sensor
 		// altitude match the gps altitude +-5m
 		while (Math.abs(SensorManager.getAltitude(ref, lastPresureNotified) - h) > 5 && ref > 0) {

@@ -29,9 +29,8 @@ public class KalmanFilter implements Filter {
 	@Override
 	public void reset() {
 		Q = 0.0001f;
-		R = Preferences.baro_sensitivity * 0.0001f;
+		R = Preferences.baro_sensitivity * 0.0005f;
 		P = Preferences.baro_sensitivity / 16f;
 		X = 0f;
-		K = 0;
 	}
 }

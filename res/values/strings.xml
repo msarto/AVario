@@ -106,6 +106,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="recordTrack_q">Start recording this track?</string>
+    <string name="altitude_from_gps">Altitude set from GPS: %1$s</string>    
     <string-array name="units_system_names">
         <item>Metric</item>
         <item>Imperial</item>

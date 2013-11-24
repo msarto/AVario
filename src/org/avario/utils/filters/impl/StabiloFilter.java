@@ -7,14 +7,15 @@ import org.avario.utils.filters.Filter;
 public class StabiloFilter implements Filter {
 	// The lower the noise is the higher the filtering is
 	private float previousValue = 0.0f;
-	protected static float stabiloMinNoise = 0.1f / 1000f;
-	protected static float stabiloMaxNoise = 0.5f / 1000f;
+	protected static float stabiloMinNoise = 0.2f / 1000f;
+	protected static float stabiloMaxNoise = 0.4f / 1000f;
 
 	@Override
-	public float[] doFilter(float... value) {
+	public synchronized float[] doFilter(float... value) {
 		float ret = value[0];
 		float delta = Math.abs(ret - previousValue);
 		if (delta > 0.01f) {
+			previousValue = ret;
 			return new float[] { 0 };
 		}
 
@@ -36,7 +37,7 @@ public class StabiloFilter implements Filter {
 		return new float[] { ret };
 	}
 
-	public void reset() {
-		previousValue = 0.0f;
+	public synchronized void reset() {
+		// previousValue = 0.0f;
 	}
 }

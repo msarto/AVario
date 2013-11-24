@@ -28,6 +28,7 @@ public class LinearRegression {
 	private float sumy;
 
 	public synchronized void reset() {
+		filter.reset();
 		samples.clear();
 		sumx = 0;
 		sumy = 0f;
