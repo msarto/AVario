@@ -18,9 +18,7 @@ import android.widget.Toast;
 
 public class BaroSensorFilter implements LocationConsumer {
 	private volatile float referrence = SensorManager.PRESSURE_STANDARD_ATMOSPHERE;
-	// private MedianFixFilter baroFilter = new MedianFixFilter();
 	private Filter baroFilter = new KalmanFilter();
-	// private IIRFilter altitudeFilter = new IIRFilter();
 
 	private volatile float lastPresureNotified = -1f;
 	private volatile boolean goodAccuracy = false;
@@ -68,8 +66,8 @@ public class BaroSensorFilter implements LocationConsumer {
 		Toast.makeText(AVarioActivity.CONTEXT, altitudeChangeNotif, Toast.LENGTH_LONG).show();
 		// adjust the reference pressure until the pressure sensor
 		// altitude match the gps altitude +-5m
-		while (Math.abs(SensorManager.getAltitude(ref, lastPresureNotified) - h) > 5 && ref > 0) {
-			ref -= 0.5;
+		while (Math.abs(SensorManager.getAltitude(ref, lastPresureNotified) - h) > 2 && ref > 0) {
+			ref -= 0.2;
 		}
 		baroFilter.reset();
 		// altitudeFilter.reset();

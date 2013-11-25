@@ -22,6 +22,7 @@ public class LinearRegression {
 	private StabiloFilter filter = new StabiloFilter();
 	private boolean needNewSlope = false;
 	private float currentSlope = 0f;
+	private boolean calibrated = false;
 
 	// / Invariants
 	private double sumx;
@@ -66,8 +67,12 @@ public class LinearRegression {
 		}
 		float beta1 = xybar / xxbar;
 		currentSlope = filter.doFilter(beta1)[0];
+		if (!calibrated) {
+			calibrated = currentSlope > 0 && (currentSlope * 1000f) < Preferences.lift_start;
+			return 0;
+		}
+		calibrated = true;
 		return currentSlope;
-		// return beta1;
 	}
 
 	public synchronized float getLastDelta() {
