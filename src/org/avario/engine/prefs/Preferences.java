@@ -10,6 +10,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.AudioManager;
+import android.os.Build;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 
@@ -69,9 +70,42 @@ public class Preferences {
 		}
 	}
 
+	private static void setDefaultBaroSensitivity() {
+		try {
+
+			String baroSetting = getString("baro_sensitivity", "-1");
+			Logger.get().log("baroSetting: " + baroSetting);
+
+			if (baroSetting.equals("-1")) {
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+				int defaultValue = getDefaultBaroSensitivity();
+				Logger.get().log(Build.MODEL + " set default baro sensitivity " + defaultValue);
+				Editor ed = prefs.edit();
+				// ed.clear();
+				ed.putString("baro_sensitivity", String.valueOf(defaultValue));
+				ed.commit();
+			}
+		} catch (Exception e) {
+			Logger.get().log("Unable o set app volume...", e);
+		}
+	}
+
+	private static int getDefaultBaroSensitivity() {
+		// final String manufacturer = Build.MANUFACTURER.toLowerCase();
+		final String model = Build.MODEL.toLowerCase().trim();
+		if (model.equals("GT-I9300".toLowerCase()) || model.startsWith("T999".toLowerCase())
+				|| model.equals("I747".toLowerCase())) {
+			return 40;
+		}
+		return 25;
+	}
+
 	public static void update(Context context) {
 		Preferences.context = context;
+
 		checkForUpdateVersion();
+		setDefaultBaroSensitivity();
+
 		use_speach = getBool("use_speach", use_speach);
 		auto_track = getBool("auto_track", auto_track);
 		beep_interval = Math.round(1000f * getFloat("beep_interval", 0.5f));

@@ -97,7 +97,7 @@
         </PreferenceScreen>
 
         <org.avario.ui.prefs.SeekBarPreference
-            android:defaultValue="25"
+            android:defaultValue="-1"
             android:key="baro_sensitivity"
             android:max="50"
             android:summary="@string/baro_filter_sensitivity_s"
