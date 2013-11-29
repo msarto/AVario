@@ -36,7 +36,7 @@ import android.widget.Toast;
  * 
  */
 public class AVarioActivity extends Activity {
-	public static Context CONTEXT;
+	public static Activity CONTEXT;
 	private PowerManager.WakeLock wakeLock;
 	private int startVolume = Integer.MIN_VALUE;
 	private boolean viewCreated = false;
@@ -74,10 +74,6 @@ public class AVarioActivity extends Activity {
 		PoiManager.init();
 		Speaker.init(this);
 
-		if (Preferences.auto_track && !Tracker.get().isTracking()) {
-			startAutoTrack();
-		}
-
 		// Keep the screen awake
 		try {
 			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -89,12 +85,12 @@ public class AVarioActivity extends Activity {
 		addNotification();
 	}
 
-	private void startAutoTrack() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	public static void startAutoTrack() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(CONTEXT);
 		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 
-				AVarioActivity.this.runOnUiThread(new Runnable() {
+				CONTEXT.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						Tracker.get().startTracking();

@@ -66,6 +66,7 @@ public class LinearRegression {
 			xybar += (s.x - xbar) * (s.y - ybar);
 		}
 		float beta1 = xybar / xxbar;
+		
 		currentSlope = filter.doFilter(beta1)[0];
 		if (!calibrated) {
 			calibrated = currentSlope > 0 && (currentSlope * 1000f) < Preferences.lift_start;

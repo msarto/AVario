@@ -4,6 +4,8 @@ import org.avario.engine.DataAccessObject;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.SensorThread;
 import org.avario.engine.prefs.Preferences;
+import org.avario.utils.filters.Filter;
+import org.avario.utils.filters.impl.IIRFilter;
 import org.avario.utils.filters.sensors.BaroSensorFilter;
 
 import android.app.Activity;
@@ -13,7 +15,7 @@ import android.hardware.SensorManager;
 
 public class BaroSensorThread extends SensorThread<Float> {
 	private BaroSensorFilter baroFilter = new BaroSensorFilter();
-	private float prevPresure = 0;
+	private Filter preFilterPresure = new IIRFilter(0.5f - Preferences.baro_sensitivity * 0.01f);
 
 	public BaroSensorThread(Activity activity) {
 		super(activity);
@@ -23,20 +25,12 @@ public class BaroSensorThread extends SensorThread<Float> {
 	protected void init() {
 		sensors = new int[] { Sensor.TYPE_PRESSURE };
 		sensorSpeed = SensorManager.SENSOR_DELAY_FASTEST;
-		retry = true;
 	}
 
 	@Override
 	public synchronized void notifySensorChanged(SensorEvent sensorEvent) {
-		retry = false;
 		float currentPresure = sensorEvent.values.clone()[0];
-		final float diff = Math.abs(prevPresure - currentPresure);
-		if (diff > (50 - Preferences.baro_sensitivity) * 0.003f) {
-			// We will skip big consecutive differences to filter the big noise
-			int filterSensitivity = (100 - Preferences.baro_sensitivity);
-			currentPresure = prevPresure > 0 ? ((prevPresure * filterSensitivity + currentPresure
-					* (100 - filterSensitivity)) / 100) : currentPresure;
-		}
+		currentPresure = preFilterPresure.doFilter(currentPresure)[0];
 		final float altitude = baroFilter.toAltitude(currentPresure);
 		if (altitude >= 0) {
 			DataAccessObject.get().setBaroLastAltitude(altitude);
@@ -47,6 +41,5 @@ public class BaroSensorThread extends SensorThread<Float> {
 				}
 			});
 		}
-		prevPresure = currentPresure;
 	}
 }

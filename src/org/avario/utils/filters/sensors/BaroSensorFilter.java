@@ -6,6 +6,7 @@ import org.avario.engine.DataAccessObject;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.consumerdef.LocationConsumer;
 import org.avario.engine.prefs.Preferences;
+import org.avario.engine.tracks.Tracker;
 import org.avario.utils.Logger;
 import org.avario.utils.StringFormatter;
 import org.avario.utils.UnitsConverter;
@@ -21,7 +22,6 @@ public class BaroSensorFilter implements LocationConsumer {
 	private Filter baroFilter = new KalmanFilter();
 
 	private volatile float lastPresureNotified = -1f;
-	private volatile boolean goodAccuracy = false;
 	private volatile boolean gpsAltitude = false;
 
 	public BaroSensorFilter() {
@@ -35,25 +35,18 @@ public class BaroSensorFilter implements LocationConsumer {
 		lastPresureNotified = baroFilter.doFilter(lastPresureNotified)[0];
 		float sensorAlt = SensorManager.getAltitude(referrence, lastPresureNotified);
 		return sensorAlt;
-		// return altitudeFilter.doFilter(sensorAlt)[0];
-	}
-
-	public float getReferrence() {
-		return referrence;
 	}
 
 	@Override
 	public void notifyWithLocation(Location location) {
-		boolean betterAccuracy = !goodAccuracy && location.getAccuracy() > 0 && location.getAccuracy() < 5;
-		if (betterAccuracy) {
-			Logger.get().log("Better accuracy " + location.getAltitude());
-			adjustAltitude(location);
-			goodAccuracy = true;
-			gpsAltitude = true;
-		} else if (!gpsAltitude && location.hasAltitude() && lastPresureNotified > 0f) {
+		if (!gpsAltitude && location.hasAltitude() && lastPresureNotified > 0f && location.getAccuracy() < 5) {
 			Logger.get().log("GPS Altitude " + location.getAltitude());
 			adjustAltitude(location);
 			gpsAltitude = true;
+			// Start the track if selected
+			if (Preferences.auto_track && !Tracker.get().isTracking()) {
+				AVarioActivity.startAutoTrack();
+			}
 		}
 	}
 
