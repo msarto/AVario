@@ -10,7 +10,6 @@ import org.avario.engine.consumerdef.VarioConsumer;
 import org.avario.engine.sensors.BaroSensorThread;
 import org.avario.engine.sensors.CompasSensorThread;
 import org.avario.engine.sensors.LocationThread;
-import org.avario.engine.sensors.LogBaroThread;
 import org.avario.utils.Logger;
 
 import android.app.Activity;
@@ -31,9 +30,11 @@ public class SensorProducer {
 
 	}
 
-	public static void init(Activity activity) {
+	public static void init(Activity activity, boolean useInternalSensors) {
 		THIS = new SensorProducer();
-		THIS.initSensorsListners(activity);
+		if (useInternalSensors) {
+			THIS.initSensorsListners(activity);
+		}
 
 	}
 
@@ -48,6 +49,7 @@ public class SensorProducer {
 	protected void close() {
 		gspConsumers.clear();
 		baroConsumers.clear();
+		gspConsumers.clear();
 
 		if (compasThread != null) {
 			compasThread.stop();

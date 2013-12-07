@@ -15,7 +15,7 @@ import android.hardware.SensorManager;
 
 public class BaroSensorThread extends SensorThread<Float> {
 	private BaroSensorFilter baroFilter = new BaroSensorFilter();
-	private Filter preFilterPresure = new IIRFilter(0.5f - Preferences.baro_sensitivity * 0.01f);
+	private Filter preFilterPresure = new IIRFilter(0.7f - Preferences.baro_sensitivity * 0.01f);
 
 	public BaroSensorThread(Activity activity) {
 		super(activity);

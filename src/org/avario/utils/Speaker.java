@@ -36,4 +36,13 @@ public class Speaker {
 				talker.speak(text2say, TextToSpeech.QUEUE_FLUSH, null);
 		}
 	}
+
+	public static void clear() {
+		THIS.close();
+	}
+
+	private void close() {
+		talker.stop();
+		talker.shutdown();
+	}
 }

@@ -15,6 +15,7 @@ import org.avario.ui.prefs.PreferencesMenu;
 import org.avario.ui.tracks.TracksList;
 import org.avario.utils.Logger;
 import org.avario.utils.Speaker;
+import org.avario.utils.bt.BTScanner;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -59,28 +60,32 @@ public class AVarioActivity extends Activity {
 
 		Preferences.update(this);
 		super.onCreate(savedInstanceState);
-		Logger.init();
-		SensorProducer.init(this);
-		// Draw the UI from the vario.xml layout
-		setContentView(R.layout.vario);
-		DataAccessObject.init();
-		// Initialize sensors listeners
-		NumericViewUpdater.init(this);
-		VarioMeterScaleUpdater.init(this);
-		LocationsHistory.init(this);
-		BeepBeeper.init(this);
-		NavigatorUpdater.init(this);
-		Tracker.init(this);
-		PoiManager.init();
-		Speaker.init(this);
 
-		// Keep the screen awake
+		Logger.init();
 		try {
+			SensorProducer.init(this, !Preferences.use_sensbox);
+			// Draw the UI from the vario.xml layout
+			setContentView(R.layout.vario);
+			DataAccessObject.init();
+			// Initialize sensors listeners
+			NumericViewUpdater.init(this);
+			VarioMeterScaleUpdater.init(this);
+			LocationsHistory.init(this);
+			BeepBeeper.init(this);
+			NavigatorUpdater.init(this);
+			Tracker.init(this);
+			PoiManager.init();
+			Speaker.init(this);
+			if (Preferences.use_sensbox) {
+				BTScanner.get().scan();
+			}
+			// Keep the screen awake
+
 			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "AVario lock");
 			wakeLock.acquire();
 		} catch (Exception ex) {
-			Logger.get().log("Fail keeping awake " + ex.getMessage());
+			Logger.get().log("Fail initializing ", ex);
 		}
 		addNotification();
 	}
@@ -167,12 +172,11 @@ public class AVarioActivity extends Activity {
 			return true;
 		case R.id.exit:
 			// A bit brutal ....
-			onDestroy();
+			clear();
 			System.runFinalizersOnExit(true);
 			System.exit(0);
-			return true;
 		}
-		return false;
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -188,26 +192,26 @@ public class AVarioActivity extends Activity {
 		super.onAttachedToWindow();
 	}
 
-	@Override
-	protected void onDestroy() {
+	private void clear() {
 		try {
 			if (wakeLock != null) {
 				wakeLock.release();
 			}
 			Tracker.get().stopTracking();
 			removeNotification();
+			Speaker.clear();
 			SensorProducer.clear();
 			BeepBeeper.clear();
 			VarioMeterScaleUpdater.clear();
 			NumericViewUpdater.clear();
 			DataAccessObject.clear();
-
+			if (Preferences.use_sensbox) {
+				BTScanner.get().clear();
+			}
 			Logger.get().log("App terminated...");
 			Logger.get().close();
 		} catch (Exception ex) {
 			Logger.get().log("Fail terminating awake " + ex.getMessage());
-		} finally {
-			super.onDestroy();
 		}
 	}
 
@@ -221,6 +225,13 @@ public class AVarioActivity extends Activity {
 			}
 		} catch (Exception ex) {
 			Logger.get().log("Fail to restore volume", ex);
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == BTScanner.INTENT_ID) {
+			BTScanner.get().onActivityResult(requestCode, resultCode, data);
 		}
 	}
 

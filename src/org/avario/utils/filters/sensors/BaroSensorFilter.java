@@ -31,8 +31,7 @@ public class BaroSensorFilter implements LocationConsumer {
 
 	// filter the pressure and transform it to altitude
 	public synchronized float toAltitude(float currentPresure) {
-		lastPresureNotified = currentPresure;
-		lastPresureNotified = baroFilter.doFilter(lastPresureNotified)[0];
+		lastPresureNotified = baroFilter.doFilter(currentPresure)[0];
 		float sensorAlt = SensorManager.getAltitude(referrence, lastPresureNotified);
 		return sensorAlt;
 	}
@@ -59,8 +58,10 @@ public class BaroSensorFilter implements LocationConsumer {
 		Toast.makeText(AVarioActivity.CONTEXT, altitudeChangeNotif, Toast.LENGTH_LONG).show();
 		// adjust the reference pressure until the pressure sensor
 		// altitude match the gps altitude +-5m
-		while (Math.abs(SensorManager.getAltitude(ref, lastPresureNotified) - h) > 2 && ref > 0) {
-			ref -= 0.2;
+		double delta = Math.abs(SensorManager.getAltitude(ref, lastPresureNotified) - h);
+		while (delta > 2 && ref > 0) {
+			ref -= 0.1 * delta;
+			delta = Math.abs(SensorManager.getAltitude(ref, lastPresureNotified) - h);
 		}
 		baroFilter.reset();
 		// altitudeFilter.reset();

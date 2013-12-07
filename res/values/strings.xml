@@ -106,7 +106,9 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="recordTrack_q">Start recording this track?</string>
-    <string name="altitude_from_gps">Altitude set from GPS: %1$s</string>    
+    <string name="altitude_from_gps">Altitude set from GPS: %1$s</string>
+    <string name="use_sensbox_s">Use the BT Flytech Sensbox</string>
+    <string name="use_sensbox_t">Use Sensbox</string>
     <string-array name="units_system_names">
         <item>Metric</item>
         <item>Imperial</item>

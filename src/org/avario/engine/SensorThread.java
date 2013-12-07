@@ -1,5 +1,8 @@
 package org.avario.engine;
 
+import java.util.List;
+
+import org.avario.AVarioActivity;
 import org.avario.utils.Logger;
 
 import android.app.Activity;
@@ -14,9 +17,12 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 	protected final Activity activity;
 	protected int[] sensors;
 	protected int sensorSpeed;
+	private SensorManager sensorManager;
+	private boolean isSensorActive = false;
 
 	protected SensorThread(Activity activity) {
 		this.activity = activity;
+		this.sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
 		thr = new Thread(this);
 	}
 
@@ -25,23 +31,29 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 	}
 
 	public void stop() {
-		SensorManager sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
-		sensorManager.unregisterListener(this);
+		if (isSensorActive) {
+			sensorManager.unregisterListener(this);
+		}
 	}
 
 	@Override
 	public void run() {
 		try {
 			if (sensors != null) {
-				SensorManager sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
-				for (int sensor : sensors) {
-					Logger.get().log("Try initializing sensor " + sensor);
-					sensorManager.registerListener(this, sensorManager.getDefaultSensor(sensor), sensorSpeed);
+				for (int sensorId : sensors) {
+					Logger.get().log("Try initializing sensor " + sensorId);
+					isSensorActive = registerListener(sensorId, sensorSpeed);
+					Logger.get().log(isSensorActive ? "DONE" : "NOT" + " Registered sensor " + sensorId);
 				}
 			}
 		} catch (Exception e) {
 			Logger.get().log("Sensors initialization fail ", e);
 		}
+	}
+
+	private synchronized boolean registerListener(int sensorId, int speed) {
+		List<Sensor> sensorsList = sensorManager.getSensorList(sensorId);
+		return sensorsList.size() == 1 ? sensorManager.registerListener(this, sensorsList.get(0), sensorSpeed) : false;
 	}
 
 	@Override
