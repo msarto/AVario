@@ -111,7 +111,7 @@
     
     <string name="use_sensbox_s">Foloseste BT Flytech Sensbox</string>
     <string name="use_sensbox_t">Foloseste Sensbox</string>
-    
+    <string name="initalizing_sensors">Initializing sensors</string>
     <string-array name="units_system_names">
         <item>Metric</item>
         <item>Imperial</item>

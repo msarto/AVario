@@ -28,9 +28,11 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 /**
@@ -185,10 +187,18 @@ public class AVarioActivity extends Activity {
 		Toast.makeText(this, R.string.exit_from_menu, Toast.LENGTH_SHORT).show();
 	}
 
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_HOME) {
+			Logger.get().log("Home Button Clicked");
+			return false;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
 	@Override
 	public void onAttachedToWindow() {
 		// To disable home button
-		// this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD);
+		this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD);
 		super.onAttachedToWindow();
 	}
 

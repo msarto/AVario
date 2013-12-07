@@ -110,7 +110,7 @@
     
     <string name="use_sensbox_s">Utiliser le BT Flytech Sensbox</string>
     <string name="use_sensbox_t">Utiliser Sensbox</string>
-    
+    <string name="initalizing_sensors">Initializing sensors</string>
     <string-array name="units_system_names">
         <item>Métrique</item>
         <item>Impérial</item>
