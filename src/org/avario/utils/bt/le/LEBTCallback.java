@@ -1,40 +1,66 @@
 package org.avario.utils.bt.le;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.avario.utils.Logger;
+import org.avario.utils.bt.le.services.ServiceHandler;
+import org.avario.utils.bt.le.services.flytech.SensorServiceHandler;
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
+import android.os.Build;
 
-@SuppressLint("NewApi")
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class LEBTCallback extends BluetoothGattCallback {
+	private static final CountDownLatch semaphore = new CountDownLatch(1);
+	private List<BluetoothGattService> leServices = new ArrayList<BluetoothGattService>();
+
 	@Override
 	public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-		List<BluetoothGattService> services = gatt.getServices();
-		for (BluetoothGattService service : services) {
-			Logger.get().log("Service UUID" + service.getUuid().toString());
+		leServices = gatt.getServices();
+		semaphore.countDown();
+		for (BluetoothGattService service : leServices) {
+			ServiceHandler serviceHandler = getHandle(gatt, service.getUuid());
+			if (serviceHandler != null) {
+				Logger.get().log("Handle Service UUID" + service.getUuid().toString());
+				serviceHandler.handleService(gatt, service);
+			} else {
+				Logger.get().log("Unknown Service UUID" + service.getUuid().toString());
+			}
 		}
 	}
 
-	public void handle(BluetoothGatt gatt) {
+	protected ServiceHandler getHandle(BluetoothGatt gatt, final UUID uuid) {
+		if ("aba27100-143b-4b81-a444-edcd0000f020".equals(uuid.toString())) {
+			return new SensorServiceHandler();
+		}
+		return null;
+	}
+
+	@Override
+	public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+		ServiceHandler.getCharacteristicHandler(characteristic.getUuid()).handleCharacteristic(characteristic);
+	}
+
+	@Override
+	public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+		ServiceHandler.getCharacteristicHandler(characteristic.getUuid()).handleCharacteristic(characteristic);
+	}
+
+	public void discover(final BluetoothGatt gatt) throws InterruptedException {
+		semaphore.await(1, TimeUnit.SECONDS);
 		gatt.connect();
 		gatt.discoverServices();
-		//while (true) {
-		//	try {
-		//		Thread.sleep(10);
-		//	} catch (InterruptedException e) {
-		//		// TODO Auto-generated catch block
-		//		e.printStackTrace();
-		//	}
-		//}
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (leServices.size() == 0) {
+			leServices = gatt.getServices();
 		}
+		semaphore.await(2, TimeUnit.SECONDS);
 	}
 }

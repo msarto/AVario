@@ -4,7 +4,6 @@ import org.avario.AVarioActivity;
 import org.avario.utils.Logger;
 import org.avario.utils.bt.le.LEBTAdapter;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -20,7 +19,6 @@ public class BTScanner {
 
 	private static final BTScanner THIS = new BTScanner();
 	public static final int INTENT_ID = 901;
-	protected DeviceBroadcastReceiver btReceiver = new DeviceBroadcastReceiver();
 	private BluetoothAdapter mBluetoothAdapter;
 	private boolean leBt = false;
 
@@ -63,7 +61,15 @@ public class BTScanner {
 				mBluetoothAdapter.cancelDiscovery();
 			}
 			mBluetoothAdapter.startDiscovery();
-			AVarioActivity.CONTEXT.registerReceiver(btReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
+			AVarioActivity.CONTEXT.registerReceiver(new BroadcastReceiver() {
+				public void onReceive(Context context, Intent intent) {
+					String action = intent.getAction();
+					if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+						BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+						Logger.get().log("Found: " + device.getName());
+					}
+				}
+			}, new IntentFilter(BluetoothDevice.ACTION_FOUND));
 		}
 	}
 
@@ -81,21 +87,6 @@ public class BTScanner {
 		}
 	}
 
-	protected class DeviceBroadcastReceiver extends BroadcastReceiver {
-
-		public void onReceive(Context context, Intent intent) {
-			String action = intent.getAction();
-			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-				BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-				String derp = device.getName() + " - " + device.getAddress();
-				// -- Toast.makeText(AVarioActivity.CONTEXT, "Found BT device: "
-				// + derp, Toast.LENGTH_LONG).show();
-				Logger.get().log("Found: " + device.getName());
-			}
-		}
-	}
-
-	@SuppressLint("NewApi")
 	private BluetoothAdapter getAddapter() {
 		if (mBluetoothAdapter != null) {
 			return mBluetoothAdapter;
@@ -113,7 +104,6 @@ public class BTScanner {
 			Logger.get().log("Unsupported LE BT at this API");
 		}
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
 		return mBluetoothAdapter;
 	}
 }

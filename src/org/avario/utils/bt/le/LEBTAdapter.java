@@ -3,14 +3,15 @@ package org.avario.utils.bt.le;
 import org.avario.AVarioActivity;
 import org.avario.utils.Logger;
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
+import android.os.Build;
 import android.os.Handler;
 import android.widget.Toast;
 
-@SuppressLint("NewApi")
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class LEBTAdapter {
 
 	private static final LEBTAdapter THIS = new LEBTAdapter();
@@ -30,8 +31,8 @@ public class LEBTAdapter {
 		return THIS;
 	}
 
-	public void scanLeDevice(final BluetoothAdapter mBluetoothAdapter, final boolean enable) {
-		this.mBluetoothAdapter = mBluetoothAdapter;
+	public void scanLeDevice(final BluetoothAdapter bluetoothAdapter, final boolean enable) {
+		this.mBluetoothAdapter = bluetoothAdapter;
 		if (enable) {
 			// Stops scanning after a pre-defined scan period.
 			new Handler().postDelayed(new Runnable() {
@@ -64,7 +65,6 @@ public class LEBTAdapter {
 		}
 	}
 
-	@SuppressLint("NewApi")
 	private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
 		@Override
 		public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord) {
@@ -72,17 +72,6 @@ public class LEBTAdapter {
 				leDevice = device;
 				stopScanning();
 			}
-
-			// AVarioActivity.CONTEXT.runOnUiThread(new Runnable() {
-			// @Override
-			// public void run() {
-			// if (mScanning) {
-			// Logger.get().log("Device " + device + " RSSI " + rssi);
-			// stopScanning();
-			// startLEDeviceandle(device);
-			// }
-			// }
-			// });
 		}
 	};
 
@@ -91,7 +80,11 @@ public class LEBTAdapter {
 			if (handler == null) {
 				handler = new LEBTCallback();
 				BluetoothGatt gatt = leDevice.connectGatt(AVarioActivity.CONTEXT, true, handler);
-				handler.handle(gatt);
+				try {
+					handler.discover(gatt);
+				} catch (InterruptedException e) {
+					Logger.get().log("Unsupported LE BT at this API");
+				}
 			}
 			// gatt.disconnect();
 		}
