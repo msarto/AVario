@@ -11,7 +11,7 @@ public class StabiloFilter implements Filter {
 	@Override
 	public synchronized float[] doFilter(float... value) {
 		float ret = value[0];
-		float stabiloMaxNoise = (0.3f - Preferences.baro_sensitivity * 0.003f) / 1000f;
+		float stabiloMaxNoise = (0.5f - Preferences.baro_sensitivity * 0.003f) / 1000f;
 		float delta = Math.abs(ret - previousValue);
 		if (delta > 0.001f) {
 			previousValue = ret;
