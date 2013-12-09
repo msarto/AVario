@@ -9,12 +9,15 @@ public class KalmanFilter implements Filter {
 	private float Q = Preferences.baro_sensitivity * 0.000004f;
 	private float R = Preferences.baro_sensitivity * 0.0006f;
 	private float P = Preferences.baro_sensitivity / (2f * 1000f);
-	private float X = 0f; // one dimensional
+	private float X = 0; // one dimensional
 	private float K = 0;
 
 	@Override
 	public float[] doFilter(float... value) {
 		float measurement = value[0];
+		if (X == 0) {
+			X = measurement;
+		}
 		K = (P + Q) / (P + Q + R);
 		P = R * K;
 		X = X + (measurement - X) * K;

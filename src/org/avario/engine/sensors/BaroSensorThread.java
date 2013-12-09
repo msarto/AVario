@@ -25,6 +25,9 @@ public class BaroSensorThread extends SensorThread<Float> {
 	protected void init() {
 		sensors = new int[] { Sensor.TYPE_PRESSURE };
 		sensorSpeed = SensorManager.SENSOR_DELAY_FASTEST;
+		if (sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) != null) {
+			DataAccessObject.get().setMovementFactor(new LinearRegression());
+		}
 	}
 
 	@Override
@@ -33,7 +36,9 @@ public class BaroSensorThread extends SensorThread<Float> {
 		currentPresure = preFilterPresure.doFilter(currentPresure)[0];
 		final float altitude = baroFilter.toAltitude(currentPresure);
 		if (altitude >= 0) {
-			DataAccessObject.get().setBaroLastAltitude(altitude);
+			DataAccessObject.get().setLastAltitude(altitude);
+			DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, altitude);
+
 			activity.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {

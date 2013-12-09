@@ -22,7 +22,6 @@ public class IIRFilter implements Filter {
 			float iirFilter = filterFactor > 0 ? filterFactor : 1f - (Preferences.baro_sensitivity * 2f) / 100f;
 			float prevValue = previousValue;
 			ret[0] = value[0] * iirFilter + (1 - iirFilter) * prevValue;
-
 		}
 		previousValue = ret[0];
 		return ret;

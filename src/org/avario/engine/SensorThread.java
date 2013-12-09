@@ -17,7 +17,7 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 	protected final Activity activity;
 	protected int[] sensors;
 	protected int sensorSpeed;
-	private SensorManager sensorManager;
+	protected SensorManager sensorManager;
 	private boolean isSensorActive = false;
 
 	protected SensorThread(Activity activity) {

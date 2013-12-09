@@ -1,7 +1,8 @@
 package org.avario.engine;
 
 import org.avario.engine.prefs.Preferences;
-import org.avario.utils.LinearRegression;
+import org.avario.engine.sensors.GpsMovement;
+import org.avario.engine.sensors.MovementFactor;
 import org.avario.utils.Logger;
 
 import android.location.Location;
@@ -11,12 +12,11 @@ public class DataAccessObject {
 	protected static DataAccessObject THIS;
 	protected volatile Location lastThermal;
 	protected volatile Location lastlocation;
-	protected volatile double gpsaltitude;
 
 	protected volatile long lastlocationTimestamp = 0;
 
 	protected volatile float bearing = 0f;
-	protected boolean baroFix = false;
+	// protected boolean baroFix = false;
 	protected volatile float lastAltitude = -1;
 
 	private volatile float heading = -1f;
@@ -24,7 +24,7 @@ public class DataAccessObject {
 
 	private volatile float maxSpeed = 0f;
 
-	private LinearRegression vSpeedRegression = new LinearRegression();
+	private MovementFactor movementFactor = new GpsMovement();
 	protected ThermalingTask thermalTask = new ThermalingTask();
 	protected HeadingTask headingTask = new HeadingTask();
 
@@ -46,6 +46,14 @@ public class DataAccessObject {
 		return THIS;
 	}
 
+	public void setMovementFactor(MovementFactor factor) {
+		this.movementFactor = factor;
+	}
+
+	public MovementFactor getMovementFactor() {
+		return movementFactor;
+	}
+
 	public Location getLastlocation() {
 		return lastlocation;
 	}
@@ -55,25 +63,25 @@ public class DataAccessObject {
 	}
 
 	public float getLastVSpeed() {
-		float speed = 0f;
-		if (baroFix) {
-			speed = vSpeedRegression.getSlope();
-		} else if (isGPSFix()) {
-			speed = vSpeedRegression.getLastDelta();
-		}
-		return speed * 1000.0f;
+		// float speed = 0f;
+		return movementFactor.getValue();
+		// if (baroFix) {
+		// speed = vSpeedRegression.getSlope();
+		// } else if (isGPSFix()) {
+		// speed = vSpeedRegression.getLastDelta();
+		// }
+		// return speed * 1000.0f;
 	}
 
 	public void resetVSpeed() {
-		vSpeedRegression.reset();
+		movementFactor.reset();
 		LocationsHistory.get().clearLocations();
 	}
 
 	public void setLastlocation(Location nowlocation) {
 		lastlocation = nowlocation;
-		gpsaltitude = nowlocation.hasAltitude() ? nowlocation.getAltitude() : gpsaltitude;
-		if (baroFix && lastAltitude > 0) {
-			// -- set the altitude from the barometrer
+		if (lastAltitude > 0) {
+			// -- set the altitude from the barometer
 			lastlocation.setAltitude(lastAltitude);
 		}
 		lastlocationTimestamp = SystemClock.elapsedRealtime();
@@ -82,10 +90,6 @@ public class DataAccessObject {
 
 	public float getWindDirectionBearing() {
 		return windDirectionBearing;
-	}
-
-	public double getGpsAltitude() {
-		return gpsaltitude;
 	}
 
 	public float getLastAltitude() {
@@ -97,18 +101,19 @@ public class DataAccessObject {
 		return lastAltitude;
 	}
 
-	public synchronized void setBaroLastAltitude(float lastAltitude) {
-		baroFix = true;
+	public synchronized void setLastAltitude(float lastAltitude) {
 		this.lastAltitude = lastAltitude;
-		vSpeedRegression.addSample(System.nanoTime() / 1000000d, lastAltitude, baroFix);
 	}
 
-	public synchronized void setGpsLastAltitude(float lastAltitude) {
-		if (!baroFix) {
-			this.lastAltitude = lastAltitude;
-			vSpeedRegression.addSample(System.nanoTime() / 1000000d, lastAltitude, baroFix);
-		}
-	}
+	// public synchronized void setBaroLastAltitude(float lastAltitude) {
+	// this.lastAltitude = lastAltitude;
+	// movementFactor.notify(System.nanoTime() / 1000000d, lastAltitude);
+	// }
+
+	// public synchronized void setGpsLastAltitude(float lastAltitude) {
+	// this.lastAltitude = lastAltitude;
+	// movementFactor.notify(System.nanoTime() / 1000000d, lastAltitude);
+	// }
 
 	public float getBearing() {
 		return bearing;

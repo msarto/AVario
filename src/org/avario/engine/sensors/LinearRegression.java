@@ -1,4 +1,4 @@
-package org.avario.utils;
+package org.avario.engine.sensors;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -6,17 +6,7 @@ import java.util.Queue;
 import org.avario.engine.prefs.Preferences;
 import org.avario.utils.filters.impl.StabiloFilter;
 
-public class LinearRegression {
-
-	static class Sample {
-		public double x;
-		public float y;
-
-		public Sample(double x, float y) {
-			this.x = x;
-			this.y = y;
-		}
-	}
+public class LinearRegression implements MovementFactor {
 
 	private volatile Queue<Sample> samples = new ArrayDeque<Sample>();
 	private StabiloFilter filter = new StabiloFilter();
@@ -28,6 +18,7 @@ public class LinearRegression {
 	private double sumx;
 	private float sumy;
 
+	@Override
 	public synchronized void reset() {
 		filter.reset();
 		samples.clear();
@@ -35,24 +26,24 @@ public class LinearRegression {
 		sumy = 0f;
 	}
 
-	public synchronized void addSample(double x, float y, boolean replaceOld) {
+	@Override
+	public synchronized void notify(double x, float y) {
 		Sample newSample = new Sample(x, y);
 		sumx += x;
 		sumy += y;
 		samples.add(newSample);
 		needNewSlope = true;
-		if (replaceOld) {
-			// Cull old entries
-			double oldest = x - (40 * Preferences.baro_sensitivity);
-			while (samples.peek().x < oldest) {
-				Sample s = samples.remove();
-				sumx -= s.x;
-				sumy -= s.y;
-			}
+		// Cull old entries
+		double oldest = x - (40 * Preferences.baro_sensitivity);
+		while (samples.peek().x < oldest) {
+			Sample s = samples.remove();
+			sumx -= s.x;
+			sumy -= s.y;
 		}
 	}
 
-	public synchronized float getSlope() {
+	@Override
+	public synchronized float getValue() {
 		if (!needNewSlope) {
 			return currentSlope;
 		}
@@ -66,33 +57,15 @@ public class LinearRegression {
 			xybar += (s.x - xbar) * (s.y - ybar);
 		}
 		float beta1 = xybar / xxbar;
-		
+
 		currentSlope = filter.doFilter(beta1)[0];
 		if (!calibrated) {
 			calibrated = currentSlope > 0 && (currentSlope * 1000f) < Preferences.lift_start;
 			return 0;
 		}
+		
 		calibrated = true;
-		return currentSlope;
+		return currentSlope * 1000f;
 	}
 
-	public synchronized float getLastDelta() {
-		if (samples.size() > 1) {
-			Sample last = null;
-			Sample prev = null;
-			while (samples.size() > 0) {
-				prev = last;
-				last = samples.remove();
-			}
-
-			if (prev != null && last != null) {
-				samples.add(prev);
-				samples.add(last);
-				double deltaT = last.x - prev.x;
-				float deltaD = last.y - prev.y;
-				return (float) (deltaD / deltaT);
-			}
-		}
-		return 0;
-	}
 }

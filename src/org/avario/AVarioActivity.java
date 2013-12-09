@@ -65,10 +65,10 @@ public class AVarioActivity extends Activity {
 
 		Logger.init();
 		try {
+			DataAccessObject.init();
 			SensorProducer.init(this, !Preferences.use_sensbox);
 			// Draw the UI from the vario.xml layout
 			setContentView(R.layout.vario);
-			DataAccessObject.init();
 			// Initialize sensors listeners
 			NumericViewUpdater.init(this);
 			VarioMeterScaleUpdater.init(this);
