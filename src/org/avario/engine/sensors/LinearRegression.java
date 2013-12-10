@@ -56,7 +56,6 @@ public class LinearRegression implements MovementFactor {
 			xybar += (s.x - xbar) * (s.y - ybar);
 		}
 		float beta1 = xybar / xxbar;
-
 		currentSlope = filter.doFilter(beta1)[0];
 		return currentSlope * 1000f;
 	}
