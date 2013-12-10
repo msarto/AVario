@@ -49,25 +49,21 @@ public class TonePlayer {
 			toneSound[idx++] = (byte) ((val & 0xff00) >>> 8);
 		}
 		try {
-			playTone(toneSound, numSamples);
+			if (audioTrack != null) {
+				switch (audioTrack.getPlayState()) {
+				case AudioTrack.PLAYSTATE_PAUSED:
+				case AudioTrack.PLAYSTATE_PLAYING:
+					audioTrack.stop();
+					break;
+				}
+			}
+
+			audioTrack.reloadStaticData();
+			audioTrack.write(toneSound, 0, toneSound.length);
+			audioTrack.play();
 		} catch (Exception ex) {
 			Logger.get().log("Fail playing track ", ex);
 		}
-	}
-
-	private void playTone(byte[] toneSound, int samples) {
-		if (audioTrack != null) {
-			switch (audioTrack.getPlayState()) {
-			case AudioTrack.PLAYSTATE_PAUSED:
-			case AudioTrack.PLAYSTATE_PLAYING:
-				audioTrack.stop();
-				break;
-			}
-		}
-
-		audioTrack.reloadStaticData();
-		audioTrack.write(toneSound, 0, toneSound.length);
-		audioTrack.play();
 	}
 
 	public synchronized void stop() {

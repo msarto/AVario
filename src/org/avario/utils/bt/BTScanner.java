@@ -85,6 +85,7 @@ public class BTScanner {
 		if (mBluetoothAdapter.isDiscovering()) {
 			mBluetoothAdapter.cancelDiscovery();
 		}
+		LEBTAdapter.get().clear();
 	}
 
 	private BluetoothAdapter getAddapter() {

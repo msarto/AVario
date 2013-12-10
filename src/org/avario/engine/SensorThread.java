@@ -2,7 +2,6 @@ package org.avario.engine;
 
 import java.util.List;
 
-import org.avario.AVarioActivity;
 import org.avario.utils.Logger;
 
 import android.app.Activity;

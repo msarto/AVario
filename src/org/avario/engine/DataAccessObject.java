@@ -21,6 +21,7 @@ public class DataAccessObject {
 
 	private volatile float heading = -1f;
 	private volatile float windDirectionBearing = -1f;
+	private volatile float temperature = 0f;
 
 	private volatile float maxSpeed = 0f;
 
@@ -63,14 +64,7 @@ public class DataAccessObject {
 	}
 
 	public float getLastVSpeed() {
-		// float speed = 0f;
 		return movementFactor.getValue();
-		// if (baroFix) {
-		// speed = vSpeedRegression.getSlope();
-		// } else if (isGPSFix()) {
-		// speed = vSpeedRegression.getLastDelta();
-		// }
-		// return speed * 1000.0f;
 	}
 
 	public void resetVSpeed() {
@@ -125,6 +119,14 @@ public class DataAccessObject {
 
 	public void setBearing(float bearing) {
 		this.bearing = bearing;
+	}
+
+	public float getTemperature() {
+		return temperature;
+	}
+
+	public void setTemperature(float temperature) {
+		this.temperature = temperature;
 	}
 
 	public boolean isGPSFix() {

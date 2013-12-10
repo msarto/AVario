@@ -16,9 +16,11 @@ public class LEBTAdapter {
 
 	private static final LEBTAdapter THIS = new LEBTAdapter();
 	private boolean mScanning;
+	private boolean isConnected = false;
 	private BluetoothAdapter mBluetoothAdapter;
 	private BluetoothDevice leDevice;
 	private LEBTCallback handler;
+	private BluetoothGatt gatt;
 
 	// Stops scanning after 10 seconds.
 	private static final long SCAN_PERIOD = 10000;
@@ -29,6 +31,10 @@ public class LEBTAdapter {
 
 	public static LEBTAdapter get() {
 		return THIS;
+	}
+
+	public boolean isConnected() {
+		return isConnected;
 	}
 
 	public void scanLeDevice(final BluetoothAdapter bluetoothAdapter, final boolean enable) {
@@ -70,6 +76,7 @@ public class LEBTAdapter {
 		public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord) {
 			if (mScanning) {
 				leDevice = device;
+				isConnected = true;
 				stopScanning();
 			}
 		}
@@ -79,7 +86,7 @@ public class LEBTAdapter {
 		if (leDevice != null) {
 			if (handler == null) {
 				handler = new LEBTCallback();
-				BluetoothGatt gatt = leDevice.connectGatt(AVarioActivity.CONTEXT, true, handler);
+				gatt = leDevice.connectGatt(AVarioActivity.CONTEXT, true, handler);
 				try {
 					handler.discover(gatt);
 				} catch (InterruptedException e) {
@@ -88,5 +95,14 @@ public class LEBTAdapter {
 			}
 			// gatt.disconnect();
 		}
+	}
+
+	public void clear() {
+		isConnected = false;
+		if (gatt != null) {
+			gatt.close();
+			gatt = null;
+		}
+
 	}
 }

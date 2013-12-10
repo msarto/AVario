@@ -6,7 +6,10 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.avario.AVarioActivity;
+import org.avario.engine.sensors.bt.OutsideProducer;
 import org.avario.utils.Logger;
+import org.avario.utils.bt.le.services.CharacteristicHandler;
 import org.avario.utils.bt.le.services.ServiceHandler;
 import org.avario.utils.bt.le.services.flytech.SensorServiceHandler;
 
@@ -46,12 +49,18 @@ public class LEBTCallback extends BluetoothGattCallback {
 
 	@Override
 	public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-		ServiceHandler.getCharacteristicHandler(characteristic.getUuid()).handleCharacteristic(characteristic);
+		CharacteristicHandler characteristicHandler = ServiceHandler.getCharacteristicHandler(characteristic.getUuid());
+		if (characteristicHandler != null) {
+			characteristicHandler.handleCharacteristic(characteristic);
+		}
 	}
 
 	@Override
 	public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-		ServiceHandler.getCharacteristicHandler(characteristic.getUuid()).handleCharacteristic(characteristic);
+		CharacteristicHandler characteristicHandler = ServiceHandler.getCharacteristicHandler(characteristic.getUuid());
+		if (characteristicHandler != null) {
+			characteristicHandler.handleCharacteristic(characteristic);
+		}
 	}
 
 	public void discover(final BluetoothGatt gatt) throws InterruptedException {
@@ -62,5 +71,6 @@ public class LEBTCallback extends BluetoothGattCallback {
 			leServices = gatt.getServices();
 		}
 		semaphore.await(2, TimeUnit.SECONDS);
+		OutsideProducer.init(AVarioActivity.CONTEXT);
 	}
 }

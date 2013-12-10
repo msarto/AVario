@@ -24,9 +24,9 @@ public class SensorProducer {
 	private final List<BarometerConsumer> baroConsumers = new ArrayList<BarometerConsumer>();
 	private final List<CompasConsumer> compasConsumers = new ArrayList<CompasConsumer>();
 
-	private CompasSensorThread compasThread;
-	private BaroSensorThread baroThread;
-	private LocationThread locationThread;
+	protected CompasSensorThread compasThread;
+	protected BaroSensorThread baroThread;
+	protected LocationThread locationThread;
 
 	protected SensorProducer() {
 

@@ -8,4 +8,6 @@ import android.os.Build;
 public interface CharacteristicHandler {
 
 	void handleCharacteristic(BluetoothGattCharacteristic characteristic);
+
+	long getLatency();
 }

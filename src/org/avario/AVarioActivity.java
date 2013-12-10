@@ -174,7 +174,7 @@ public class AVarioActivity extends Activity {
 			return true;
 		case R.id.exit:
 			// A bit brutal ....
-			clear();
+			onDestroy();
 			System.runFinalizersOnExit(true);
 			System.exit(0);
 		}
@@ -223,6 +223,12 @@ public class AVarioActivity extends Activity {
 		} catch (Exception ex) {
 			Logger.get().log("Fail terminating awake " + ex.getMessage());
 		}
+	}
+
+	@Override
+	public void onDestroy() {
+		clear();
+		super.onDestroy();
 	}
 
 	private void removeNotification() {

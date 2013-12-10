@@ -156,10 +156,9 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 
 	@Override
 	protected Integer doInBackground(Integer... arg0) {
-		Logger.get().log("Start scale updater ");
 		while (!THIS.isCancelled()) {
 			try {
-				Thread.sleep(300);
+				Thread.sleep(200);
 				float beepSpeed = DataAccessObject.get().getLastVSpeed();
 				publishProgress(beepSpeed);
 			} catch (InterruptedException e) {
