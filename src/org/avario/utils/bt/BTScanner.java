@@ -39,16 +39,17 @@ public class BTScanner {
 				Toast.makeText(AVarioActivity.CONTEXT, "SensBox BT device is supported", Toast.LENGTH_SHORT).show();
 				leBt = true;
 			}
+
+			getAddapter();
+			if (!mBluetoothAdapter.isEnabled()) {
+				AVarioActivity.CONTEXT.startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
+						INTENT_ID);
+			} else {
+				proceedWithBTDevice();
+			}
 		} catch (Exception ex) {
 			Toast.makeText(AVarioActivity.CONTEXT, "SensBox BT device is not supported by your device",
 					Toast.LENGTH_SHORT).show();
-		}
-		getAddapter();
-		if (!mBluetoothAdapter.isEnabled()) {
-			AVarioActivity.CONTEXT
-					.startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), INTENT_ID);
-		} else {
-			proceedWithBTDevice();
 		}
 	}
 
@@ -85,7 +86,9 @@ public class BTScanner {
 		if (mBluetoothAdapter.isDiscovering()) {
 			mBluetoothAdapter.cancelDiscovery();
 		}
-		LEBTAdapter.get().clear();
+		if (leBt) {
+			LEBTAdapter.get().clear();
+		}
 	}
 
 	private BluetoothAdapter getAddapter() {
