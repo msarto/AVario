@@ -5,7 +5,7 @@ import org.avario.engine.SensorProducer;
 import org.avario.engine.SensorThread;
 import org.avario.engine.prefs.Preferences;
 import org.avario.utils.filters.Filter;
-import org.avario.utils.filters.impl.IIRFilter;
+import org.avario.utils.filters.impl.MedianFilter;
 import org.avario.utils.filters.sensors.BaroSensorFilter;
 
 import android.app.Activity;
@@ -15,7 +15,7 @@ import android.hardware.SensorManager;
 
 public class BaroSensorThread extends SensorThread<Float> {
 	private BaroSensorFilter baroFilter = new BaroSensorFilter();
-	private Filter preFilterPresure = new IIRFilter(0.7f - Preferences.baro_sensitivity * 0.01f);
+	private Filter preFilterPresure = new MedianFilter(Preferences.baro_sensitivity * 18);
 
 	public BaroSensorThread(Activity activity) {
 		super(activity);

@@ -93,11 +93,10 @@ public class Preferences {
 	}
 
 	private static int getDefaultBaroSensitivity() {
-		// final String manufacturer = Build.MANUFACTURER.toLowerCase();
 		final String model = Build.MODEL.toLowerCase().trim();
 		if (model.equals("GT-I9300".toLowerCase()) || model.startsWith("T999".toLowerCase())
 				|| model.equals("I747".toLowerCase())) {
-			return 40;
+			return 35;
 		}
 		return 25;
 	}

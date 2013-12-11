@@ -1,9 +1,11 @@
 package org.avario.utils.bt;
 
 import org.avario.AVarioActivity;
+import org.avario.R;
 import org.avario.utils.Logger;
 import org.avario.utils.bt.le.LEBTAdapter;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -13,8 +15,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.widget.Toast;
 
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BTScanner {
 
 	private static final BTScanner THIS = new BTScanner();
@@ -29,17 +33,13 @@ public class BTScanner {
 		return THIS;
 	}
 
-	public void scan() {
+	public boolean scan() {
 		try {
-			if (!AVarioActivity.CONTEXT.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-				Toast.makeText(AVarioActivity.CONTEXT, "SensBox BT device is not supported by your device",
-						Toast.LENGTH_SHORT).show();
-
-			} else {
-				Toast.makeText(AVarioActivity.CONTEXT, "SensBox BT device is supported", Toast.LENGTH_SHORT).show();
-				leBt = true;
+			leBt = AVarioActivity.CONTEXT.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
+			if (!leBt) {
+				Toast.makeText(AVarioActivity.CONTEXT, R.string.sensbox_not_supported, Toast.LENGTH_LONG).show();
+				return false;
 			}
-
 			getAddapter();
 			if (!mBluetoothAdapter.isEnabled()) {
 				AVarioActivity.CONTEXT.startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
@@ -48,9 +48,9 @@ public class BTScanner {
 				proceedWithBTDevice();
 			}
 		} catch (Exception ex) {
-			Toast.makeText(AVarioActivity.CONTEXT, "SensBox BT device is not supported by your device",
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(AVarioActivity.CONTEXT, R.string.sensbox_not_supported, Toast.LENGTH_SHORT).show();
 		}
+		return true;
 	}
 
 	protected void proceedWithBTDevice() {
@@ -75,8 +75,7 @@ public class BTScanner {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == INTENT_ID && data != null && data.getAction().equals(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-				&& resultCode == Activity.RESULT_OK) {
+		if (requestCode == INTENT_ID && data != null && resultCode == Activity.RESULT_OK) {
 			proceedWithBTDevice();
 		}
 	}

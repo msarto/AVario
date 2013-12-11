@@ -1,6 +1,7 @@
 package org.avario.utils.bt.le;
 
 import org.avario.AVarioActivity;
+import org.avario.R;
 import org.avario.utils.Logger;
 
 import android.annotation.TargetApi;
@@ -23,7 +24,7 @@ public class LEBTAdapter {
 	private BluetoothGatt gatt;
 
 	// Stops scanning after 10 seconds.
-	private static final long SCAN_PERIOD = 10000;
+	private static final long SCAN_PERIOD = 60000;
 
 	protected LEBTAdapter() {
 
@@ -44,6 +45,9 @@ public class LEBTAdapter {
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
+					if (!isConnected) {
+						Toast.makeText(AVarioActivity.CONTEXT, R.string.sensbox_not_found, Toast.LENGTH_LONG).show();
+					}
 					mBluetoothAdapter.stopLeScan(mLeScanCallback);
 				}
 			}, SCAN_PERIOD);
@@ -57,14 +61,14 @@ public class LEBTAdapter {
 		}
 	}
 
-	private void stopScanning() {
+	private synchronized void stopScanning() {
 		if (mScanning) {
 			mScanning = false;
 			mBluetoothAdapter.stopLeScan(mLeScanCallback);
 			AVarioActivity.CONTEXT.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					Toast.makeText(AVarioActivity.CONTEXT, "Done scanning BT devices", Toast.LENGTH_SHORT).show();
+					Toast.makeText(AVarioActivity.CONTEXT, R.string.sensbox_found, Toast.LENGTH_LONG).show();
 					startLEDeviceandle(leDevice);
 				}
 			});

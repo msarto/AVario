@@ -4,6 +4,7 @@ import org.avario.engine.prefs.Preferences;
 import org.avario.utils.filters.Filter;
 
 public class KalmanFilter implements Filter {
+
 	// Greetings to
 	// http://trandi.wordpress.com/2011/05/16/kalman-filter-simplified-version/
 	private float Q = Preferences.baro_sensitivity * 0.000004f;
@@ -11,6 +12,16 @@ public class KalmanFilter implements Filter {
 	private float P = Preferences.baro_sensitivity / (2f * 1000f);
 	private float X = 0; // one dimensional
 	private float K = 0;
+	private float sensitivity = Preferences.baro_sensitivity;
+
+	public KalmanFilter(float sensitivity) {
+		this.sensitivity = sensitivity;
+		Q = sensitivity * 0.000004f;
+		R = sensitivity * 0.0006f;
+		P = sensitivity / (2f * 1000f);
+		X = 0; // one dimensional
+		K = 0;
+	}
 
 	@Override
 	public float[] doFilter(float... value) {
@@ -26,9 +37,9 @@ public class KalmanFilter implements Filter {
 
 	@Override
 	public void reset() {
-		Q = Preferences.baro_sensitivity * 0.000004f;
-		R = Preferences.baro_sensitivity * 0.0006f;
-		P = Preferences.baro_sensitivity / (2f * 1000f);
+		Q = sensitivity * 0.000004f;
+		R = sensitivity * 0.0006f;
+		P = sensitivity / (2f * 1000f);
 		X = 0f;
 	}
 }

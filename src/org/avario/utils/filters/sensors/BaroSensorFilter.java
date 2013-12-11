@@ -19,7 +19,8 @@ import android.widget.Toast;
 
 public class BaroSensorFilter implements LocationConsumer {
 	private volatile float referrence = SensorManager.PRESSURE_STANDARD_ATMOSPHERE;
-	private Filter baroFilter = new KalmanFilter(); // new MedianFixFilter(Preferences.baro_sensitivity);
+	private Filter baroFilter = new KalmanFilter(Preferences.baro_sensitivity); // new
+																				// MedianFixFilter(Preferences.baro_sensitivity);
 
 	private volatile float lastPresureNotified = -1f;
 	private volatile boolean gpsAltitude = false;

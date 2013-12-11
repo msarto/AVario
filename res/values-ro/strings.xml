@@ -104,19 +104,20 @@
     <string name="yes">Da</string>
     <string name="no">Nu</string>
     <string name="recordTrack_q">Pornesc inregistratea traseului?</string>
-    <string name="altitude_from_gps">Altitudea de la GPS: %1$s</string>    
-    
+    <string name="altitude_from_gps">Altitudea de la GPS: %1$s</string>
     <string name="reference_altitude_s">Selectare altitudine referinta</string>
     <string name="reference_altitude_t">Setare altitudine</string>
-    
     <string name="use_sensbox_s">Foloseste BT Flytech Sensbox</string>
     <string name="use_sensbox_t">Foloseste Sensbox</string>
     <string name="initalizing_sensors">Initializing sensors</string>
+    <string name="sensbox_not_found">SensBox BT device was not found</string>
+    <string name="sensbox_not_supported">SensBox BT is not supported by your device</string>
+    <string name="sensbox_found">"SensBox BT found</string>
+
     <string-array name="units_system_names">
         <item>Metric</item>
         <item>Imperial</item>
     </string-array>
-
     <string-array name="units_system_vals">
         <item>1</item>
         <item>2</item>

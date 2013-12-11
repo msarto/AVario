@@ -66,21 +66,24 @@ public class AVarioActivity extends Activity {
 		Logger.init();
 		try {
 			DataAccessObject.init();
-			SensorProducer.init(this, !Preferences.use_sensbox);
-			// Draw the UI from the vario.xml layout
 			setContentView(R.layout.vario);
-			// Initialize sensors listeners
+			if (Preferences.use_sensbox) {
+				boolean canUseBT = BTScanner.get().scan();
+				// Try using internal sensors if the BT are not available;
+				SensorProducer.init(this, !canUseBT);
+			} else {
+				SensorProducer.init(this, true);
+			}
+			// Draw the UI from the vario.xml layout			
 			NumericViewUpdater.init(this);
 			VarioMeterScaleUpdater.init(this);
+
 			LocationsHistory.init(this);
 			BeepBeeper.init(this);
 			NavigatorUpdater.init(this);
 			Tracker.init(this);
 			PoiManager.init();
 			Speaker.init(this);
-			if (Preferences.use_sensbox) {
-				BTScanner.get().scan();
-			}
 			// Keep the screen awake
 
 			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
