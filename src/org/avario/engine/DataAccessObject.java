@@ -258,12 +258,14 @@ public class DataAccessObject {
 		public void run() {
 			blinker = Thread.currentThread();
 			while (blinker == Thread.currentThread()) {
-				if (lastLocations.size() > 0) {
-					float oldLocationAltitude = (lastLocations.size() >= Preferences.location_history) ? lastLocations
-							.poll() : lastLocations.peek();
-					gain = DataAccessObject.get().getLastAltitude() - oldLocationAltitude;
+				if (DataAccessObject.get().getLastAltitude() > 0) {
+					if (lastLocations.size() > 0) {
+						float oldLocationAltitude = (lastLocations.size() >= Preferences.location_history) ? lastLocations
+								.poll() : lastLocations.peek();
+						gain = DataAccessObject.get().getLastAltitude() - oldLocationAltitude;
+					}
+					lastLocations.add(DataAccessObject.get().getLastAltitude());
 				}
-				lastLocations.add(DataAccessObject.get().getLastAltitude());
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
