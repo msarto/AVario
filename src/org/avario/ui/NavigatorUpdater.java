@@ -50,7 +50,6 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 	private Activity context;
 	private NavigationView navView;
 
-	protected int[] canvasMargins = new int[] { 0, 0, 0, 0 };
 	protected int radius = 80;
 	protected int xCenter;
 	protected int yCenter;

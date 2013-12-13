@@ -6,9 +6,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EEEEEE"
     android:orientation="vertical"
-    android:textColor="#000000" >
+>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -211,9 +210,9 @@
                     android:id="@+id/vSpeed"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
+                    android:layout_gravity="center"
                     android:background="@drawable/round_border"
                     android:gravity="bottom|center"
-                    android:layout_gravity="center"
                     android:text="@string/nan"
                     android:textSize="25sp"
                     android:textStyle="bold" >
@@ -396,8 +395,9 @@
                 android:id="@+id/navLayout"
                 android:layout_width="match_parent"
                 android:layout_height="240dp"
-                android:background="#EEEEEE"
-/>
+                android:layout_margin="2dp"
+                android:background="@drawable/round_border"
+                android:gravity="center_horizontal|center_vertical" />
 
             <!-- Lower right pannel -->
 

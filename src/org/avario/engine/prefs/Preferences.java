@@ -103,7 +103,6 @@ public class Preferences {
 			// Samsung S4
 			return 35;
 		}
-
 		return 25;
 	}
 
