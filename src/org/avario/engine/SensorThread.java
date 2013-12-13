@@ -1,6 +1,8 @@
 package org.avario.engine;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.avario.utils.Logger;
 
@@ -12,6 +14,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 public abstract class SensorThread<T> implements Runnable, SensorEventListener {
+	private final CountDownLatch semaphore = new CountDownLatch(1);
 	private Thread thr;
 	protected final Activity activity;
 	protected int[] sensors;
@@ -42,6 +45,9 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 				for (int sensorId : sensors) {
 					Logger.get().log("Try initializing sensor " + sensorId);
 					isSensorActive = registerListener(sensorId, sensorSpeed);
+					if (isSensorActive) {
+						semaphore.await(30, TimeUnit.SECONDS);
+					}
 					Logger.get().log(isSensorActive ? "DONE" : "NOT" + " Registered sensor " + sensorId);
 				}
 			}
@@ -50,7 +56,7 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 		}
 	}
 
-	private synchronized boolean registerListener(int sensorId, int speed) {
+	private boolean registerListener(int sensorId, int speed) {
 		List<Sensor> sensorsList = sensorManager.getSensorList(sensorId);
 		return sensorsList.size() == 1 ? sensorManager.registerListener(this, sensorsList.get(0), sensorSpeed) : false;
 	}
@@ -68,6 +74,7 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 		// described for each sensor type here:
 		// http://developer.android.com/reference/android/hardware/SensorEvent.html#values
 		try {
+			semaphore.countDown();
 			notifySensorChanged(sensorEvent);
 		} catch (Exception e) {
 			Logger.get().log("Fail sensoring changed ", e);
