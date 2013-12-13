@@ -212,9 +212,10 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:background="@drawable/round_border"
-                    android:gravity="center"
+                    android:gravity="bottom|center"
+                    android:layout_gravity="center"
                     android:text="@string/nan"
-                    android:textSize="20sp"
+                    android:textSize="25sp"
                     android:textStyle="bold" >
                 </TextView>
             </LinearLayout>

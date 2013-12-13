@@ -15,30 +15,29 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 
 public class Preferences {
-	public static boolean use_speach = false;
-	public static boolean auto_track = false;
-	public static boolean use_sensbox = false;
+	public static volatile boolean use_speach = false;
+	public static volatile boolean auto_track = false;
+	public static volatile boolean use_sensbox = false;
 
-	public static int beep_interval = 500;
-	public static float sink_start = -1.5f;
-	public static float lift_start = 0.2f;
-	public static int tone_variation = 100;
-	public static int prenotify_interval = 3000;
+	public static volatile int beep_interval = 500;
+	public static volatile float sink_start = -1.5f;
+	public static volatile float lift_start = 0.2f;
+	public static volatile int tone_variation = 100;
+	public static volatile int prenotify_interval = 3000;
 
-	public static int location_history = 5;
-	public static int heading_interval = 2000;
+	public static volatile int location_history = 5;
+	public static volatile int heading_interval = 2000;
 
-	public static int baro_sensitivity = 25;
+	public static volatile int baro_sensitivity = 25;
 
-	public static float compass_filter_sensitivity = 2f;
-	public static int max_last_thermal_distance = 200;
-	public static float min_thermal_interval = 3000;
-	public static float min_thermal_gain = 3;
-	public static int units_system = 1; // 1-metric; 2-imperial
-
-	public static int lift_hz = 600;
-	public static int sink_hz = 350;
+	public static volatile float compass_filter_sensitivity = 2f;
+	public static volatile int max_last_thermal_distance = 200;
+	public static volatile float min_thermal_interval = 3000;
+	public static volatile float min_thermal_gain = 3;
+	public static volatile int units_system = 1; // 1-metric; 2-imperial
 	
+	public static volatile int lift_hz = 600;
+	public static volatile int sink_hz = 350;
 
 	private static Context context;
 

@@ -75,8 +75,6 @@ public class AVarioActivity extends Activity {
 				SensorProducer.init(this, true);
 			}
 			// Draw the UI from the vario.xml layout			
-			NumericViewUpdater.init(this);
-			VarioMeterScaleUpdater.init(this);
 
 			LocationsHistory.init(this);
 			BeepBeeper.init(this);
@@ -89,6 +87,9 @@ public class AVarioActivity extends Activity {
 			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "AVario lock");
 			wakeLock.acquire();
+			
+			NumericViewUpdater.init(this);
+			VarioMeterScaleUpdater.init(this);
 		} catch (Exception ex) {
 			Logger.get().log("Fail initializing ", ex);
 		}

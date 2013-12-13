@@ -110,7 +110,7 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 			updatingUI = true;
 			float vSpeed = UnitsConverter.toPreferredVSpeed(speed);
 			varioView.setText(Preferences.units_system == 2 ? StringFormatter.noDecimals(vSpeed) : StringFormatter
-					.twoDecimals(vSpeed));
+					.oneDecimal(vSpeed));
 			float verticalSpeed = speed > 5 ? 5 : speed;
 			verticalSpeed = verticalSpeed < -5 ? -5 : verticalSpeed;
 			int unitsMarked = Math.round(4 * verticalSpeed);

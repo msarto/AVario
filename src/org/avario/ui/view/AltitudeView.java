@@ -19,20 +19,28 @@ public class AltitudeView extends LinearLayout {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		try {
-			int hScroll = computeHorizontalScrollRange();
-			int vScroll = computeVerticalScrollRange();
-			LayoutParams params = (LayoutParams) getLayoutParams();
-			// Changes the height
-			params.height = vScroll;
+			super.onDraw(canvas);
 			if (viewUpdater == null) {
+				int hScroll = computeHorizontalScrollRange();
+				int vScroll = computeVerticalScrollRange();
+				LayoutParams params = (LayoutParams) getLayoutParams();
+				// Changes the height
+				params.height = vScroll;
 				viewUpdater = new AltitudeUpdater(this, vScroll, hScroll);
-				viewUpdater.execute();
+				Logger.get().log("Init alt updater UI h " + hScroll + " v " + vScroll);
+			} else {
+				viewUpdater.drawAltitudes(canvas);
 			}
-			viewUpdater.drawAltitudes(canvas);
 		} catch (Exception ex) {
 			Logger.get().log("Fail to draw altitude ...", ex);
-		} finally {
-			super.onDraw(canvas);
 		}
+	}
+
+	@Override
+	protected void onDetachedFromWindow() {
+		if (viewUpdater != null) {
+			viewUpdater.cancel();
+		}
+		super.onDetachedFromWindow();
 	}
 }
