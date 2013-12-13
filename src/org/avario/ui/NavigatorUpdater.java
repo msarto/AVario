@@ -2,7 +2,6 @@ package org.avario.ui;
 
 import org.avario.R;
 import org.avario.engine.DataAccessObject;
-import org.avario.engine.LocationsHistory;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.consumerdef.CompasConsumer;
 import org.avario.engine.consumerdef.LocationConsumer;
@@ -99,10 +98,7 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		drawIcon(navCanvas, DataAccessObject.get().getHeading(), heading);
 		if (DataAccessObject.get().isGPSFix()) {
 			drawThermal(navCanvas);
-		} else {
-			LocationsHistory.get().clearLocations();
 		}
-
 	}
 
 	private void initDrawings(Canvas navigationCanvas) {

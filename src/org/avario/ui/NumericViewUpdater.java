@@ -2,9 +2,7 @@ package org.avario.ui;
 
 import org.avario.R;
 import org.avario.engine.DataAccessObject;
-import org.avario.engine.LocationsHistory;
 import org.avario.engine.SensorProducer;
-import org.avario.engine.consumerdef.BarometerConsumer;
 import org.avario.engine.consumerdef.LocationConsumer;
 import org.avario.engine.prefs.Preferences;
 import org.avario.utils.Logger;
@@ -17,8 +15,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.widget.TextView;
 
-public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> implements LocationConsumer,
-		BarometerConsumer {
+public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> implements LocationConsumer {
 	private Activity context = null;
 	private static NumericViewUpdater THIS;
 	protected long startTime = System.currentTimeMillis();
@@ -73,7 +70,7 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 		}
 		lastGainText.setText(String.format(context.getString(R.string.gainedlastmin),
 				String.valueOf(Preferences.location_history)));
-		double lastGain = UnitsConverter.toPreferredShort(Math.round(LocationsHistory.get().getHistoryAltimeterGain()));
+		double lastGain = UnitsConverter.toPreferredShort(Math.round(DataAccessObject.get().getHistoryAltimeterGain()));
 		lastGainView.setText(context.getApplicationContext().getString(R.string.lastgainvalue,
 				StringFormatter.noDecimals(lastGain)));
 		if (lastLocationTracked != null) {
@@ -82,10 +79,6 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 					+ UnitsConverter.preferredDistLong());
 		}
 		lastLocationTracked = location;
-	}
-
-	@Override
-	public void notifyWithAltFromPreasure(float altitude) {
 	}
 
 	@Override
@@ -116,6 +109,13 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 					.getLastAltitude())));
 			altitudeMeasure.setText(context.getApplicationContext().getString(
 					Preferences.units_system == 2 ? R.string.feet : R.string.meters));
+
+			lastGainText.setText(String.format(context.getString(R.string.gainedlastmin),
+					String.valueOf(Preferences.location_history)));
+			double lastGain = UnitsConverter.toPreferredShort(Math.round(DataAccessObject.get()
+					.getHistoryAltimeterGain()));
+			lastGainView.setText(context.getApplicationContext().getString(R.string.lastgainvalue,
+					StringFormatter.noDecimals(lastGain)));
 		} catch (Exception e) {
 			Logger.get().log("Fail to refresh UI progress", e);
 		}

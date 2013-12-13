@@ -1,5 +1,8 @@
 package org.avario.engine;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sensors.GpsMovement;
 import org.avario.engine.sensors.MovementFactor;
@@ -16,7 +19,6 @@ public class DataAccessObject {
 	protected volatile long lastlocationTimestamp = 0;
 
 	protected volatile float bearing = 0f;
-	// protected boolean baroFix = false;
 	protected volatile float lastAltitude = -1;
 
 	private volatile float heading = -1f;
@@ -28,6 +30,7 @@ public class DataAccessObject {
 	private MovementFactor movementFactor = new GpsMovement();
 	protected ThermalingTask thermalTask = new ThermalingTask();
 	protected HeadingTask headingTask = new HeadingTask();
+	protected AltitudeGainTask altitudeGainTask = new AltitudeGainTask();
 
 	protected DataAccessObject() {
 	}
@@ -36,11 +39,13 @@ public class DataAccessObject {
 		THIS = new DataAccessObject();
 		THIS.thermalTask.start();
 		THIS.headingTask.start();
+		THIS.altitudeGainTask.start();
 	}
 
 	public static void clear() {
 		THIS.thermalTask.stop();
 		THIS.headingTask.stop();
+		THIS.altitudeGainTask.stop();
 	}
 
 	public static DataAccessObject get() {
@@ -69,7 +74,7 @@ public class DataAccessObject {
 
 	public void resetVSpeed() {
 		movementFactor.reset();
-		LocationsHistory.get().clearLocations();
+		altitudeGainTask.reset();
 	}
 
 	public void setLastlocation(Location nowlocation) {
@@ -142,6 +147,10 @@ public class DataAccessObject {
 				Logger.get().log("wind direction bearing at" + windDirectionBearing + " on speed " + maxSpeed);
 			}
 		}
+	}
+
+	public double getHistoryAltimeterGain() {
+		return altitudeGainTask.getAltitudeGain();
 	}
 
 	private class ThermalingTask implements Runnable {
@@ -217,6 +226,52 @@ public class DataAccessObject {
 				Logger.get().log("Heading task terminated");
 			}
 		}
+	}
+
+	private class AltitudeGainTask implements Runnable {
+		private volatile Thread blinker;
+		private Thread thr;
+		protected volatile Queue<Float> lastLocations = new ArrayDeque<Float>();
+		protected float gain = 0f;
+
+		private AltitudeGainTask() {
+			thr = new Thread(this);
+		}
+
+		public void start() {
+			thr.start();
+		}
+
+		public void stop() {
+			blinker = null;
+		}
+
+		public void reset() {
+			lastLocations.clear();
+		}
+
+		public float getAltitudeGain() {
+			return gain;
+		}
+
+		@Override
+		public void run() {
+			blinker = Thread.currentThread();
+			while (blinker == Thread.currentThread()) {
+				if (lastLocations.size() > 0) {
+					float oldLocationAltitude = (lastLocations.size() >= Preferences.location_history) ? lastLocations
+							.poll() : lastLocations.peek();
+					gain = DataAccessObject.get().getLastAltitude() - oldLocationAltitude;
+				}
+				lastLocations.add(DataAccessObject.get().getLastAltitude());
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					blinker = null;
+				}
+			}
+		}
+
 	}
 
 }

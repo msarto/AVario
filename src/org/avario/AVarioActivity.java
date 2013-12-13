@@ -1,7 +1,6 @@
 package org.avario;
 
 import org.avario.engine.DataAccessObject;
-import org.avario.engine.LocationsHistory;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.poi.PoiManager;
 import org.avario.engine.prefs.Preferences;
@@ -74,9 +73,8 @@ public class AVarioActivity extends Activity {
 			} else {
 				SensorProducer.init(this, true);
 			}
-			// Draw the UI from the vario.xml layout			
+			// Draw the UI from the vario.xml layout
 
-			LocationsHistory.init(this);
 			BeepBeeper.init(this);
 			NavigatorUpdater.init(this);
 			Tracker.init(this);
@@ -87,7 +85,7 @@ public class AVarioActivity extends Activity {
 			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "AVario lock");
 			wakeLock.acquire();
-			
+
 			NumericViewUpdater.init(this);
 			VarioMeterScaleUpdater.init(this);
 		} catch (Exception ex) {
