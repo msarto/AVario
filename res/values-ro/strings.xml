@@ -107,7 +107,7 @@
     <string name="altitude_from_gps">Altitudea de la GPS: %1$s</string>
     <string name="reference_altitude_s">Selectare altitudine referinta</string>
     <string name="reference_altitude_t">Setare altitudine</string>
-    <string name="use_sensbox_s">Foloseste BT Flytech Sensbox</string>
+    <string name="use_sensbox_s">Foloseste BT Flytec Sensbox</string>
     <string name="use_sensbox_t">Foloseste Sensbox</string>
     <string name="initalizing_sensors">Initializing sensors</string>
     <string name="sensbox_not_found">SensBox BT device was not found</string>

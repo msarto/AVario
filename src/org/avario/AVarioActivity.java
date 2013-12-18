@@ -1,7 +1,7 @@
 package org.avario;
 
-import org.avario.engine.DataAccessObject;
 import org.avario.engine.SensorProducer;
+import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.poi.PoiManager;
 import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sounds.BeepBeeper;

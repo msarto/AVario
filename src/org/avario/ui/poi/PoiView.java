@@ -1,6 +1,6 @@
 package org.avario.ui.poi;
 
-import org.avario.engine.DataAccessObject;
+import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.poi.POI;
 import org.avario.engine.poi.PoiManager;
 import org.avario.utils.UnitsConverter;

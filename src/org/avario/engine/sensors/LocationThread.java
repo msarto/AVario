@@ -1,9 +1,9 @@
 package org.avario.engine.sensors;
 
 import org.avario.R;
-import org.avario.engine.DataAccessObject;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.SensorThread;
+import org.avario.engine.datastore.DataAccessObject;
 
 import android.app.Activity;
 import android.content.Context;

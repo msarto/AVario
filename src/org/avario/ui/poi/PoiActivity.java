@@ -1,8 +1,8 @@
 package org.avario.ui.poi;
 
 import org.avario.R;
-import org.avario.engine.DataAccessObject;
 import org.avario.engine.PoiProducer;
+import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.poi.POI;
 
 import android.app.Activity;

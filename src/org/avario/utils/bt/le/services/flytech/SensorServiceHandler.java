@@ -2,7 +2,7 @@ package org.avario.utils.bt.le.services.flytech;
 
 import java.util.UUID;
 
-import org.avario.engine.DataAccessObject;
+import org.avario.engine.datastore.DataAccessObject;
 import org.avario.utils.bt.le.services.CharacteristicHandler;
 import org.avario.utils.bt.le.services.ServiceHandler;
 

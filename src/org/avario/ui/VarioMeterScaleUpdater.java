@@ -1,7 +1,7 @@
 package org.avario.ui;
 
 import org.avario.R;
-import org.avario.engine.DataAccessObject;
+import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
 import org.avario.utils.Logger;
 import org.avario.utils.StringFormatter;

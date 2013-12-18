@@ -2,7 +2,7 @@ package org.avario.ui;
 
 import java.util.ArrayDeque;
 
-import org.avario.engine.DataAccessObject;
+import org.avario.engine.datastore.DataAccessObject;
 import org.avario.ui.view.AltitudeView;
 import org.avario.utils.Logger;
 

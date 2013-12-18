@@ -1,7 +1,7 @@
 package org.avario.engine.sensors.bt;
 
-import org.avario.engine.DataAccessObject;
 import org.avario.engine.SensorProducer;
+import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.sensors.CompasSensorThread;
 import org.avario.engine.sensors.LocationThread;
 

@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.avario.R;
-import org.avario.engine.DataAccessObject;
 import org.avario.engine.PoiProducer;
 import org.avario.engine.consumerdef.POIConsumer;
+import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.poi.KmlPois;
 import org.avario.engine.poi.POI;
 import org.avario.engine.poi.PoiManager;

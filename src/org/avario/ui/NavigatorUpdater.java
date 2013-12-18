@@ -1,10 +1,10 @@
 package org.avario.ui;
 
 import org.avario.R;
-import org.avario.engine.DataAccessObject;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.consumerdef.CompasConsumer;
 import org.avario.engine.consumerdef.LocationConsumer;
+import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
 import org.avario.ui.poi.PoiView;
 import org.avario.ui.view.NavigationView;
