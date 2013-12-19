@@ -9,22 +9,20 @@ import android.os.SystemClock;
 
 public class DataAccessObject {
 	protected static DataAccessObject THIS;
-	protected volatile Location lastlocation;
 
-	protected volatile long lastlocationTimestamp = 0;
+	protected volatile Location lastlocation;
 
 	protected volatile float bearing = 0f;
 	protected volatile float lastAltitude = -1;
 
 	private volatile float windDirectionBearing = -1f;
 	private volatile float temperature = 0f;
-
 	private volatile float maxSpeed = 0f;
 
 	private MovementFactor movementFactor = new GpsMovement();
-	protected ThermalingTask thermalTask = new ThermalingTask();
-	protected HeadingTask headingTask = new HeadingTask();
-	protected AltitudeGainTask altitudeGainTask = new AltitudeGainTask();
+	private ThermalingTask thermalTask = new ThermalingTask();
+	private HeadingTask headingTask = new HeadingTask();
+	private AltitudeGainTask altitudeGainTask = new AltitudeGainTask();
 
 	protected DataAccessObject() {
 	}
@@ -77,7 +75,6 @@ public class DataAccessObject {
 			// -- set the altitude from the barometer
 			lastlocation.setAltitude(lastAltitude);
 		}
-		lastlocationTimestamp = SystemClock.elapsedRealtime();
 		makeWind(lastlocation);
 	}
 
@@ -119,7 +116,7 @@ public class DataAccessObject {
 	}
 
 	public boolean isGPSFix() {
-		return ((SystemClock.elapsedRealtime() - lastlocationTimestamp) < 5000);
+		return ((SystemClock.elapsedRealtimeNanos() - lastlocation.getElapsedRealtimeNanos()) < 5000);
 	}
 
 	protected void makeWind(Location location) {
