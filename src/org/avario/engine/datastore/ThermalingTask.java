@@ -10,7 +10,7 @@ public class ThermalingTask implements Runnable {
 	private Thread thr;
 	private Location lastThermal;
 
-	public ThermalingTask() {
+	ThermalingTask() {
 		thr = new Thread(this);
 	}
 

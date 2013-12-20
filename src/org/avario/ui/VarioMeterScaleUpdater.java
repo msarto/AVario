@@ -105,15 +105,15 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 		THIS.cancel(false);
 	}
 
-	protected synchronized void updateSpeed(float speed) {
+	protected synchronized void updateSpeed(float vSpeed) {
 		try {
 			updatingUI = true;
-			float vSpeed = UnitsConverter.toPreferredVSpeed(speed);
-			varioView.setText(Preferences.units_system == 2 ? StringFormatter.noDecimals(vSpeed) : StringFormatter
-					.oneDecimal(vSpeed));
-			float verticalSpeed = speed > 5 ? 5 : speed;
-			verticalSpeed = verticalSpeed < -5 ? -5 : verticalSpeed;
-			int unitsMarked = Math.round(4 * verticalSpeed);
+
+			float displaySpeed = UnitsConverter.toPreferredVSpeed(vSpeed);
+			varioView.setText(Preferences.units_system == 2 ? StringFormatter.noDecimals(displaySpeed)
+					: StringFormatter.oneDecimal(displaySpeed));
+
+			int unitsMarked = Math.round(4 * vSpeed);
 			if (currentUnitsMark == unitsMarked) {
 				// Nothing to do, just return
 				return;
@@ -148,7 +148,7 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 			}
 			currentUnitsMark = unitsMarked;
 		} catch (Exception ex) {
-			Logger.get().log("Fil to updte vrio scle with speed: " + speed, ex);
+			Logger.get().log("Fil to updte vrio scle with speed " + vSpeed, ex);
 		} finally {
 			updatingUI = false;
 		}
@@ -159,8 +159,11 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 		while (!THIS.isCancelled()) {
 			try {
 				Thread.sleep(200);
-				float beepSpeed = DataAccessObject.get().getLastVSpeed();
-				publishProgress(beepSpeed);
+				float speed = DataAccessObject.get().getLastVSpeed();
+				float vSpeed = Math.abs(speed) > Preferences.lift_start ? speed : 0.0f;
+				vSpeed = vSpeed > 5 ? 5 : vSpeed;
+				vSpeed = vSpeed < -5 ? -5 : vSpeed;
+				publishProgress(vSpeed);
 			} catch (InterruptedException e) {
 				THIS.cancel(false);
 				break;
@@ -176,8 +179,7 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 	protected void onProgressUpdate(final Float... speed) {
 		try {
 			if (!updatingUI) {
-				float vSpeed = Math.abs(speed[0]) > Preferences.lift_start ? speed[0] : 0.0f;
-				updateSpeed(vSpeed);
+				updateSpeed(speed[0]);
 			}
 		} catch (Exception ex) {
 			Logger.get().log("Fail async beep progress: ", ex);

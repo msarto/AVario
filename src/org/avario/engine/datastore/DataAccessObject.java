@@ -72,7 +72,6 @@ public class DataAccessObject {
 	public void setLastlocation(Location nowlocation) {
 		lastlocation = nowlocation;
 		if (lastAltitude > 0) {
-			// -- set the altitude from the barometer
 			lastlocation.setAltitude(lastAltitude);
 		}
 		makeWind(lastlocation);
@@ -116,7 +115,7 @@ public class DataAccessObject {
 	}
 
 	public boolean isGPSFix() {
-		return ((SystemClock.elapsedRealtimeNanos() - lastlocation.getElapsedRealtimeNanos()) < 5000);
+		return (lastlocation != null && (System.currentTimeMillis() - lastlocation.getTime()) < 5000);
 	}
 
 	protected void makeWind(Location location) {

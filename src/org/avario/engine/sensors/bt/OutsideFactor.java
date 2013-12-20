@@ -5,6 +5,7 @@ import org.avario.engine.sensors.MovementFactor;
 public class OutsideFactor implements MovementFactor {
 
 	private float value = 0f; 
+
 	@Override
 	public void reset() {
 		value = 0f;
