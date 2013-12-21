@@ -16,6 +16,7 @@ public class PoiView {
 
 	private static Paint mPaint;
 	private static Paint pDistance;
+	private static Paint pName;
 	static {
 		pDistance = new Paint();
 		pDistance.setAntiAlias(true);
@@ -24,6 +25,14 @@ public class PoiView {
 		pDistance.setTextAlign(Paint.Align.CENTER);
 		pDistance.setDither(true);
 		pDistance.setSubpixelText(true);
+
+		pName = new Paint();
+		pName.setAntiAlias(true);
+		pName.setTextSize(15);
+		pName.setColor(Color.BLACK);
+		// pName.setTextAlign(Paint.Align.CENTER);
+		pName.setDither(true);
+		pName.setSubpixelText(true);
 
 		mPaint = new Paint();
 		mPaint.setColor(Color.RED);
@@ -57,30 +66,27 @@ public class PoiView {
 		if (lastLocation != null) {
 			POI activePOI = PoiManager.get().getActivePOI();
 			if (activePOI != null) {
+				
 				canvas.save();
 				canvas.translate(xCenter, yCenter);
-				float distance = activePOI.distanceTo(lastLocation);
 				float bearing = activePOI.bearingTo(lastLocation);
 				canvas.rotate(bearing);
 				canvas.drawPath(mPath, mPaint);
 				canvas.restore();
 
 				// Now draw the distance number and keep it still
+				float distance = activePOI.distanceTo(lastLocation);
+				String poiName = activePOI.getName().replace("(www)", "").trim();
+				poiName = poiName.length() > 10 ? poiName.substring(0, 9) + "..." : poiName;
 				String distStr = UnitsConverter.normalizedDistance(distance);
 				canvas.save();
 				canvas.translate(xCenter, yCenter);
 				canvas.rotate(360 - DataAccessObject.get().getBearing());
 				canvas.drawText(distStr, 0, 0, pDistance);
+				canvas.drawText(poiName, -xCenter + 5, -yCenter + 20, pName);
 				canvas.restore();
-
 			}
 		}
-
-		// canvas.save();
-		// canvas.translate(xCenter, yCenter);
-		// canvas.drawText(StringFormatter.noDecimals(DataAccessObject.get().getBearing()),
-		// 0, 0, pDistance);
-		// canvas.restore();
 	}
 
 }

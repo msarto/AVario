@@ -34,7 +34,8 @@ public class UnitsConverter {
 		return humanString;
 	}
 
-	public static float verticalSpeed(float lastAltitudeValue, long lastAltitudeTimestamp, float newAltitude, long newAltitudeTimestamp) {
+	public static float verticalSpeed(float lastAltitudeValue, long lastAltitudeTimestamp, float newAltitude,
+			long newAltitudeTimestamp) {
 		if (newAltitudeTimestamp == lastAltitudeTimestamp) {
 			return 0f;
 		}
@@ -122,12 +123,12 @@ public class UnitsConverter {
 	}
 
 	public static String normalizedDistance(float distance) {
-
 		String tooLong = Preferences.units_system == 1 ? ">500km" : ">300miles";
-		String distStr = distance > 500000 ? tooLong : StringFormatter.noDecimals(UnitsConverter.toPreferredShort(distance))
-				+ UnitsConverter.preferredDistShort();
-		if (distance > 5000f) {
-			distStr = StringFormatter.noDecimals(UnitsConverter.toPreferredLong(distance / 1000f)) + UnitsConverter.preferredDistLong();
+		String distStr = distance > 500000 ? tooLong : StringFormatter.noDecimals(UnitsConverter
+				.toPreferredShort(distance)) + UnitsConverter.preferredDistShort();
+		if (distance < 500000 && distance > 5000f) {
+			distStr = StringFormatter.noDecimals(UnitsConverter.toPreferredLong(distance / 1000f))
+					+ UnitsConverter.preferredDistLong();
 		}
 		return distStr;
 	}
