@@ -42,7 +42,7 @@ public class BeepBeeper implements Runnable {
 				beepSpeed = beepSpeed > 5 ? 5 : beepSpeed;
 				beepSpeed = beepSpeed < -5 ? -5 : beepSpeed;
 				if (!validateThisSpeed(beepSpeed)) {
-					Thread.sleep(150);
+					Thread.sleep(100);
 				} else {
 					if (beepSpeed > 0) {
 						final float beepHz = Preferences.lift_hz + Preferences.tone_variation * beepSpeed;
@@ -61,7 +61,7 @@ public class BeepBeeper implements Runnable {
 								Preferences.units_system == 2 ? StringFormatter.noDecimals(saySpeed) : StringFormatter
 										.oneDecimal(saySpeed));
 					}
-					Thread.sleep(Math.round(250 - 30 * beepSpeed));
+					Thread.sleep(Math.round(200 - 40 * beepSpeed));
 				}
 			} catch (InterruptedException e) {
 				break;
@@ -76,7 +76,7 @@ public class BeepBeeper implements Runnable {
 			return false;
 		}
 
-		if (Math.abs(beepSpeed) < 0.1) {
+		if ((beepSpeed > -Preferences.lift_start) && (beepSpeed < Preferences.lift_start)) {
 			prenotifyThermal();
 		}
 
@@ -96,8 +96,7 @@ public class BeepBeeper implements Runnable {
 	}
 
 	private void prenotifyThermal() {
-		if (Preferences.prenotify_interval > 0 && DataAccessObject.get().isGPSFix()
-				&& UnitsConverter.msTokmh(DataAccessObject.get().getLastlocation().getSpeed()) > 5) {
+		if (Preferences.prenotify_interval > 0 && DataAccessObject.get().isGPSFix()) {
 			prenotifyBeep.beep();
 		}
 	}
