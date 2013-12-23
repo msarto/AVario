@@ -5,7 +5,6 @@ import org.avario.engine.sensors.MovementFactor;
 import org.avario.utils.Logger;
 
 import android.location.Location;
-import android.os.SystemClock;
 
 public class DataAccessObject {
 	protected static DataAccessObject THIS;

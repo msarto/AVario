@@ -54,6 +54,7 @@ public class CompasSensorThread extends SensorThread<Float> {
 
 		public void stop() {
 			blinker = null;
+			thr.interrupt();
 		}
 
 		@Override
@@ -62,7 +63,8 @@ public class CompasSensorThread extends SensorThread<Float> {
 				blinker = Thread.currentThread();
 				while (blinker == Thread.currentThread()) {
 					final float smoothBearing = compasFilter.smoothFilter(bearing);
-					if (DataAccessObject.get() != null && Math.abs(smoothBearing - bearing) > Preferences.compass_filter_sensitivity) {
+					if (DataAccessObject.get() != null
+							&& Math.abs(smoothBearing - bearing) > Preferences.compass_filter_sensitivity) {
 
 						DataAccessObject.get().setBearing(smoothBearing);
 						activity.runOnUiThread(new Runnable() {
@@ -73,8 +75,8 @@ public class CompasSensorThread extends SensorThread<Float> {
 						});
 					}
 
-					long wait = Math.round(120 - Math.abs(smoothBearing - bearing));
-					Thread.sleep(wait > 0 ? wait : 5);
+					long wait = Math.round(80 - Math.abs(smoothBearing - bearing));
+					Thread.sleep(wait > 5 ? wait : 5);
 				}
 			} catch (Exception ex) {
 				Logger.get().log("Compass stopped...", ex);
