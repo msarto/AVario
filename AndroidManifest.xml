@@ -19,7 +19,7 @@
 <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
-    <application
+<application
         android:icon="@drawable/icon"
         android:label="@string/AVario" >
         <activity

@@ -26,7 +26,7 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 
 	@Override
 	public void run() {
-
+		locationManager.removeUpdates(LocationThread.this);
 		activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
@@ -36,9 +36,16 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 					Toast.makeText(activity, activity.getApplicationContext().getString(R.string.gps_fail),
 							Toast.LENGTH_LONG).show();
 				}
+
 			}
 		});
-		locationManager.removeUpdates(LocationThread.this);
+		/*
+		(new MockLocation() {
+			@Override
+			public void notifyLocation(Location location) {
+				onLocationChanged(location);
+			}
+		}).run();*/
 	}
 
 	@Override

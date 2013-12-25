@@ -81,7 +81,6 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 	}
 
 	public void draw(Canvas navCanvas, int xCenter, int yCenter) {
-
 		this.xCenter = xCenter;
 		this.yCenter = yCenter;
 		if (navView == null) {
@@ -131,8 +130,8 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		if (bearing != -1) {
 			bearing = bearing % 360;
 			float angle = (float) (bearing * Math.PI / 180f - Math.PI / 2);
-			float theX = (float) ((radius + 5 * densityMultiplier) * Math.cos(angle) * densityMultiplier + xCenter);
-			float theY = (float) ((radius + 5 * densityMultiplier) * Math.sin(angle) * densityMultiplier + yCenter);
+			float theX = (float) ((radius + 5 * densityMultiplier) * Math.cos(angle) + xCenter);
+			float theY = (float) ((radius + 5 * densityMultiplier) * Math.sin(angle) + yCenter);
 			navCanvas.save();
 			navCanvas.drawBitmap(bitmap, theX, theY, windMarkPaint);
 			navCanvas.restore();
