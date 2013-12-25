@@ -76,7 +76,7 @@ public class CompasSensorThread extends SensorThread<Float> {
 					}
 
 					long wait = Math.round(80 - Math.abs(smoothBearing - bearing));
-					Thread.sleep(wait > 5 ? wait : 5);
+					Thread.sleep(wait > 10 ? wait : 10);
 				}
 			} catch (Exception ex) {
 				Logger.get().log("Compass stopped...", ex);

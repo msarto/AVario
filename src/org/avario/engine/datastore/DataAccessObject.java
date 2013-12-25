@@ -81,10 +81,8 @@ public class DataAccessObject {
 	}
 
 	public float getLastAltitude() {
-		if (lastAltitude < 0) {
-			if (lastlocation != null) {
-				return (float) lastlocation.getAltitude();
-			}
+		if (lastAltitude < 0 && lastlocation != null) {
+			return (float) lastlocation.getAltitude();
 		}
 		return lastAltitude;
 	}
