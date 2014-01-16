@@ -20,8 +20,8 @@ public class OutsideProducer extends SensorProducer {
 	}
 
 	private void initSensorsListners(Activity activity) {
-		compasThread = new CompasSensorThread(activity);
-		locationThread = new LocationThread(activity);
+		compasThread = new CompasSensorThread();
+		locationThread = new LocationThread();
 
 		compasThread.startSensor();
 		locationThread.startSensor();

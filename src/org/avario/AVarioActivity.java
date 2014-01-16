@@ -5,6 +5,8 @@ import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.poi.PoiManager;
 import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sounds.BeepBeeper;
+import org.avario.engine.sounds.TonePlayer;
+import org.avario.engine.sounds.TonePlayer.ToneType;
 import org.avario.engine.tracks.Tracker;
 import org.avario.ui.NavigatorUpdater;
 import org.avario.ui.NumericViewUpdater;
@@ -17,12 +19,10 @@ import org.avario.utils.Speaker;
 import org.avario.utils.bt.BTScanner;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -95,30 +95,14 @@ public class AVarioActivity extends Activity {
 	}
 
 	public static void startAutoTrack() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(CONTEXT);
-		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-
-				CONTEXT.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Tracker.get().startTracking();
-					}
-				});
-
+		TonePlayer startTrack = new TonePlayer();
+		startTrack.play(400f, ToneType.HIGH);
+		CONTEXT.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				Tracker.get().startTracking();
 			}
 		});
-
-		builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-			}
-		});
-
-		builder.setCancelable(false);
-		builder.setMessage(R.string.recordTrack_q);
-		AlertDialog dialog = builder.create();
-		dialog.show();
 	}
 
 	private void addNotification() {

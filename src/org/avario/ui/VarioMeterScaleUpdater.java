@@ -156,6 +156,7 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 
 	@Override
 	protected Integer doInBackground(Integer... arg0) {
+		float prevSpeed = 0f;
 		while (!THIS.isCancelled()) {
 			try {
 				Thread.sleep(200);
@@ -163,7 +164,10 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 				float vSpeed = Math.abs(speed) > Preferences.lift_start ? speed : 0.0f;
 				vSpeed = vSpeed > 5 ? 5 : vSpeed;
 				vSpeed = vSpeed < -5 ? -5 : vSpeed;
-				publishProgress(vSpeed);
+				if (Math.abs(vSpeed - prevSpeed) > 0.1f) {
+					publishProgress(vSpeed);
+				}
+				prevSpeed = vSpeed;
 			} catch (InterruptedException e) {
 				THIS.cancel(false);
 				break;

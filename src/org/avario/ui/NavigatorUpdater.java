@@ -1,5 +1,6 @@
 package org.avario.ui;
 
+import org.avario.AVarioActivity;
 import org.avario.R;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.consumerdef.CompasConsumer;
@@ -164,9 +165,15 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 
 	@Override
 	public void notifyWithLocation(Location location) {
-		if (navView != null) {
-			navView.invalidate();
-		}
+
+		AVarioActivity.CONTEXT.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (navView != null) {
+					navView.invalidate();
+				}
+			}
+		});
 	}
 
 	@Override
@@ -174,7 +181,12 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		if (navView != null
 				&& Math.abs(prevBearing - DataAccessObject.get().getBearing()) >= Preferences.compass_filter_sensitivity) {
 			prevBearing = DataAccessObject.get().getBearing();
-			navView.invalidate();
+			AVarioActivity.CONTEXT.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					navView.invalidate();
+				}
+			});
 		}
 	}
 }

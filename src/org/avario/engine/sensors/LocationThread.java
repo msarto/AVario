@@ -1,11 +1,11 @@
 package org.avario.engine.sensors;
 
+import org.avario.AVarioActivity;
 import org.avario.R;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.SensorThread;
 import org.avario.engine.datastore.DataAccessObject;
 
-import android.app.Activity;
 import android.content.Context;
 import android.hardware.SensorEvent;
 import android.location.Location;
@@ -18,34 +18,26 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 
 	private final LocationManager locationManager;
 
-	public LocationThread(Activity activity) {
-		super(activity);
-		locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-
+	public LocationThread() {
+		locationManager = (LocationManager) AVarioActivity.CONTEXT.getSystemService(Context.LOCATION_SERVICE);
 	}
 
 	@Override
 	public void run() {
 		locationManager.removeUpdates(LocationThread.this);
-		activity.runOnUiThread(new Runnable() {
+		AVarioActivity.CONTEXT.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, LocationThread.this);
 				} catch (Exception e) {
-					Toast.makeText(activity, activity.getApplicationContext().getString(R.string.gps_fail),
+					Toast.makeText(AVarioActivity.CONTEXT,
+							AVarioActivity.CONTEXT.getApplicationContext().getString(R.string.gps_fail),
 							Toast.LENGTH_LONG).show();
 				}
 
 			}
 		});
-		/*
-		(new MockLocation() {
-			@Override
-			public void notifyLocation(Location location) {
-				onLocationChanged(location);
-			}
-		}).run();*/
 	}
 
 	@Override
@@ -58,11 +50,11 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 		if (newLocation.hasAltitude() && (DataAccessObject.get().getMovementFactor() instanceof GpsMovement)) {
 			DataAccessObject.get().setLastAltitude((float) newLocation.getAltitude());
 		}
-		
-		DataAccessObject.get().setLastlocation(newLocation);
-		activity.runOnUiThread(new Runnable() {
+
+		callbackThreadPool.execute(new Runnable() {
 			@Override
 			public void run() {
+				DataAccessObject.get().setLastlocation(newLocation);
 				SensorProducer.get().notifyGpsConsumers(DataAccessObject.get().getLastlocation());
 				SensorProducer.get().notifyBaroConsumers(DataAccessObject.get().getLastAltitude());
 			}

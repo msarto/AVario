@@ -8,7 +8,6 @@ import org.avario.utils.filters.Filter;
 import org.avario.utils.filters.impl.MedianFilter;
 import org.avario.utils.filters.sensors.BaroSensorFilter;
 
-import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -17,8 +16,7 @@ public class BaroSensorThread extends SensorThread<Float> {
 	private BaroSensorFilter baroFilter = new BaroSensorFilter();
 	private Filter preFilterPresure = new MedianFilter(Preferences.baro_sensitivity * 18);
 
-	public BaroSensorThread(Activity activity) {
-		super(activity);
+	public BaroSensorThread() {
 		init();
 	}
 
@@ -38,8 +36,7 @@ public class BaroSensorThread extends SensorThread<Float> {
 		if (altitude >= 0) {
 			DataAccessObject.get().setLastAltitude(altitude);
 			DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, altitude);
-
-			activity.runOnUiThread(new Runnable() {
+			callbackThreadPool.execute(new Runnable() {
 				@Override
 				public void run() {
 					SensorProducer.get().notifyBaroConsumers(altitude);

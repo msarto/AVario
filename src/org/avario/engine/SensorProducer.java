@@ -83,9 +83,9 @@ public class SensorProducer {
 	}
 
 	private void initSensorsListners(Activity activity) {
-		compasThread = new CompasSensorThread(activity);
-		baroThread = new BaroSensorThread(activity);
-		locationThread = new LocationThread(activity);
+		compasThread = new CompasSensorThread();
+		baroThread = new BaroSensorThread();
+		locationThread = new LocationThread();
 
 		compasThread.startSensor();
 		baroThread.startSensor();

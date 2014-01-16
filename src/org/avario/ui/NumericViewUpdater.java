@@ -1,5 +1,6 @@
 package org.avario.ui;
 
+import org.avario.AVarioActivity;
 import org.avario.R;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.consumerdef.LocationConsumer;
@@ -62,23 +63,29 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 	}
 
 	@Override
-	public void notifyWithLocation(Location location) {
-		if (location.hasSpeed()) {
-			groundSpeedView.setText(StringFormatter.noDecimals(UnitsConverter.toPreferredLong(UnitsConverter
-					.msTokmh(location.getSpeed()))));
-			groundSpeedMeasure.setText(UnitsConverter.preferredDistLong() + "/h");
-		}
-		lastGainText.setText(String.format(context.getString(R.string.gainedlastmin),
-				String.valueOf(Preferences.location_history)));
-		double lastGain = UnitsConverter.toPreferredShort(Math.round(DataAccessObject.get().getHistoryAltimeterGain()));
-		lastGainView.setText(context.getApplicationContext().getString(R.string.lastgainvalue,
-				StringFormatter.noDecimals(lastGain)));
-		if (lastLocationTracked != null) {
-			metersTracked += location.distanceTo(lastLocationTracked);
-			flightDistance.setText(StringFormatter.oneDecimal(UnitsConverter.toPreferredLong(metersTracked / 1000F))
-					+ UnitsConverter.preferredDistLong());
-		}
-		lastLocationTracked = location;
+	public void notifyWithLocation(final Location location) {
+		AVarioActivity.CONTEXT.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (location.hasSpeed()) {
+					groundSpeedView.setText(StringFormatter.noDecimals(UnitsConverter.toPreferredLong(UnitsConverter
+							.msTokmh(location.getSpeed()))));
+					groundSpeedMeasure.setText(UnitsConverter.preferredDistLong() + "/h");
+				}
+				lastGainText.setText(String.format(context.getString(R.string.gainedlastmin),
+						String.valueOf(Preferences.location_history)));
+				double lastGain = UnitsConverter.toPreferredShort(Math.round(DataAccessObject.get()
+						.getHistoryAltimeterGain()));
+				lastGainView.setText(context.getApplicationContext().getString(R.string.lastgainvalue,
+						StringFormatter.noDecimals(lastGain)));
+				if (lastLocationTracked != null) {
+					metersTracked += location.distanceTo(lastLocationTracked);
+					flightDistance.setText(StringFormatter.oneDecimal(UnitsConverter
+							.toPreferredLong(metersTracked / 1000F)) + UnitsConverter.preferredDistLong());
+				}
+				lastLocationTracked = location;
+			}
+		});
 	}
 
 	@Override

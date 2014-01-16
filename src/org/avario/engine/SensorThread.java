@@ -2,11 +2,13 @@ package org.avario.engine;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.avario.AVarioActivity;
 import org.avario.utils.Logger;
 
-import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -14,22 +16,20 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 public abstract class SensorThread<T> implements Runnable, SensorEventListener {
+	protected static ExecutorService callbackThreadPool = Executors.newCachedThreadPool();
+
 	private final CountDownLatch semaphore = new CountDownLatch(1);
-	private Thread thr;
-	protected final Activity activity;
 	protected int[] sensors;
 	protected int sensorSpeed;
 	protected SensorManager sensorManager;
 	private boolean isSensorActive = false;
 
-	protected SensorThread(Activity activity) {
-		this.activity = activity;
-		this.sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
-		thr = new Thread(this);
+	protected SensorThread() {
+		this.sensorManager = (SensorManager) AVarioActivity.CONTEXT.getSystemService(Context.SENSOR_SERVICE);
 	}
 
 	public void startSensor() {
-		thr.start();
+		callbackThreadPool.execute(this);
 	}
 
 	public void stop() {

@@ -21,7 +21,6 @@ public class LogBaroThread extends BaroSensorThread {
 	private long prevTs = 0;
 
 	public LogBaroThread(Activity activity) {
-		super(activity);
 		try {
 			logStream = new BufferedOutputStream(new FileOutputStream(logFile, false));
 		} catch (FileNotFoundException e) {

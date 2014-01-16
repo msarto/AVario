@@ -77,7 +77,7 @@ public class AltitudeUpdater implements Runnable {
 		maxAltitudeCount = Math.round(width / (lineWidth + 2));
 		varioSpeed = new ArrayDeque<Float>(maxAltitudeCount);
 		varioSpeed.clear();
-		
+
 		while (!cancel) {
 			try {
 				try {

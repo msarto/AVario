@@ -46,7 +46,7 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 		SensorProducer.get().registerConsumer(THIS);
 	}
 
-	public void startTracking() {
+	public synchronized void startTracking() {
 		Logger.get().log("Start tracking " + tracking);
 		if (tracking == false) {
 			trackStream = null;
@@ -65,7 +65,7 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 		}
 	}
 
-	public void stopTracking() {
+	public synchronized void stopTracking() {
 		Logger.get().log("Stop tracking " + tracking);
 		if (tracking == true) {
 			tracking = false;
@@ -82,7 +82,8 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 	protected void startTrack() {
 		try {
 			String HEADER = "AXMP Sony Xperia Active - AVario 0.1\r\n";
-			HEADER += "HFDTE" + String.format("%1$td%1$tm%1$ty", new GregorianCalendar(TimeZone.getTimeZone("GMT"))) + "\r\n";
+			HEADER += "HFDTE" + String.format("%1$td%1$tm%1$ty", new GregorianCalendar(TimeZone.getTimeZone("GMT")))
+					+ "\r\n";
 			HEADER += "HFFXA50\r\n";
 			HEADER += "HOPLTPILOT: AVario\r\n";
 			HEADER += "HFFTYFR TYPE:AVario Android\r\n";
@@ -91,8 +92,8 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 			HEADER += "HOCCLCOMPETITION CLASS: Paraglider open\r\n";
 			HEADER += "I013638GSP\r\n";
 			trackFileName = String.format("%1$ty%1$tm%1$td%1$tH%1$tM%1$tS", new GregorianCalendar());
-			final File trackFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario" + File.separator
-					+ trackFileName + ".igc");
+			final File trackFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
+					+ File.separator + trackFileName + ".igc");
 			if (!trackFile.getParentFile().exists()) {
 				trackFile.getParentFile().mkdirs();
 			}
@@ -114,8 +115,8 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 					metaInfo.setEndAlt((int) Math.round(lastNotification.getAltitude()));
 				}
 				if (trackFileName != null) {
-					File trackMetaFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario" + File.separator
-							+ trackFileName + ".meta");
+					File trackMetaFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
+							+ File.separator + trackFileName + ".meta");
 					metaInfo.writeTo(trackMetaFile);
 				}
 
@@ -140,10 +141,10 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 
 				cal.setTimeInMillis(location.getTime());
 				if (lastNotification != null && (location.getTime() - lastNotification.getTime() < 1000)) {
-					// don't track to much
 					return;
 				}
-				int altitude = (int) (location.hasAltitude() ? location.getAltitude() : DataAccessObject.get().getLastAltitude());
+				int altitude = (int) (location.hasAltitude() ? location.getAltitude() : DataAccessObject.get()
+						.getLastAltitude());
 
 				strSeq = String.format(Locale.US, "B%02d%02d%02d%s%s%c%05d%05d%03d\r\n", cal.get(Calendar.HOUR_OF_DAY),
 						cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), degreeStr(location.getLatitude(), true),
@@ -191,7 +192,8 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 		int minwhole = (int) minutes;
 		int minfract = (int) ((minutes - minwhole) * 1000);
 
-		return String.format(Locale.US, (isLatitude ? "%02d" : "%03d") + "%02d%03d%c", (int) degIn, minwhole, minfract, dirLetter);
+		return String.format(Locale.US, (isLatitude ? "%02d" : "%03d") + "%02d%03d%c", (int) degIn, minwhole, minfract,
+				dirLetter);
 	}
 
 	@Override
