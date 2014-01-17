@@ -5,19 +5,15 @@ import org.avario.utils.filters.Filter;
 
 public class IIRFilter implements Filter {
 	private float previousValue = 0.0f;
-	private float filterFactor = -1;
 
 	public IIRFilter() {
 
 	}
 
-	public IIRFilter(float filterFactor) {
-		this.filterFactor = filterFactor;
-	}
-
 	@Override
 	public synchronized float[] doFilter(float... value) {
 		float[] ret = value;
+		float filterFactor = value.length > 1 ? value[1] : 0;
 		if (previousValue != 0.0f) {
 			float iirFilter = filterFactor > 0 ? filterFactor : 1f - (Preferences.baro_sensitivity * 2f) / 100f;
 			float prevValue = previousValue;

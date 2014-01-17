@@ -113,7 +113,7 @@
     <string name="sensbox_not_found">SensBox BT device was not found</string>
     <string name="sensbox_not_supported">SensBox BT is not supported by your device</string>
     <string name="sensbox_found">"SensBox BT found</string>
-
+    
     <string-array name="units_system_names">
         <item>Métrique</item>
         <item>Impérial</item>

@@ -34,8 +34,6 @@ public class ProgressiveFilter implements Filter {
 	@Override
 	public synchronized void reset() {
 		prev = null;
-		// TODO Auto-generated method stub
-
 	}
 
 }

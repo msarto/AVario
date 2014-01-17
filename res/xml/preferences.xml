@@ -103,6 +103,13 @@
             android:summary="@string/baro_filter_sensitivity_s"
             android:title="@string/baro_filter_sensitivity_t" />
 
+         <org.avario.ui.prefs.EditTextPreferenceWithValue
+            android:defaultValue="GPS"
+            android:key="ref_altitude"
+            android:singleLine="true"
+            android:summary="@string/reference_altitude_s"
+            android:title="@string/reference_altitude_t" />
+         
         <ListPreference
             android:capitalize="words"
             android:defaultValue="1"

@@ -1,6 +1,7 @@
 package org.avario.engine.prefs;
 
 import org.avario.AVarioActivity;
+import org.avario.engine.datastore.DataAccessObject;
 import org.avario.ui.prefs.PreferencesMenu;
 import org.avario.utils.Logger;
 
@@ -9,6 +10,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.hardware.SensorManager;
+import android.location.Location;
 import android.media.AudioManager;
 import android.os.Build;
 import android.preference.Preference;
@@ -38,6 +41,8 @@ public class Preferences {
 	
 	public static volatile int lift_hz = 600;
 	public static volatile int sink_hz = 350;
+	
+	public static volatile int ref_altitude = 0;
 
 	private static Context context;
 
@@ -135,6 +140,7 @@ public class Preferences {
 		max_last_thermal_distance = getInt("max_last_thermal_distance", max_last_thermal_distance);
 		min_thermal_interval = 1000 * getFloat("min_thermal_interval", min_thermal_interval / 1000f);
 		min_thermal_gain = getFloat("min_thermal_gain", min_thermal_gain);
+		ref_altitude =  getInt("ref_altitude", 0);
 	}
 
 	private static float getFloat(String name, float defaultValue) {
