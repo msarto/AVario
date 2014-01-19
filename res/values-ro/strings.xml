@@ -110,9 +110,7 @@
     <string name="initalizing_sensors">Initializing sensors</string>
     <string name="sensbox_not_found">SensBox BT device was not found</string>
     <string name="sensbox_not_supported">SensBox BT is not supported by your device</string>
-    <string name="sensbox_found">"SensBox BT found</string>
-    <string name="qnh_s">QNH</string>
-    <string name="qnh_t">Reference presure</string>
+    <string name="sensbox_found">SensBox BT found</string>
     <string name="qnh_s">QNH</string>
     <string name="qnh_t">Reference presure</string>
     <string name="ref_alt_title">Current altitude</string>
