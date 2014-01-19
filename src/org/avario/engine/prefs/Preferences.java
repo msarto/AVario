@@ -1,7 +1,6 @@
 package org.avario.engine.prefs;
 
 import org.avario.AVarioActivity;
-import org.avario.engine.datastore.DataAccessObject;
 import org.avario.ui.prefs.PreferencesMenu;
 import org.avario.utils.Logger;
 
@@ -11,7 +10,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.hardware.SensorManager;
-import android.location.Location;
 import android.media.AudioManager;
 import android.os.Build;
 import android.preference.Preference;
@@ -38,11 +36,11 @@ public class Preferences {
 	public static volatile float min_thermal_interval = 3000;
 	public static volatile float min_thermal_gain = 3;
 	public static volatile int units_system = 1; // 1-metric; 2-imperial
-	
+
 	public static volatile int lift_hz = 600;
 	public static volatile int sink_hz = 350;
-	
-	public static volatile int ref_altitude = 0;
+
+	public static volatile float ref_qnh = SensorManager.PRESSURE_STANDARD_ATMOSPHERE;
 
 	private static Context context;
 
@@ -120,7 +118,7 @@ public class Preferences {
 		use_speach = getBool("use_speach", use_speach);
 		auto_track = getBool("auto_track", auto_track);
 		use_sensbox = getBool("use_sensbox", use_sensbox);
-		
+
 		beep_interval = Math.round(1000f * getFloat("beep_interval", 0.5f));
 		sink_start = -1f * getFloat("sink_start", 1.5f);
 		lift_start = getFloat("lift_start", lift_start);
@@ -140,7 +138,7 @@ public class Preferences {
 		max_last_thermal_distance = getInt("max_last_thermal_distance", max_last_thermal_distance);
 		min_thermal_interval = 1000 * getFloat("min_thermal_interval", min_thermal_interval / 1000f);
 		min_thermal_gain = getFloat("min_thermal_gain", min_thermal_gain);
-		ref_altitude =  getInt("ref_altitude", 0);
+		ref_qnh = getFloat("ref_qnh", ref_qnh);
 	}
 
 	private static float getFloat(String name, float defaultValue) {
@@ -192,6 +190,16 @@ public class Preferences {
 			appVersionPreference.setSummary(version);
 		} catch (NameNotFoundException e) {
 			Logger.get().log("Fail getting version ", e);
+		}
+	}
+
+	public static void updateQNH(PreferencesMenu preferencesMenu) {
+		try {
+			Preference appVersionPreference = preferencesMenu.findPreference("ref_qnh");
+			appVersionPreference.setSummary(ref_qnh + "hPa");
+			appVersionPreference.setDefaultValue(ref_qnh);
+		} catch (Exception e) {
+			Logger.get().log("Fail update QNH ", e);
 		}
 	}
 }

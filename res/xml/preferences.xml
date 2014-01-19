@@ -103,13 +103,14 @@
             android:summary="@string/baro_filter_sensitivity_s"
             android:title="@string/baro_filter_sensitivity_t" />
 
-         <org.avario.ui.prefs.EditTextPreferenceWithValue
-            android:defaultValue="GPS"
-            android:key="ref_altitude"
+        <org.avario.ui.prefs.EditQNHValue
+            android:defaultValue="1013.25"
+            android:inputType="numberDecimal"
+            android:key="ref_qnh"
             android:singleLine="true"
-            android:summary="@string/reference_altitude_s"
-            android:title="@string/reference_altitude_t" />
-         
+            android:summary="@string/qnh_t"
+            android:title="@string/qnh_s" />
+
         <ListPreference
             android:capitalize="words"
             android:defaultValue="1"
@@ -132,7 +133,6 @@
             android:key="auto_track"
             android:summary="@string/auto_track_s"
             android:title="@string/auto_track_t" />
-        
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="use_sensbox"

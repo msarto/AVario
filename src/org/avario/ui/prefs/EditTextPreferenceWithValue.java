@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 public class EditTextPreferenceWithValue extends EditTextPreference {
 
-	private TextView mValueText;
+	protected TextView mValueText;
 
 	public EditTextPreferenceWithValue(Context context, AttributeSet attrs) {
 		super(context, attrs);

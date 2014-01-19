@@ -105,14 +105,16 @@
     <string name="no">Non</string>
     <string name="recordTrack_q">Débuter l\'enregistrement?</string>
     <string name="altitude_from_gps">Altitude de la GPS: %1$s</string>
-    <string name="reference_altitude_s">Manual set reference altitude</string>
-    <string name="reference_altitude_t">Reference altitude</string>
     <string name="use_sensbox_s">Utiliser le BT Flytec Sensbox</string>
     <string name="use_sensbox_t">Utiliser Sensbox</string>
     <string name="initalizing_sensors">Initializing sensors</string>
     <string name="sensbox_not_found">SensBox BT device was not found</string>
     <string name="sensbox_not_supported">SensBox BT is not supported by your device</string>
     <string name="sensbox_found">"SensBox BT found</string>
+    <string name="qnh_s">QNH</string>
+    <string name="qnh_t">Reference presure</string>
+    <string name="ref_alt_title">Current altitude</string>
+    <string name="ref_alt_description">Seting current altitude will make automatic computaion of QNH value. Please insert current altitude in meters.</string>
     
     <string-array name="units_system_names">
         <item>Métrique</item>

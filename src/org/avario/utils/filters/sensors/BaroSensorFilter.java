@@ -20,10 +20,9 @@ import android.widget.Toast;
 public class BaroSensorFilter implements LocationConsumer {
 	private Filter baroFilter = new Kalman2Filter(Preferences.baro_sensitivity); // new
 																					// MedianFixFilter(Preferences.baro_sensitivity);
-	private volatile int refAltitude = 0;
-	private volatile float referrencePresure = SensorManager.PRESSURE_STANDARD_ATMOSPHERE;
+	private volatile float referrencePresure = Preferences.ref_qnh;
 
-	private volatile float lastPresureNotified = -1f;
+	public static volatile float lastPresureNotified = -1f;
 	private volatile boolean gpsAltitude = false;
 
 	public BaroSensorFilter() {
@@ -34,16 +33,14 @@ public class BaroSensorFilter implements LocationConsumer {
 	// filter the pressure and transform it to altitude
 	public synchronized float toAltitude(float currentPresure) {
 		lastPresureNotified = baroFilter.doFilter(currentPresure)[0];
-		checkQNF();
+		if (referrencePresure != Preferences.ref_qnh) {
+			baroFilter.reset();
+			// altitudeFilter.reset();
+			DataAccessObject.get().resetVSpeed();
+			referrencePresure = Preferences.ref_qnh;
+		}
 		float sensorAlt = SensorManager.getAltitude(referrencePresure, lastPresureNotified);
 		return sensorAlt;
-	}
-
-	private void checkQNF() {
-		if (refAltitude != Preferences.ref_altitude) {
-			adjustAltitude(Preferences.ref_altitude);
-			refAltitude = Preferences.ref_altitude;
-		}
 	}
 
 	@Override
@@ -71,7 +68,7 @@ public class BaroSensorFilter implements LocationConsumer {
 		}
 	}
 
-	private synchronized void adjustAltitude(double h) {
+	protected synchronized void adjustAltitude(double h) {
 		float ref = SensorManager.PRESSURE_STANDARD_ATMOSPHERE + 100;
 		// double h = location.getAltitude();
 		// adjust the reference pressure until the pressure sensor
