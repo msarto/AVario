@@ -30,9 +30,9 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 	protected TextView recView = null;
 	// protected TextView clockView = null;
 
-	protected Location lastLocationTracked;
-	protected float metersTracked = 0;
-	protected TextView flightDistance = null;
+	// protected Location lastLocationTracked;
+	// protected float metersTracked = 0;
+	protected TextView glideRatio = null;
 
 	protected NumericViewUpdater(Activity context) {
 		this.context = context;
@@ -51,7 +51,7 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 		lastGainText = (TextView) context.findViewById(R.id.glastText);
 		timeSpanView = (TextView) context.findViewById(R.id.ftimeValue);
 		// clockView = (TextView) context.findViewById(R.id.clock);
-		flightDistance = (TextView) context.findViewById(R.id.kmValue);
+		glideRatio = (TextView) context.findViewById(R.id.ratio);
 		lastGainText.setText(String.format(context.getString(R.string.gainedlastmin),
 				String.valueOf(Preferences.location_history)));
 	}
@@ -78,12 +78,20 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 						.getHistoryAltimeterGain()));
 				lastGainView.setText(context.getApplicationContext().getString(R.string.lastgainvalue,
 						StringFormatter.noDecimals(lastGain)));
-				if (lastLocationTracked != null) {
-					metersTracked += location.distanceTo(lastLocationTracked);
-					flightDistance.setText(StringFormatter.oneDecimal(UnitsConverter
-							.toPreferredLong(metersTracked / 1000F)) + UnitsConverter.preferredDistLong());
+
+				float vSpeed = DataAccessObject.get().getLastVSpeed();
+				if (vSpeed != 0f) {
+					// metersTracked +=
+					// location.distanceTo(lastLocationTracked);
+					float ratio = location.getSpeed() / vSpeed;
+					ratio = ratio > 99 ? 99 :ratio; 
+					ratio = ratio < -99 ? -99 :ratio;					
+					glideRatio.setText(StringFormatter.noDecimals(location.getSpeed() / vSpeed) + " : 1");
+					// flightDistance.setText(StringFormatter.oneDecimal(UnitsConverter
+					// .toPreferredLong(metersTracked / 1000F)) +
+					// UnitsConverter.preferredDistLong());
 				}
-				lastLocationTracked = location;
+				// lastLocationTracked = location;
 			}
 		});
 	}

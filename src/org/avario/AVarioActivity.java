@@ -5,8 +5,6 @@ import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.poi.PoiManager;
 import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sounds.BeepBeeper;
-import org.avario.engine.sounds.TonePlayer;
-import org.avario.engine.sounds.TonePlayer.ToneType;
 import org.avario.engine.tracks.Tracker;
 import org.avario.ui.NavigatorUpdater;
 import org.avario.ui.NumericViewUpdater;
@@ -92,17 +90,6 @@ public class AVarioActivity extends Activity {
 			Logger.get().log("Fail initializing ", ex);
 		}
 		addNotification();
-	}
-
-	public static void startAutoTrack() {
-		TonePlayer startTrack = new TonePlayer();
-		startTrack.play(400f, ToneType.HIGH);
-		CONTEXT.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				Tracker.get().startTracking();
-			}
-		});
 	}
 
 	private void addNotification() {

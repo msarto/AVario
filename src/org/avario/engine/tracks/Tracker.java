@@ -7,12 +7,15 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.avario.AVarioActivity;
 import org.avario.R;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.consumerdef.BarometerConsumer;
 import org.avario.engine.consumerdef.LocationConsumer;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
+import org.avario.engine.sounds.TonePlayer;
+import org.avario.engine.sounds.TonePlayer.ToneType;
 import org.avario.utils.Logger;
 
 import android.app.Activity;
@@ -29,6 +32,7 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 	private Location lastNotification;
 	private TextView recView;
 	private boolean tracking = false;
+	private boolean needTracking = false;
 	private TrackInfo metaInfo = new TrackInfo();
 	private String trackFileName;
 	private Animation recAnimation = new AlphaAnimation(0.0f, 1.0f);
@@ -46,9 +50,15 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 		SensorProducer.get().registerConsumer(THIS);
 	}
 
-	public synchronized void startTracking() {
-		Logger.get().log("Start tracking " + tracking);
-		if (tracking == false) {
+	public synchronized boolean startTracking() {
+		float speed = DataAccessObject.get().getLastlocation().getSpeed();
+		if (tracking == false && speed > 3) {
+			Logger.get().log("Start tracking " + tracking);
+			TonePlayer startTrack = new TonePlayer();
+			for (int i = 0; i < 3; i++) {
+				startTrack.play(400f, ToneType.HIGH);
+				startTrack.stop();
+			}
 			trackStream = null;
 			cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
 			lastNotification = null;
@@ -56,13 +66,17 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 			trackFileName = null;
 			startTrack();
 			tracking = true;
-			recView.setText(R.string.rec);
-			recAnimation.setDuration(500);
-			recAnimation.setStartOffset(20);
-			recAnimation.setRepeatMode(Animation.REVERSE);
-			recAnimation.setRepeatCount(Animation.INFINITE);
-			recView.startAnimation(recAnimation);
 		}
+
+		recView.setText(R.string.rec);
+		recAnimation.setDuration(500);
+		recAnimation.setStartOffset(20);
+		recAnimation.setRepeatMode(Animation.REVERSE);
+		recAnimation.setRepeatCount(Animation.INFINITE);
+		recView.startAnimation(recAnimation);
+
+		needTracking = !tracking;
+		return tracking;
 	}
 
 	public synchronized void stopTracking() {
@@ -129,16 +143,21 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 	}
 
 	@Override
-	public synchronized void notifyWithLocation(Location location) {
+	public synchronized void notifyWithLocation(final Location location) {
+		// Start the track if selected
+		if (needTracking || (Preferences.auto_track && !isTracking())) {
+			AVarioActivity.CONTEXT.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					startTracking();
+				}
+			});
+			return;
+		}
+
 		if (trackStream != null && tracking) {
-			float speed = location.getSpeed();
-			if (speed < 3) {
-				// Skip records bellow 3mps
-				return;
-			}
 			String strSeq = null;
 			try {
-
 				cal.setTimeInMillis(location.getTime());
 				if (lastNotification != null && (location.getTime() - lastNotification.getTime() < 1000)) {
 					return;

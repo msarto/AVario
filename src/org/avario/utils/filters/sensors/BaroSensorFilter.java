@@ -49,11 +49,6 @@ public class BaroSensorFilter implements LocationConsumer {
 			Logger.get().log("GPS Altitude " + location.getAltitude());
 			gpsAltitude = true;
 			adjustAltitude(location.getAltitude());
-
-			// Start the track if selected
-			if (Preferences.auto_track && !Tracker.get().isTracking()) {
-				AVarioActivity.startAutoTrack();
-			}
 			AVarioActivity.CONTEXT.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
