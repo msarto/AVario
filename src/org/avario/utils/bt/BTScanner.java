@@ -33,6 +33,10 @@ public class BTScanner {
 		return THIS;
 	}
 
+	public void setLeBT(boolean leBt) {
+		this.leBt = leBt;
+	}
+
 	public boolean scan() {
 		try {
 			leBt = AVarioActivity.CONTEXT.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
@@ -42,19 +46,22 @@ public class BTScanner {
 			}
 			getAddapter();
 			if (!mBluetoothAdapter.isEnabled()) {
-				AVarioActivity.CONTEXT.startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
-						INTENT_ID);
+
+				AVarioActivity.CONTEXT.startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE) {
+				}, INTENT_ID);
+				leBt = false;
+				this.wait(10000);
+
 			} else {
 				proceedWithBTDevice();
 			}
 		} catch (Exception ex) {
 			Toast.makeText(AVarioActivity.CONTEXT, R.string.sensbox_not_supported, Toast.LENGTH_SHORT).show();
 		}
-		return true;
+		return leBt;
 	}
 
 	protected void proceedWithBTDevice() {
-
 		if (leBt) {
 			LEBTAdapter.get().scanLeDevice(mBluetoothAdapter, true);
 		} else {
