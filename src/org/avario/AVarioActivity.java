@@ -46,21 +46,9 @@ public class AVarioActivity extends Activity {
 		AVarioActivity.CONTEXT = this;
 	}
 
-	/** Called with the activity is first created. */
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		if (viewCreated) {
-			return;
-		}
-		viewCreated = true;
-		AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-		startVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
-
-		Preferences.update(this);
-		super.onCreate(savedInstanceState);
-
-		Logger.init();
+	protected void onStart() {
+		super.onStart();
 		try {
 			DataAccessObject.init();
 			setContentView(R.layout.vario);
@@ -90,6 +78,21 @@ public class AVarioActivity extends Activity {
 			Logger.get().log("Fail initializing ", ex);
 		}
 		addNotification();
+	}
+
+	/** Called with the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if (viewCreated) {
+			return;
+		}
+		viewCreated = true;
+		AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		startVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
+
+		Preferences.update(this);
+		Logger.init();
 	}
 
 	private void addNotification() {

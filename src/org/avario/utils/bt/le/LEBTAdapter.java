@@ -3,6 +3,7 @@ package org.avario.utils.bt.le;
 import org.avario.AVarioActivity;
 import org.avario.R;
 import org.avario.utils.Logger;
+import org.avario.utils.bt.BTScanner;
 
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
@@ -72,6 +73,7 @@ public class LEBTAdapter {
 					startLEDeviceandle(leDevice);
 				}
 			});
+			
 		}
 	}
 
@@ -93,6 +95,7 @@ public class LEBTAdapter {
 				gatt = leDevice.connectGatt(AVarioActivity.CONTEXT, true, handler);
 				try {
 					handler.discover(gatt);
+					BTScanner.get().btDone();
 				} catch (InterruptedException e) {
 					Logger.get().log("Unsupported LE BT at this API");
 				}

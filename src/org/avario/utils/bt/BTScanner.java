@@ -33,7 +33,11 @@ public class BTScanner {
 		return THIS;
 	}
 
-	public boolean scan() {
+	public boolean getLeBt(){
+		return leBt;
+	}
+
+	public synchronized boolean scan() {
 		try {
 			leBt = AVarioActivity.CONTEXT.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
 			if (!leBt) {
@@ -47,10 +51,11 @@ public class BTScanner {
 			} else {
 				proceedWithBTDevice();
 			}
+			this.wait(5000);
 		} catch (Exception ex) {
 			Toast.makeText(AVarioActivity.CONTEXT, R.string.sensbox_not_supported, Toast.LENGTH_SHORT).show();
 		}
-		return true;
+		return leBt;
 	}
 
 	protected void proceedWithBTDevice() {
@@ -69,9 +74,15 @@ public class BTScanner {
 						BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 						Logger.get().log("Found: " + device.getName());
 					}
+					BTScanner.this.btDone();
 				}
 			}, new IntentFilter(BluetoothDevice.ACTION_FOUND));
 		}
+	}
+
+	public synchronized void btDone() {
+		this.notify();
+		
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
