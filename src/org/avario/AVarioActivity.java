@@ -36,7 +36,7 @@ import android.widget.Toast;
  * 
  */
 public class AVarioActivity extends Activity {
-	public static AVarioActivity CONTEXT;
+	public static Activity CONTEXT;
 	private PowerManager.WakeLock wakeLock;
 	private int startVolume = Integer.MIN_VALUE;
 	private boolean viewCreated = false;
@@ -65,24 +65,27 @@ public class AVarioActivity extends Activity {
 			DataAccessObject.init();
 			setContentView(R.layout.vario);
 			if (Preferences.use_sensbox) {
-				boolean btOn = BTScanner.get().scan();
-				SensorProducer.init(AVarioActivity.CONTEXT, !btOn);
+				boolean canUseBT = BTScanner.get().scan();
+				// Try using internal sensors if the BT are not available;
+				SensorProducer.init(this, !canUseBT);
 			} else {
-				SensorProducer.init(AVarioActivity.CONTEXT, true);
+				SensorProducer.init(this, true);
 			}
+			// Draw the UI from the vario.xml layout
 
 			BeepBeeper.init(this);
 			NavigatorUpdater.init(this);
 			Tracker.init(this);
 			PoiManager.init();
 			Speaker.init(this);
-			NumericViewUpdater.init(this);
-			VarioMeterScaleUpdater.init(this);
+			// Keep the screen awake
 
 			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "AVario lock");
 			wakeLock.acquire();
 
+			NumericViewUpdater.init(this);
+			VarioMeterScaleUpdater.init(this);
 		} catch (Exception ex) {
 			Logger.get().log("Fail initializing ", ex);
 		}
@@ -217,10 +220,8 @@ public class AVarioActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == BTScanner.INTENT_ID) {
-			BTScanner.get().setLeBT(true);
 			BTScanner.get().onActivityResult(requestCode, resultCode, data);
 		}
-		BTScanner.get().notify();
 	}
 
 }
