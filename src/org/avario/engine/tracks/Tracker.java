@@ -50,35 +50,33 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 		SensorProducer.get().registerConsumer(THIS);
 	}
 
-	public boolean startTracking() {
-		synchronized (recAnimation) {
-			float speed = DataAccessObject.get().getLastlocation().getSpeed();
-			if (tracking == false && speed > 3) {
-				Logger.get().log("Start tracking " + tracking);
-				TonePlayer startTrack = new TonePlayer();
-				for (int i = 0; i < 3; i++) {
-					startTrack.play(400f, ToneType.HIGH);
-					startTrack.stop();
-				}
-				trackStream = null;
-				cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-				lastNotification = null;
-				metaInfo = new TrackInfo();
-				trackFileName = null;
-				startTrack();
-				tracking = true;
+	public synchronized boolean startTracking() {
+		float speed = DataAccessObject.get().getLastlocation().getSpeed();
+		if (tracking == false && speed > 3) {
+			Logger.get().log("Start tracking " + tracking);
+			TonePlayer startTrack = new TonePlayer();
+			for (int i = 0; i < 3; i++) {
+				startTrack.play(400f, ToneType.HIGH);
+				startTrack.stop();
 			}
-
-			recView.setText(R.string.rec);
-			recAnimation.setDuration(500);
-			recAnimation.setStartOffset(20);
-			recAnimation.setRepeatMode(Animation.REVERSE);
-			recAnimation.setRepeatCount(Animation.INFINITE);
-			recView.startAnimation(recAnimation);
-
-			needTracking = !tracking;
-			return tracking;
+			trackStream = null;
+			cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+			lastNotification = null;
+			metaInfo = new TrackInfo();
+			trackFileName = null;
+			startTrack();
+			tracking = true;
 		}
+
+		recView.setText(R.string.rec);
+		recAnimation.setDuration(500);
+		recAnimation.setStartOffset(20);
+		recAnimation.setRepeatMode(Animation.REVERSE);
+		recAnimation.setRepeatCount(Animation.INFINITE);
+		recView.startAnimation(recAnimation);
+
+		needTracking = !tracking;
+		return tracking;
 	}
 
 	public synchronized void stopTracking() {
