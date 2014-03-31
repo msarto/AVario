@@ -13,6 +13,7 @@ public class DataAccessObject {
 
 	protected volatile float bearing = 0f;
 	protected volatile float lastAltitude = -1;
+	protected volatile float refAltitude = -1;
 
 	private volatile float windDirectionBearing = -1f;
 	private volatile float temperature = 0f;
@@ -74,6 +75,7 @@ public class DataAccessObject {
 			lastlocation.setAltitude(lastAltitude);
 		}
 		makeWind(lastlocation);
+		makeQFE(lastlocation);
 	}
 
 	public float getWindDirectionBearing() {
@@ -124,6 +126,20 @@ public class DataAccessObject {
 				Logger.get().log("wind direction bearing at" + windDirectionBearing + " on speed " + maxSpeed);
 			}
 		}
+	}
+
+	protected void makeQFE(Location location) {
+		if (refAltitude < 0 && location != null && location.hasSpeed()) {
+			float speed = location.getSpeed();
+			if (speed > 4) {
+				refAltitude = getLastAltitude();
+				Logger.get().log("Take of altitude " + refAltitude);
+			}
+		}
+	}
+
+	public float getQFE() {
+		return refAltitude < 0 ? 0f : (getLastAltitude() - refAltitude);
 	}
 
 	public double getHistoryAltimeterGain() {

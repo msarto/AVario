@@ -24,8 +24,8 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 	protected TextView altitudeMeasure = null;
 	protected TextView groundSpeedView = null;
 	protected TextView groundSpeedMeasure = null;
-	protected TextView lastGainView = null;
-	protected TextView lastGainText = null;
+	protected TextView qfeView = null;
+	protected TextView hGainView = null;
 	protected TextView timeSpanView = null;
 	protected TextView recView = null;
 	// protected TextView clockView = null;
@@ -46,14 +46,15 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 		groundSpeedMeasure.setText(UnitsConverter.preferredDistLong() + "/h");
 		recView = (TextView) context.findViewById(R.id.rec_status);
 		recView.setText(Preferences.units_system == 1 ? R.string.ms : R.string.fs);
-		lastGainView = (TextView) context.findViewById(R.id.glastValue);
-		lastGainView.setTypeface(font);
-		lastGainText = (TextView) context.findViewById(R.id.glastText);
+		hGainView = (TextView) context.findViewById(R.id.hgain);
+		hGainView.setTypeface(font);
+		qfeView = (TextView) context.findViewById(R.id.qfe);
+		qfeView.setTypeface(font);
 		timeSpanView = (TextView) context.findViewById(R.id.ftimeValue);
 		// clockView = (TextView) context.findViewById(R.id.clock);
 		glideRatio = (TextView) context.findViewById(R.id.ratio);
-		lastGainText.setText(String.format(context.getString(R.string.gainedlastmin),
-				String.valueOf(Preferences.location_history)));
+		// lastGainText.setText(String.format(context.getString(R.string.gainedlastmin),
+		// String.valueOf(Preferences.location_history)));
 	}
 
 	public static void init(Activity context) {
@@ -72,11 +73,9 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 							.msTokmh(location.getSpeed()))));
 					groundSpeedMeasure.setText(UnitsConverter.preferredDistLong() + "/h");
 				}
-				lastGainText.setText(String.format(context.getString(R.string.gainedlastmin),
-						String.valueOf(Preferences.location_history)));
 				double lastGain = UnitsConverter.toPreferredShort(Math.round(DataAccessObject.get()
 						.getHistoryAltimeterGain()));
-				lastGainView.setText(context.getApplicationContext().getString(R.string.lastgainvalue,
+				hGainView.setText(context.getApplicationContext().getString(R.string.lastgainvalue,
 						StringFormatter.noDecimals(lastGain)));
 
 				float vSpeed = DataAccessObject.get().getLastVSpeed();
@@ -125,12 +124,12 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 			altitudeMeasure.setText(context.getApplicationContext().getString(
 					Preferences.units_system == 2 ? R.string.feet : R.string.meters));
 
-			lastGainText.setText(String.format(context.getString(R.string.gainedlastmin),
-					String.valueOf(Preferences.location_history)));
 			double lastGain = UnitsConverter.toPreferredShort(Math.round(DataAccessObject.get()
 					.getHistoryAltimeterGain()));
-			lastGainView.setText(context.getApplicationContext().getString(R.string.lastgainvalue,
+			hGainView.setText(context.getApplicationContext().getString(R.string.lastgainvalue,
 					StringFormatter.noDecimals(lastGain)));
+			qfeView.setText(StringFormatter.noDecimals(DataAccessObject.get().getQFE()));
+
 		} catch (Exception e) {
 			Logger.get().log("Fail to refresh UI progress", e);
 		}

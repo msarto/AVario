@@ -150,11 +150,10 @@ public class AVarioActivity extends Activity {
 			return true;
 		case R.id.exit:
 			// A bit brutal ....
-			onDestroy();
 			System.runFinalizersOnExit(true);
+			onDestroy();
 			android.os.Process.killProcess(android.os.Process.myPid());
-			//onDestroy();
-			//System.exit(0);
+			System.exit(0);
 		}
 		return super.onOptionsItemSelected(item);
 	}

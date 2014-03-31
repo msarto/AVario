@@ -51,7 +51,8 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 	}
 
 	public synchronized boolean startTracking() {
-		float speed = DataAccessObject.get().getLastlocation().getSpeed();
+		float speed = DataAccessObject.get().getLastlocation() == null ? 0f : DataAccessObject.get().getLastlocation()
+				.getSpeed();
 		if (tracking == false && speed > 3) {
 			Logger.get().log("Start tracking " + tracking);
 			TonePlayer startTrack = new TonePlayer();

@@ -463,7 +463,7 @@
 
                 <!-- 2nd info line -->
 
-                <LinearLayout
+<LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:baselineAligned="false"
@@ -473,27 +473,45 @@
                         android:layout_width="0dp"
                         android:layout_height="35sp"
                         android:layout_margin="2dp"
-                        android:layout_weight="1"
+                        android:layout_weight=".50"
                         android:background="@drawable/round_border"
                         android:orientation="horizontal" >
 
                         <TextView
-                            android:id="@+id/glastText"
-                            android:layout_width="160sp"
+                            android:id="@+id/qfeText"
+                            android:layout_width="35dp"
                             android:layout_height="match_parent"
-                            android:layout_margin="5dp"
                             android:gravity="left|center_vertical"
-                            android:text="@string/gainedlastmin"
-                            android:textSize="15sp" >
+                            android:layout_margin="2dp"           
+                            android:text="QFE: "
+                            android:textSize="14sp" >
                         </TextView>
 
-                        <TextView
-                            android:id="@+id/glastValue"
+<TextView
+                            android:id="@+id/qfe"
                             android:layout_width="fill_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center|center_vertical"
+                            android:gravity="center"
                             android:text="@string/nan"
-                            android:textSize="26sp" >
+                            android:textSize="20sp" >
+                        </TextView>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="35sp"
+                        android:layout_margin="2dp"
+                        android:layout_weight="0.50"
+                        android:background="@drawable/round_border"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/hgain"
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="@string/span"
+                            android:textSize="20sp" >
                         </TextView>
                     </LinearLayout>
                 </LinearLayout>
