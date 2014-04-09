@@ -23,7 +23,7 @@ public class Preferences {
 	public static volatile int beep_interval = 500;
 	public static volatile float sink_start = -1.5f;
 	public static volatile float lift_start = 0.2f;
-	public static volatile int tone_variation = 100;
+	public static volatile int tone_variation = 50;
 	public static volatile int prenotify_interval = 3000;
 
 	public static volatile int location_history = 5;

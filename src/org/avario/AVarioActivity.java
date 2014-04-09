@@ -46,8 +46,7 @@ public class AVarioActivity extends Activity {
 		AVarioActivity.CONTEXT = this;
 	}
 
-	@Override
-	protected void onStart() {
+	protected void initializeSensors() {
 		super.onStart();
 		try {
 			DataAccessObject.init();
@@ -66,18 +65,12 @@ public class AVarioActivity extends Activity {
 			Tracker.init(this);
 			PoiManager.init();
 			Speaker.init(this);
-			// Keep the screen awake
-
-			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-			wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "AVario lock");
-			wakeLock.acquire();
-
 			NumericViewUpdater.init(this);
 			VarioMeterScaleUpdater.init(this);
+			addNotification();
 		} catch (Exception ex) {
 			Logger.get().log("Fail initializing ", ex);
 		}
-		addNotification();
 	}
 
 	/** Called with the activity is first created. */
@@ -87,12 +80,19 @@ public class AVarioActivity extends Activity {
 		if (viewCreated) {
 			return;
 		}
+		// Keep the screen awake
+		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "AVario lock");
+		wakeLock.acquire();
+
 		viewCreated = true;
 		AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		startVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
 
 		Preferences.update(this);
 		Logger.init();
+		initializeSensors();
+
 	}
 
 	private void addNotification() {

@@ -62,7 +62,7 @@
                 android:summary="@string/sink_hz_s"
                 android:title="@string/sink_hz_t" />
             <org.avario.ui.prefs.EditTextPreferenceWithValue
-                android:defaultValue="80"
+                android:defaultValue="50"
                 android:inputType="numberDecimal"
                 android:key="tone_variation"
                 android:singleLine="true"
