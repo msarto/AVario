@@ -15,10 +15,6 @@ public class TonePlayer {
 	private final int highTone = 32767;
 	private final int lowTone = 65533;
 
-	public TonePlayer() {
-		audioTrack.setStereoVolume(AudioTrack.getMaxVolume(), AudioTrack.getMaxVolume());
-	}
-
 	public static enum ToneType {
 		HIGH, LOW
 	};
@@ -27,9 +23,10 @@ public class TonePlayer {
 		try {
 			if (audioTrack != null) {
 				if (audioTrack.getState() == AudioTrack.PLAYSTATE_PLAYING) {
-					audioTrack.stop();
+					audioTrack.pause();
+					audioTrack.flush();
+					audioTrack.release();
 				}
-				audioTrack.release();
 			}
 		} catch (Exception ex) {
 			Logger.get().log("Fail closing track ", ex);
@@ -53,12 +50,15 @@ public class TonePlayer {
 				switch (audioTrack.getPlayState()) {
 				case AudioTrack.PLAYSTATE_PAUSED:
 				case AudioTrack.PLAYSTATE_PLAYING:
-					audioTrack.stop();
+					audioTrack.pause();
+					audioTrack.flush();
+					audioTrack.release();
 					break;
 				}
 			}
 
-			audioTrack.reloadStaticData();
+			audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate, AudioFormat.CHANNEL_OUT_DEFAULT,
+					AudioFormat.ENCODING_PCM_16BIT, numSamples * 2, AudioTrack.MODE_STATIC);
 			audioTrack.write(toneSound, 0, toneSound.length);
 			audioTrack.play();
 		} catch (Exception ex) {
@@ -72,7 +72,9 @@ public class TonePlayer {
 				switch (audioTrack.getPlayState()) {
 				case AudioTrack.PLAYSTATE_PAUSED:
 				case AudioTrack.PLAYSTATE_PLAYING:
-					audioTrack.stop();
+					audioTrack.pause();
+					audioTrack.flush();
+					audioTrack.release();
 					break;
 				}
 			}

@@ -38,7 +38,7 @@ public class Preferences {
 	public static volatile int units_system = 1; // 1-metric; 2-imperial
 
 	public static volatile int lift_hz = 600;
-	public static volatile int sink_hz = 350;
+	public static volatile int sink_hz = 400;
 
 	public static volatile float ref_qnh = SensorManager.PRESSURE_STANDARD_ATMOSPHERE;
 

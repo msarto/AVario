@@ -128,8 +128,7 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 					.getHistoryAltimeterGain()));
 			hGainView.setText(context.getApplicationContext().getString(R.string.lastgainvalue,
 					StringFormatter.noDecimals(lastGain)));
-			qfeView.setText(StringFormatter.noDecimals(DataAccessObject.get().getQFE()));
-
+			qfeView.setText(StringFormatter.noDecimals(UnitsConverter.toPreferredShort(DataAccessObject.get().getQFE())));
 		} catch (Exception e) {
 			Logger.get().log("Fail to refresh UI progress", e);
 		}

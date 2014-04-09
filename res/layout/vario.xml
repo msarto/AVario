@@ -493,7 +493,7 @@
                             android:layout_height="match_parent"
                             android:gravity="center"
                             android:text="@string/nan"
-                            android:textSize="20sp" >
+                            android:textSize="26sp" >
                         </TextView>
                     </LinearLayout>
 
@@ -511,7 +511,7 @@
                             android:layout_height="match_parent"
                             android:gravity="center"
                             android:text="@string/span"
-                            android:textSize="20sp" >
+                            android:textSize="26sp" >
                         </TextView>
                     </LinearLayout>
                 </LinearLayout>
