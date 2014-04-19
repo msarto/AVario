@@ -73,7 +73,7 @@
     <string name="prenotify_interval_s">Discrete sound around thermal interval</string>
     <string name="sink_start_s">Sink speed to start vario beep</string>
     <string name="sink_start_t">Sink start</string>
-    <string name="lift_start_s">List speed to start vario beep</string>
+    <string name="lift_start_s">Lift speed to start vario beep</string>
     <string name="lift_start_t">Lift start</string>
     <string name="lift_hz_s">Lift tone in Hz</string>
     <string name="lift_hz_t">Lift tone</string>
@@ -105,16 +105,16 @@
     <string name="no">No</string>
     <string name="recordTrack_q">Start recording this track?</string>
     <string name="altitude_from_gps">Altitude set from GPS: %1$s</string>
-    <string name="use_sensbox_s">Use the BT Flytec Sensbox</string>
-    <string name="use_sensbox_t">Use Sensbox</string>
+    <string name="use_sensbox_s">Use the BT Flytec SensBox</string>
+    <string name="use_sensbox_t">Use SensBox</string>
     <string name="initalizing_sensors">Initializing sensors</string>
     <string name="sensbox_not_found">SensBox BT device was not found</string>
     <string name="sensbox_not_supported">SensBox BT is not supported by your device</string>
     <string name="sensbox_found">SensBox BT found</string>
     <string name="qnh_s">QNH</string>
-    <string name="qnh_t">Reference presure</string>
+    <string name="qnh_t">Reference pressure</string>
     <string name="ref_alt_title">Current altitude</string>
-    <string name="ref_alt_description">Seting current altitude will make automatic computaion of QNH value. Please insert current altitude in meters.</string>
+    <string name="ref_alt_description">Setting current altitude will make automatic computaion of QNH value. Please insert current altitude in meters.</string>
 
     <string-array name="units_system_names">
         <item>Metric</item>

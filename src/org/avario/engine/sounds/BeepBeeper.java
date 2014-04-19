@@ -2,9 +2,9 @@ package org.avario.engine.sounds;
 
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
-import org.avario.engine.sounds.tones.LiftTone;
-import org.avario.engine.sounds.tones.PrenotifyTone;
-import org.avario.engine.sounds.tones.SinkTone;
+import org.avario.engine.sounds.tones.wav.WavLiftTone;
+import org.avario.engine.sounds.tones.wav.WavPrenotifyTone;
+import org.avario.engine.sounds.tones.wav.WavSinkTone;
 import org.avario.utils.Logger;
 import org.avario.utils.Speaker;
 import org.avario.utils.StringFormatter;
@@ -17,9 +17,10 @@ public class BeepBeeper implements Runnable {
 	private Thread thr;
 	private static BeepBeeper THIS;
 
-	private final AsyncTone liftBeep = new LiftTone();
-	private final AsyncTone sinkBeep = new SinkTone();
-	private final AsyncTone prenotifyBeep = new PrenotifyTone();
+	private final AsyncTone liftBeep = new WavLiftTone();// new LiftTone();
+	private final AsyncTone sinkBeep = new WavSinkTone();// new SinkTone();
+	private final AsyncTone prenotifyBeep = new WavPrenotifyTone();// new
+																	// PrenotifyTone();
 
 	protected BeepBeeper() {
 		thr = new Thread(this);
@@ -42,16 +43,12 @@ public class BeepBeeper implements Runnable {
 				beepSpeed = beepSpeed > 5 ? 5 : beepSpeed;
 				beepSpeed = beepSpeed < -5 ? -5 : beepSpeed;
 				if (!validateThisSpeed(beepSpeed)) {
-					Thread.sleep(100);
+					Thread.sleep(200);
 				} else {
 					if (beepSpeed > 0) {
-						final float beepHz = Preferences.lift_hz + Preferences.tone_variation * beepSpeed;
-						liftBeep.setHz(beepHz);
 						liftBeep.setSpeed(beepSpeed);
 						liftBeep.beep();
 					} else if (beepSpeed < 0) {
-						final float beepHz = Preferences.sink_hz + (Preferences.tone_variation * 0.3f) * beepSpeed;
-						sinkBeep.setHz(beepHz);
 						sinkBeep.setSpeed(beepSpeed);
 						sinkBeep.beep();
 					}
@@ -96,7 +93,7 @@ public class BeepBeeper implements Runnable {
 	}
 
 	private void prenotifyThermal() {
-		if (Preferences.prenotify_interval > 0 && DataAccessObject.get().isGPSFix()) {
+		if (Preferences.prenotify_interval > 0 /*&& DataAccessObject.get().isGPSFix()*/) {
 			prenotifyBeep.beep();
 		}
 	}
@@ -106,6 +103,9 @@ public class BeepBeeper implements Runnable {
 	}
 
 	public void stop() {
+		liftBeep.stop();
+		sinkBeep.stop();
+		prenotifyBeep.stop();
 		thr.interrupt();
 	}
 }

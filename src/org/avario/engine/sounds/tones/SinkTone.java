@@ -6,6 +6,13 @@ import org.avario.engine.sounds.TonePlayer;
 import org.avario.utils.Logger;
 
 public class SinkTone extends AsyncTone {
+	protected TonePlayer tonePlayer = new TonePlayer();
+	protected float beepHz;
+
+	public void setSpeed(float beepSpeed) {
+		beepHz = Preferences.sink_hz + (Preferences.tone_variation * 0.3f) * beepSpeed;
+		super.setSpeed(beepSpeed);
+	}
 
 	@Override
 	public void beep() {

@@ -6,6 +6,7 @@ import org.avario.engine.sounds.TonePlayer;
 
 public class PrenotifyTone extends AsyncTone {
 	private volatile boolean hadPrenotify = false;
+	protected TonePlayer tonePlayer = new TonePlayer();
 
 	@Override
 	public void beep() {
@@ -24,5 +25,4 @@ public class PrenotifyTone extends AsyncTone {
 		}
 	}
 
-	
 }

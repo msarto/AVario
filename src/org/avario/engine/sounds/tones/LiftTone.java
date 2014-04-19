@@ -6,7 +6,14 @@ import org.avario.engine.sounds.TonePlayer;
 import org.avario.utils.Logger;
 
 public class LiftTone extends AsyncTone {
-
+	protected TonePlayer tonePlayer = new TonePlayer();
+	protected float beepHz;
+	
+	public void setSpeed(float beepSpeed) {
+		 beepHz = Preferences.lift_hz + Preferences.tone_variation * beepSpeed;
+		super.setSpeed(beepSpeed);
+	}
+	
 	@Override
 	public void beep() {
 		if (!isPlaying) {

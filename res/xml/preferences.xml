@@ -34,13 +34,6 @@
                 android:summary="@string/prenotify_interval_s"
                 android:title="@string/prenotify_interval_t" />
             <org.avario.ui.prefs.EditTextPreferenceWithValue
-                android:defaultValue="1.5"
-                android:inputType="numberDecimal"
-                android:key="sink_start"
-                android:singleLine="true"
-                android:summary="@string/sink_start_s"
-                android:title="@string/sink_start_t" />
-            <org.avario.ui.prefs.EditTextPreferenceWithValue
                 android:defaultValue="0.2"
                 android:inputType="numberDecimal"
                 android:key="lift_start"
@@ -48,26 +41,12 @@
                 android:summary="@string/lift_start_s"
                 android:title="@string/lift_start_t" />
             <org.avario.ui.prefs.EditTextPreferenceWithValue
-                android:defaultValue="650"
+                android:defaultValue="1.5"
                 android:inputType="numberDecimal"
-                android:key="lift_hz"
+                android:key="sink_start"
                 android:singleLine="true"
-                android:summary="@string/lift_hz_s"
-                android:title="@string/lift_hz_t" />
-            <org.avario.ui.prefs.EditTextPreferenceWithValue
-                android:defaultValue="400"
-                android:inputType="numberDecimal"
-                android:key="sink_hz"
-                android:singleLine="true"
-                android:summary="@string/sink_hz_s"
-                android:title="@string/sink_hz_t" />
-            <org.avario.ui.prefs.EditTextPreferenceWithValue
-                android:defaultValue="50"
-                android:inputType="numberDecimal"
-                android:key="tone_variation"
-                android:singleLine="true"
-                android:summary="@string/tone_variation_s"
-                android:title="@string/tone_variation_t" />
+                android:summary="@string/sink_start_s"
+                android:title="@string/sink_start_t" />
         </PreferenceScreen>
         <PreferenceScreen
             android:key="thermal_prefs"
