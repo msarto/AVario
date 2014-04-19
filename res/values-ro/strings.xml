@@ -67,13 +67,13 @@
     <string name="volume_s">Volum sunet vario</string>
     <string name="use_speach_s">Foloseste voce la vario</string>
     <string name="use_speach_t">Foloseste voce</string>
-    <string name="beep_interval_s">Interval de sunet pentru vario</string>
+    <string name="beep_interval_s">Interval de sunete pentru vario (secunde)</string>
     <string name="beep_interval_t">Interval sunet</string>
     <string name="prenotify_interval_t">Interval prenotificare</string>
     <string name="prenotify_interval_s">Interval sunet langa termica</string>
-    <string name="sink_start_s">Viteza de coborare pentru sunet</string>
+    <string name="sink_start_s">Viteza de coborare pentru sunet (m/s)</string>
     <string name="sink_start_t">Viteza coborare</string>
-    <string name="lift_start_s">Viteza de urcare pentru sunet</string>
+    <string name="lift_start_s">Viteza de urcare pentru sunet (m/s)</string>
     <string name="lift_start_t">Viteza urcare</string>
     <string name="lift_hz_s">Ton urcre in Hz</string>
     <string name="lift_hz_t">Ton urcare</string>

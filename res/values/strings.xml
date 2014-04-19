@@ -67,13 +67,13 @@
     <string name="volume_s">Vario sound volume</string>
     <string name="use_speach_s">Use speech for vario speed</string>
     <string name="use_speach_t">Use speech</string>
-    <string name="beep_interval_s">Beep sound interval</string>
+    <string name="beep_interval_s">Beep sound interval (in seconds)</string>
     <string name="beep_interval_t">Beep interval</string>
     <string name="prenotify_interval_t">Prenotify interval</string>
     <string name="prenotify_interval_s">Discrete sound around thermal interval</string>
-    <string name="sink_start_s">Sink speed to start vario beep</string>
+    <string name="sink_start_s">Sink speed to start vario beep (m/s)</string>
     <string name="sink_start_t">Sink start</string>
-    <string name="lift_start_s">Lift speed to start vario beep</string>
+    <string name="lift_start_s">Lift speed to start vario beep (m/s)</string>
     <string name="lift_start_t">Lift start</string>
     <string name="lift_hz_s">Lift tone in Hz</string>
     <string name="lift_hz_t">Lift tone</string>
