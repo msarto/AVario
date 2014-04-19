@@ -93,7 +93,7 @@ public class BeepBeeper implements Runnable {
 	}
 
 	private void prenotifyThermal() {
-		if (Preferences.prenotify_interval > 0 /*&& DataAccessObject.get().isGPSFix()*/) {
+		if (Preferences.prenotify_interval > 0 && DataAccessObject.get().isGPSFix()) {
 			prenotifyBeep.beep();
 		}
 	}
