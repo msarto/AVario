@@ -36,11 +36,9 @@ public class BaroSensorFilter implements LocationConsumer {
 	// filter the pressure and transform it to altitude
 	public synchronized float toAltitude(float currentPresure) {
 		lastPresureNotified = currentPresure;
-		if (baroFilters != null) {
 			for (Filter filter : baroFilters) {
 				lastPresureNotified = filter.doFilter(lastPresureNotified)[0];
 			}
-		}
 
 		if (referrencePresure != Preferences.ref_qnh) {
 			resetFilters();
