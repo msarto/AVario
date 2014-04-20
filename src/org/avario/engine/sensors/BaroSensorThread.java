@@ -5,6 +5,7 @@ import org.avario.engine.SensorThread;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
 import org.avario.utils.filters.Filter;
+import org.avario.utils.filters.impl.Kalman2Filter;
 import org.avario.utils.filters.impl.StabiloFilter;
 import org.avario.utils.filters.sensors.BaroSensorFilter;
 
@@ -13,7 +14,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
 public class BaroSensorThread extends SensorThread<Float> {
-	private BaroSensorFilter baroFilter = new BaroSensorFilter();
+	private BaroSensorFilter baroFilter = new BaroSensorFilter(new Kalman2Filter(Preferences.baro_sensitivity));
 	private Filter preFilterPresure = new StabiloFilter(Preferences.baro_sensitivity * 0.1f);
 
 	public BaroSensorThread() {
@@ -30,19 +31,14 @@ public class BaroSensorThread extends SensorThread<Float> {
 
 	@Override
 	public synchronized void notifySensorChanged(final SensorEvent sensorEvent) {
-		callbackThreadPool.execute(new Runnable() {
-			@Override
-			public void run() {
-				float currentPresure = sensorEvent.values.clone()[0];
-				float filterfactor = 0.6f - Preferences.baro_sensitivity / 100f;
-				currentPresure = preFilterPresure.doFilter(currentPresure, filterfactor)[0];
-				final float altitude = baroFilter.toAltitude(currentPresure);
-				if (altitude >= 0) {
-					DataAccessObject.get().setLastAltitude(altitude);
-					DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, altitude);
-					SensorProducer.get().notifyBaroConsumers(altitude);
-				}
-			}
-		});
+		float currentPresure = sensorEvent.values.clone()[0];
+		float filterfactor = 0.7f - Preferences.baro_sensitivity / 100f;
+		currentPresure = preFilterPresure.doFilter(currentPresure, filterfactor)[0];
+		final float altitude = baroFilter.toAltitude(currentPresure);
+		if (altitude >= 0) {
+			DataAccessObject.get().setLastAltitude(altitude);
+			DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, altitude);
+			SensorProducer.get().notifyBaroConsumers(altitude);
+		}
 	}
 }

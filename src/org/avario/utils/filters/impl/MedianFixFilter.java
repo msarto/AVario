@@ -9,7 +9,7 @@ import org.avario.utils.filters.Filter;
 public class MedianFixFilter implements Filter {
 	private volatile float medianValue = 0f;
 	protected volatile Queue<Float> history = new ArrayDeque<Float>();
-	private double medianSizeFactor = 0.8 * Preferences.baro_sensitivity;
+	private double medianSizeFactor = 0.5 * Preferences.baro_sensitivity;
 
 	public MedianFixFilter() {
 

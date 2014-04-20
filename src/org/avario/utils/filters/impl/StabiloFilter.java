@@ -6,7 +6,6 @@ import org.avario.utils.filters.Filter;
 public class StabiloFilter implements Filter {
 	// The lower the noise is the higher the filtering is
 	private float previousValue = 0.0f;
-
 	protected float factor = 1;
 
 	public StabiloFilter() {

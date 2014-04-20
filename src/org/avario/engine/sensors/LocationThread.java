@@ -51,14 +51,9 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 			DataAccessObject.get().setLastAltitude((float) newLocation.getAltitude());
 		}
 
-		callbackThreadPool.execute(new Runnable() {
-			@Override
-			public void run() {
-				DataAccessObject.get().setLastlocation(newLocation);
-				SensorProducer.get().notifyGpsConsumers(DataAccessObject.get().getLastlocation());
-				SensorProducer.get().notifyBaroConsumers(DataAccessObject.get().getLastAltitude());
-			}
-		});
+		DataAccessObject.get().setLastlocation(newLocation);
+		SensorProducer.get().notifyGpsConsumers(DataAccessObject.get().getLastlocation());
+		SensorProducer.get().notifyBaroConsumers(DataAccessObject.get().getLastAltitude());
 	}
 
 	@Override

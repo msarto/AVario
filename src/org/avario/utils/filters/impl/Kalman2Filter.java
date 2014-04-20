@@ -9,11 +9,7 @@ import org.avario.utils.filters.Filter;
 public class Kalman2Filter implements Filter {
 
 	protected volatile Queue<Float> history = new ArrayDeque<Float>();
-	private double filterSizeFactor = 0.8 * Preferences.baro_sensitivity;
-
-	public Kalman2Filter() {
-
-	}
+	private double filterSizeFactor = Preferences.baro_sensitivity;
 
 	public Kalman2Filter(double medianSizeFactor) {
 		this.filterSizeFactor = medianSizeFactor;
