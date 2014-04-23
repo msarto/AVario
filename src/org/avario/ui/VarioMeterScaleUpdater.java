@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 	private static VarioMeterScaleUpdater THIS;
-	protected final SparseArray<LinearLayout> scaleView = new SparseArray<LinearLayout>();
+	protected final SparseArray<MarkedLayout> scaleView = new SparseArray<MarkedLayout>();
 	protected TextView varioView = null;
 	protected int scaleHeight = 6;
 	private Activity context;
@@ -31,47 +31,47 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 		final Typeface font = StringFormatter.getLargeFont(context.getApplicationContext());
 
 		int i = -20;
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down20));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down19));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down18));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down17));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down16));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down15));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down14));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down13));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down12));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down11));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down10));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down9));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down8));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down7));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down6));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down5));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down4));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down3));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down2));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.down1));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down20)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down19)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down18)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down17)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down16)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down15)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down14)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down13)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down12)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down11)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down10)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down9)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down8)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down7)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down6)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down5)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down4)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down3)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down2)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down1)));
 		i++;
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up1));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up2));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up3));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up4));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up5));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up6));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up7));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up8));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up9));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up10));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up11));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up12));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up13));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up14));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up15));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up16));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up17));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up18));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up19));
-		scaleView.put(Integer.valueOf(i++), (LinearLayout) context.findViewById(R.id.up20));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up1)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up2)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up3)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up4)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up5)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up6)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up7)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up8)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up9)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up10)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up11)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up12)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up13)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up14)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up15)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up16)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up17)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up18)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up19)));
+		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.up20)));
 		Logger.get().log("Register  " + (i - 1) + " in scale");
 		resizeScaleWithDeviceHeight((LinearLayout) context.findViewById(R.id.scaleParent));
 		varioView = (TextView) context.findViewById(R.id.vSpeed);
@@ -83,11 +83,11 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 		final float screenH = context.getResources().getDisplayMetrics().heightPixels;
 		scaleHeight = Math.round((screenH - density * 30 - density * 140) / 40);
 		for (int i = -20; i < 21; i++) {
-			LinearLayout scaleItem = scaleView.get(i);
+			MarkedLayout scaleItem = scaleView.get(i);
 			if (scaleItem != null) {
-				LayoutParams scaleParams = (LayoutParams) scaleItem.getLayoutParams();
+				LayoutParams scaleParams = (LayoutParams) scaleItem.layout.getLayoutParams();
 				scaleParams.height = scaleHeight;
-				scaleItem.setLayoutParams(scaleParams);
+				scaleItem.layout.setLayoutParams(scaleParams);
 			}
 		}
 	}
@@ -122,12 +122,16 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 				// Start mark from the bottom
 				int marker = -20;
 				while (marker <= 20) {
-					LinearLayout layout = scaleView.get(marker);
-					if (layout != null) {
+					MarkedLayout markLayout = scaleView.get(marker);
+					if (markLayout != null) {
 						if (marker > 0 && unitsMarked >= marker) {
-							layout.setBackgroundColor(Color.GREEN);
-						} else {
-							layout.setBackgroundColor(Color.WHITE);
+							if (!markLayout.checked) {
+								markLayout.layout.setBackgroundColor(Color.GREEN);
+								markLayout.checked = true;
+							}
+						} else if (markLayout.checked) {
+							markLayout.layout.setBackgroundColor(Color.WHITE);
+							markLayout.checked = false;
 						}
 					}
 					marker++;
@@ -135,12 +139,16 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 			} else {
 				int marker = 20;
 				while (marker >= -20) {
-					LinearLayout layout = scaleView.get(marker);
-					if (layout != null) {
+					MarkedLayout markLayout = scaleView.get(marker);
+					if (markLayout != null) {
 						if (marker < 0 && unitsMarked <= marker) {
-							layout.setBackgroundColor(Color.RED);
-						} else {
-							layout.setBackgroundColor(Color.WHITE);
+							if (!markLayout.checked) {
+								markLayout.layout.setBackgroundColor(Color.RED);
+								markLayout.checked = true;
+							}
+						} else if (markLayout.checked) {
+							markLayout.layout.setBackgroundColor(Color.WHITE);
+							markLayout.checked = false;
 						}
 					}
 					marker--;
@@ -148,7 +156,7 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 			}
 			currentUnitsMark = unitsMarked;
 		} catch (Exception ex) {
-			Logger.get().log("Fil to updte vrio scle with speed " + vSpeed, ex);
+			Logger.get().log("Fil to updte vario scle with speed " + vSpeed, ex);
 		} finally {
 			updatingUI = false;
 		}
@@ -159,7 +167,7 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 		float prevSpeed = 0f;
 		while (!THIS.isCancelled()) {
 			try {
-				Thread.sleep(200);
+				Thread.sleep(100);
 				float speed = DataAccessObject.get().getLastVSpeed();
 				float vSpeed = Math.abs(speed) > Preferences.lift_start ? speed : 0.0f;
 				vSpeed = vSpeed > 5 ? 5 : vSpeed;
@@ -187,6 +195,15 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 			}
 		} catch (Exception ex) {
 			Logger.get().log("Fail async beep progress: ", ex);
+		}
+	}
+
+	protected static class MarkedLayout {
+		LinearLayout layout;
+		boolean checked = true;
+
+		MarkedLayout(LinearLayout layout) {
+			this.layout = layout;
 		}
 	}
 }

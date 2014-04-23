@@ -25,6 +25,8 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 	private static Paint lastThermalPaint = new Paint();
 	private static Paint windMarkPaint = new Paint();
 	private static Paint headingMarkPaint = new Paint();
+	private Paint cardinals = new Paint();
+	private Paint circlePaint = new Paint();
 	private float densityMultiplier = 1;
 
 	static {
@@ -45,7 +47,6 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		headingMarkPaint.setFakeBoldText(true);
 		headingMarkPaint.setTextAlign(Paint.Align.CENTER);
 		headingMarkPaint.setColor(Color.BLUE);
-
 	}
 
 	private Activity context;
@@ -70,6 +71,18 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		heading = BitmapFactory.decodeResource(context.getResources(), R.drawable.heading);
 		font = StringFormatter.getLargeFont(context.getApplicationContext());
 		densityMultiplier = context.getResources().getDisplayMetrics().density;
+
+		cardinals.setAntiAlias(true);
+		cardinals.setTextSize(30 * densityMultiplier);
+		cardinals.setColor(Color.BLACK);
+		cardinals.setTextAlign(Paint.Align.CENTER);
+		cardinals.setTypeface(font);
+
+		circlePaint.setColor(Color.RED);
+		circlePaint.setStyle(Paint.Style.STROKE);
+		circlePaint.setStrokeWidth(3 * densityMultiplier);
+		circlePaint.setAntiAlias(true);
+
 	}
 
 	public static void init(Activity context) {
@@ -84,13 +97,15 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 	public void draw(Canvas navCanvas, int xCenter, int yCenter) {
 		this.xCenter = xCenter;
 		this.yCenter = yCenter;
+
+		navCanvas.rotate(DataAccessObject.get().getBearing(), this.xCenter, this.yCenter);
 		if (navView == null) {
 			navView = (NavigationView) context.findViewById(R.id.navLayout);
 			radius = (int) Math.round(navView.getWidth() / 3);
+			poiView = new PoiView(context, navCanvas, xCenter, yCenter);
 		}
-		navCanvas.rotate(DataAccessObject.get().getBearing(), this.xCenter, this.yCenter);
-		initDrawings(navCanvas);
 
+		drawCompass(navCanvas);
 		drawPOIInfo(navCanvas);
 		drawIcon(navCanvas, DataAccessObject.get().getWindDirectionBearing(), windsock);
 		// Disable drawing heading this version
@@ -100,22 +115,10 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		}
 	}
 
-	private void initDrawings(Canvas navigationCanvas) {
-		Paint circlePaint = new Paint();
+	private void drawCompass(Canvas navigationCanvas) {
 		circlePaint.setColor(DataAccessObject.get().isGPSFix() ? Color.BLACK : Color.RED);
-		circlePaint.setStyle(Paint.Style.STROKE);
-		circlePaint.setStrokeWidth(3 * densityMultiplier);
-		circlePaint.setAntiAlias(true);
 		navigationCanvas.drawCircle(xCenter, yCenter, radius, circlePaint);
-
-		Paint cardinals = new Paint();
-		cardinals.setAntiAlias(true);
-
-		cardinals.setTextSize(30 * densityMultiplier);
-		cardinals.setColor(Color.BLACK);
-		cardinals.setTextAlign(Paint.Align.CENTER);
-		cardinals.setTypeface(font);
-
+		
 		navigationCanvas.drawText(context.getString(R.string.north), xCenter,
 				yCenter - Math.round(radius + 5 * densityMultiplier), cardinals);
 		navigationCanvas.drawText(context.getString(R.string.south), xCenter,
@@ -124,7 +127,6 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 				xCenter - Math.round(radius + 15 * densityMultiplier), yCenter, cardinals);
 		navigationCanvas.drawText(context.getString(R.string.east),
 				xCenter + Math.round(radius + 15 * densityMultiplier), yCenter, cardinals);
-		poiView = new PoiView(context, navigationCanvas, xCenter, yCenter);
 	}
 
 	private void drawIcon(Canvas navCanvas, float bearing, Bitmap bitmap) {
