@@ -82,16 +82,17 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 
 	public synchronized void stopTracking() {
 		Logger.get().log("Stop tracking " + tracking);
+		needTracking = false;
 		if (tracking == true) {
 			tracking = false;
 			stopTrack();
-			recView.setText(Preferences.units_system == 1 ? R.string.ms : R.string.fs);
-			recAnimation.setRepeatCount(0);
 		}
+		recView.setText(Preferences.units_system == 1 ? R.string.ms : R.string.fs);
+		recAnimation.setRepeatCount(0);
 	}
 
 	public boolean isTracking() {
-		return tracking;
+		return tracking || needTracking;
 	}
 
 	protected void startTrack() {
