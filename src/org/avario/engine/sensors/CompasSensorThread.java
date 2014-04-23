@@ -18,17 +18,23 @@ public class CompasSensorThread extends SensorThread<Float> {
 	public CompasSensorThread() {
 		sensors = new int[] { Sensor.TYPE_MAGNETIC_FIELD, Sensor.TYPE_ACCELEROMETER };
 		sensorSpeed = SensorManager.SENSOR_DELAY_UI;
-		callbackThreadPool.execute(compassTask);
+		new Thread(compassTask).start();
 	}
 
 	@Override
-	public synchronized void notifySensorChanged(SensorEvent sensorEvent) {
-		if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-			float bearing = compasFilter.toBearing(sensorEvent.values.clone());
-			compassTask.setBearing(bearing);
-		} else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-			compasFilter.notifyAccelerometer(sensorEvent.values.clone());
-		}
+	public void notifySensorChanged(final SensorEvent sensorEvent) {
+		callbackThreadPool.execute(new Runnable() {
+			@Override
+			public void run() {
+				if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+					float bearing = compasFilter.toBearing(sensorEvent.values.clone());
+					compassTask.setBearing(bearing);
+				} else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+					compasFilter.notifyAccelerometer(sensorEvent.values.clone());
+				}
+			}
+		});
+
 	}
 
 	@Override
@@ -48,25 +54,19 @@ public class CompasSensorThread extends SensorThread<Float> {
 					final float smoothBearing = compasFilter.smoothFilter(bearing);
 					if (DataAccessObject.get() != null
 							&& Math.abs(smoothBearing - bearing) > Preferences.compass_filter_sensitivity) {
-
 						DataAccessObject.get().setBearing(smoothBearing);
-						callbackThreadPool.execute(new Runnable() {
-							@Override
-							public void run() {
-								SensorProducer.get().notifyCompasConsumers(smoothBearing);
-							}
-						});
+						SensorProducer.get().notifyCompasConsumers(smoothBearing);
 					}
 
 					long wait = Math.round(80 - Math.abs(smoothBearing - bearing));
-					Thread.sleep(wait > 10 ? wait : 10);
+					Thread.sleep(wait > 20 ? wait : 20);
 				}
 			} catch (Exception ex) {
 				Logger.get().log("Compass stopped...", ex);
 			}
 		}
 
-		protected void setBearing(float bearing) {
+		protected synchronized void setBearing(float bearing) {
 			float bearingDiff = Math.abs(DataAccessObject.get().getBearing() - bearing);
 			if (DataAccessObject.get().getBearing() != 0 && bearingDiff > 185) {
 				bearing = 360 + bearing;

@@ -4,7 +4,6 @@ import org.avario.engine.SensorProducer;
 import org.avario.engine.SensorThread;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
-import org.avario.utils.Logger;
 import org.avario.utils.filters.impl.Kalman2Filter;
 import org.avario.utils.filters.impl.StabiloFilter;
 import org.avario.utils.filters.sensors.BaroSensorFilter;
@@ -14,9 +13,9 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
 public class BaroSensorThread extends SensorThread<Float> {
-	private static volatile boolean dump = false;
-	private BaroSensorFilter baroFilter = new BaroSensorFilter(new StabiloFilter(
-			0.7f - Preferences.baro_sensitivity / 100f), new Kalman2Filter(Preferences.baro_sensitivity));
+	private BaroSensorFilter baroFilter = new BaroSensorFilter(
+			new StabiloFilter(0.7f - Preferences.baro_sensitivity / 100f),
+			new Kalman2Filter(Preferences.baro_sensitivity));
 
 	public BaroSensorThread() {
 		init();
@@ -32,21 +31,18 @@ public class BaroSensorThread extends SensorThread<Float> {
 
 	@Override
 	public void notifySensorChanged(final SensorEvent sensorEvent) {
-		if (dump) {
-			Logger.get().log("dump");
-			return;
-		}
-		try {
-			dump = true;
-			float currentPresure = sensorEvent.values.clone()[0];
-			final float altitude = baroFilter.toAltitude(currentPresure);
-			if (altitude >= 0) {
-				DataAccessObject.get().setLastAltitude(altitude);
-				DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, altitude);
-				SensorProducer.get().notifyBaroConsumers(altitude);
+		callbackThreadPool.execute(new Runnable() {
+			@Override
+			public void run() {
+				float currentPresure = sensorEvent.values.clone()[0];
+				final float altitude = baroFilter.toAltitude(currentPresure);
+				if (altitude >= 0) {
+					DataAccessObject.get().setLastAltitude(altitude);
+					DataAccessObject.get().getMovementFactor()
+							.notify(System.nanoTime() / 1000000d, altitude);
+					SensorProducer.get().notifyBaroConsumers(altitude);
+				}
 			}
-		} finally {
-			dump = false;
-		}
+		});
 	}
 }
