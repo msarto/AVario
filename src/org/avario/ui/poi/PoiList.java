@@ -39,7 +39,7 @@ public class PoiList extends ExpandableListActivity implements POIConsumer {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		PoiManager.get().readPOIs();
+		PoiManager.get().reloadPOIS();
 		refreshList();
 		registerForContextMenu(getExpandableListView());
 		PoiProducer.get().addConsumer(this);
