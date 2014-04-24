@@ -8,7 +8,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.avario.AVarioActivity;
 import org.avario.utils.Logger;
+
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 
 public class TrackInfo {
 	private long flightLenght = 0;
@@ -21,6 +25,7 @@ public class TrackInfo {
 	private float maxSpeed = 0f;
 	private float highestSink = 0f;
 	private String trackFileName;
+	private long versionCode = 0;
 
 	public String getTrackFileName() {
 		return trackFileName;
@@ -44,6 +49,10 @@ public class TrackInfo {
 
 	public long getFlightDuration() {
 		return flightDuration;
+	}
+
+	public long getVersionCode() {
+		return versionCode;
 	}
 
 	public void setFlightDuration(long flightDuration) {
@@ -100,7 +109,13 @@ public class TrackInfo {
 
 	public void readFrom(File file) throws FileNotFoundException, IOException {
 		ObjectInputStream trackStream = new ObjectInputStream(new FileInputStream(file));
-		flightLenght = trackStream.readLong();
+		long stItem = trackStream.readLong();
+		if (stItem > 1000000l && stItem < 1001000l) {
+			versionCode = stItem - 1000000l;
+			Logger.get().log("Reading track item from version " + versionCode);
+			stItem = trackStream.readLong();
+		}
+		flightLenght = stItem;
 		flightStart = trackStream.readLong();
 		flightDuration = trackStream.readLong();
 		startAlt = trackStream.readInt();
@@ -116,6 +131,13 @@ public class TrackInfo {
 	public void writeTo(File file) throws FileNotFoundException, IOException {
 		ObjectOutputStream trackStream = new ObjectOutputStream(new FileOutputStream(file));
 		Logger.get().log("Start Serializing Track meta ");
+		try {
+			PackageInfo pInfo = AVarioActivity.CONTEXT.getPackageManager().getPackageInfo(
+					AVarioActivity.CONTEXT.getPackageName(), 0);
+			trackStream.writeLong(1000000l + pInfo.versionCode);
+		} catch (NameNotFoundException e) {
+			Logger.get().log("Fail seraializing track app version", e);
+		}
 		trackStream.writeLong(flightLenght);
 		trackStream.writeLong(flightStart);
 		trackStream.writeLong(flightDuration);
