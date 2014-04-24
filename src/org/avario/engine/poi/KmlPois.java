@@ -13,14 +13,16 @@ import java.util.zip.ZipInputStream;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.avario.AVarioActivity;
 import org.avario.utils.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.content.pm.PackageInfo;
 import android.os.AsyncTask;
 
-public class KmlPois {
+public abstract class KmlPois {
 	private AsyncTask<Integer, POI, Integer> thr;
 	private double latitude;
 	private double longitude;
@@ -64,15 +66,15 @@ public class KmlPois {
 	public String kmlString() throws IOException {
 		ZipInputStream zis = null;
 		try {
-			String preUrlStr = "http://www.paraglidingearth.com/pgearth/kml_files.php?distance=" + distance + "&center=&lat=" + latitude
-					+ "&lng=" + longitude;
+			String preUrlStr = "http://www.paraglidingearth.com/pgearth/kml_files.php?distance=" + distance
+					+ "&center=&lat=" + latitude + "&lng=" + longitude;
 			URL preUrl = new URL(preUrlStr);
 			URLConnection preCon = preUrl.openConnection();
 			preCon.connect();
 			preUrl.openStream().close();
 			// http://www.paraglidingearth.com/pgearth/sites_around.php?lng=25.1&lat=42.33&dist=100
-			String urlStr = "http://www.paraglidingearth.com/googleearth/" + distance + "km_around_" + normalize(latitude) + "-"
-					+ normalize(longitude) + ".kmz";
+			String urlStr = "http://www.paraglidingearth.com/googleearth/" + distance + "km_around_"
+					+ normalize(latitude) + "-" + normalize(longitude) + ".kmz";
 			URL url = new URL(urlStr);
 			URLConnection ucon = url.openConnection();
 			ucon.connect();
@@ -101,15 +103,19 @@ public class KmlPois {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser saxParser = factory.newSAXParser();
 
+		final PackageInfo pInfo = AVarioActivity.CONTEXT.getPackageManager().getPackageInfo(
+				AVarioActivity.CONTEXT.getPackageName(), 0);
+
 		DefaultHandler handler = new DefaultHandler() {
 			POI currentPOI;
 			boolean isName = false;
 			boolean isLatLng = false;
 
-			public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+			public void startElement(String uri, String localName, String qName, Attributes attributes)
+					throws SAXException {
 
 				if ("Placemark".equals(qName)) {
-					currentPOI = new POI();
+					currentPOI = new POI(pInfo.versionCode);
 				} else if ("coordinates".equals(qName)) {
 					isLatLng = true;
 				} else if ("name".equals(qName)) {
@@ -143,7 +149,5 @@ public class KmlPois {
 		return pois;
 	}
 
-	public void onPoi(POI... poi) {
-
-	}
+	public abstract void onPoi(POI... poi);
 }

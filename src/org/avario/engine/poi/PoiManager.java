@@ -33,6 +33,7 @@ public class PoiManager {
 		if (THIS == null) {
 			THIS = new PoiManager();
 			THIS.readPOIs();
+			THIS.readPOIsV2();
 		}
 	}
 
@@ -75,7 +76,8 @@ public class PoiManager {
 	public int readPOIs() {
 		synchronized (THIS) {
 			pois.clear();
-			File poiFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario" + File.separator + "pois");
+			File poiFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
+					+ File.separator + "pois");
 			if (!poiFile.exists()) {
 				Logger.get().log("No poi file available...");
 				return 0;
@@ -89,7 +91,37 @@ public class PoiManager {
 					poiName = poiStream.readUTF();
 					double poiLat = poiStream.readDouble();
 					double poiLong = poiStream.readDouble();
-					pois.put(poiName, new POI(poiName, poiLat, poiLong));
+					pois.put(poiName, new POI(poiName, poiLat, poiLong, 0));
+				}
+			} catch (Exception e) {
+				activePOI = pois.get(poiName);
+				Logger.get().log("Pois deserailized: " + poisCount + ". Active poi: " + poiName);
+			} finally {
+				close(poiStream);
+			}
+
+			return pois.size();
+		}
+	}
+
+	public int readPOIsV2() {
+		synchronized (THIS) {
+			pois.clear();
+			File poiFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
+					+ File.separator + "poisV2");
+			if (!poiFile.exists()) {
+				Logger.get().log("No poi file available...");
+				return 0;
+			}
+			ObjectInputStream poiStream = null;
+			String poiName = "";
+			int poisCount = 0;
+			try {
+				poiStream = new ObjectInputStream(new FileInputStream(poiFile));
+				while (poisCount++ < MAX_POIS) {
+					int version = poiStream.readInt();
+					POI poi = POISerializer.get().read(poiStream, version);
+					pois.put(poi.getName(), poi);
 				}
 			} catch (Exception e) {
 				activePOI = pois.get(poiName);
@@ -104,15 +136,14 @@ public class PoiManager {
 
 	public synchronized int writePOIs() {
 		synchronized (THIS) {
-			File poiFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario" + File.separator + "pois");
+			File poiFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
+					+ File.separator + "poisV2");
 			ObjectOutputStream poiStream = null;
 			try {
 				int poiSerialized = 0;
 				poiStream = new ObjectOutputStream(new FileOutputStream(poiFile, false));
 				for (POI poi : pois.values()) {
-					poiStream.writeUTF(poi.getName());
-					poiStream.writeDouble(poi.getLatitude());
-					poiStream.writeDouble(poi.getLongitude());
+					POISerializer.get().write(poi, poiStream);
 					poiSerialized++;
 				}
 				String poiActiveName = activePOI != null ? activePOI.getName() : "";
@@ -123,6 +154,12 @@ public class PoiManager {
 				Logger.get().log("Poi write error ", e);
 			} finally {
 				close(poiStream);
+			}
+
+			File oldFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
+					+ File.separator + "pois");
+			if (oldFile.exists()) {
+				oldFile.delete();
 			}
 
 			return pois.size();

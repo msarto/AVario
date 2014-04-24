@@ -1,11 +1,15 @@
 package org.avario.ui.poi;
 
+import org.avario.AVarioActivity;
 import org.avario.R;
 import org.avario.engine.PoiProducer;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.poi.POI;
+import org.avario.utils.Logger;
 
 import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -47,14 +51,21 @@ public class PoiActivity extends Activity {
 				String poiName = nameEdit.getText().toString();
 				Double poiLat = Double.valueOf(latEdit.getText().toString());
 				Double poiLong = Double.valueOf(longEdit.getText().toString());
-				PoiProducer.get().notify(new POI(poiName, poiLat, poiLong));
-				finish();
+				try {
+					PackageInfo pInfo = AVarioActivity.CONTEXT.getPackageManager().getPackageInfo(
+							AVarioActivity.CONTEXT.getPackageName(), 0);
+					PoiProducer.get().notify(new POI(poiName, poiLat, poiLong, pInfo.versionCode));
+				} catch (NameNotFoundException e) {
+					Logger.get().log("Fail to record POI ", e);
+				} finally {
+					finish();
+				}
 
 			}
 
 		});
 	}
-	
+
 	protected void loadDefaults() {
 		if (DataAccessObject.get().getLastlocation() != null) {
 			latEdit.setText("" + DataAccessObject.get().getLastlocation().getLatitude());

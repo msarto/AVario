@@ -4,27 +4,32 @@ import android.location.Location;
 
 public class POI {
 
+	private int version;
 	private String name;
 	private double latitude;
 	private double longitude;
 
-	public POI() {
+	public POI(int version) {
+		this.version = version;
 	}
 
-	public POI(String name) {
+	public POI(String name, int version) {
 		this.name = name;
+		this.version = version;
 	}
 
-	public POI(String name, double latitude, double longitude) {
+	public POI(String name, double latitude, double longitude, int version) {
 		this.name = name;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.version = version;
 	}
 
-	public POI(String name, Location location) {
+	public POI(String name, Location location, int version) {
 		this.name = name;
 		this.latitude = location.getLatitude();
 		this.longitude = location.getLongitude();
+		this.version = version;
 	}
 
 	public float bearingTo(Location location) {
@@ -73,5 +78,9 @@ public class POI {
 
 	public String toString() {
 		return "name: " + name + "; lat: " + latitude + "; lng: " + longitude;
+	}
+
+	public int getVersion() {
+		return version;
 	}
 }
