@@ -16,12 +16,12 @@ public class WavLiftTone extends AsyncTone {
 	private float prevBeepSpeed = 0;
 
 	public WavLiftTone() {
-		listSounds.put(0, player.load(AVarioActivity.CONTEXT, R.raw.l1000, 1));
-		listSounds.put(1, player.load(AVarioActivity.CONTEXT, R.raw.l1200, 1));
-		listSounds.put(2, player.load(AVarioActivity.CONTEXT, R.raw.l1300, 1));
-		listSounds.put(3, player.load(AVarioActivity.CONTEXT, R.raw.l1400, 1));
-		listSounds.put(4, player.load(AVarioActivity.CONTEXT, R.raw.l1600, 1));
-		listSounds.put(5, player.load(AVarioActivity.CONTEXT, R.raw.l1700, 1));
+		listSounds.put(0, player.load(AVarioActivity.CONTEXT, R.raw.l650, 1));
+		listSounds.put(1, player.load(AVarioActivity.CONTEXT, R.raw.l700, 1));
+		listSounds.put(2, player.load(AVarioActivity.CONTEXT, R.raw.l750, 1));
+		listSounds.put(3, player.load(AVarioActivity.CONTEXT, R.raw.l800, 1));
+		listSounds.put(4, player.load(AVarioActivity.CONTEXT, R.raw.l850, 1));
+		listSounds.put(5, player.load(AVarioActivity.CONTEXT, R.raw.l900, 1));
 	}
 
 	@Override
