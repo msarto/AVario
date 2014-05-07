@@ -19,7 +19,7 @@ import android.widget.TextView;
 public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> implements LocationConsumer {
 	private Activity context = null;
 	private static NumericViewUpdater THIS;
-	protected long startTime = System.currentTimeMillis();
+	protected long startTime;
 	protected TextView altitudeView = null;
 	protected TextView altitudeMeasure = null;
 	protected TextView groundSpeedView = null;
@@ -28,10 +28,6 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 	protected TextView hGainView = null;
 	protected TextView timeSpanView = null;
 	protected TextView recView = null;
-	// protected TextView clockView = null;
-
-	// protected Location lastLocationTracked;
-	// protected float metersTracked = 0;
 	protected TextView glideRatio = null;
 
 	protected NumericViewUpdater(Activity context) {
@@ -51,10 +47,7 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 		qfeView = (TextView) context.findViewById(R.id.qfe);
 		qfeView.setTypeface(font);
 		timeSpanView = (TextView) context.findViewById(R.id.ftimeValue);
-		// clockView = (TextView) context.findViewById(R.id.clock);
 		glideRatio = (TextView) context.findViewById(R.id.ratio);
-		// lastGainText.setText(String.format(context.getString(R.string.gainedlastmin),
-		// String.valueOf(Preferences.location_history)));
 	}
 
 	public static void init(Activity context) {
@@ -72,6 +65,9 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 					groundSpeedView.setText(StringFormatter.noDecimals(UnitsConverter.toPreferredLong(UnitsConverter
 							.msTokmh(location.getSpeed()))));
 					groundSpeedMeasure.setText(UnitsConverter.preferredDistLong() + "/h");
+					if (startTime == 0 && location.getSpeed() > 3f) {
+						startTime = System.currentTimeMillis();
+					}
 				}
 				double lastGain = UnitsConverter.toPreferredShort(Math.round(DataAccessObject.get()
 						.getHistoryAltimeterGain()));
@@ -80,17 +76,11 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 
 				float vSpeed = DataAccessObject.get().getLastVSpeed();
 				if (vSpeed != 0f) {
-					// metersTracked +=
-					// location.distanceTo(lastLocationTracked);
 					float ratio = location.getSpeed() / vSpeed;
-					ratio = ratio > 99 ? 99 :ratio; 
-					ratio = ratio < -99 ? -99 :ratio;					
+					ratio = ratio > 99 ? 99 : ratio;
+					ratio = ratio < -99 ? -99 : ratio;
 					glideRatio.setText(StringFormatter.noDecimals(location.getSpeed() / vSpeed) + " : 1");
-					// flightDistance.setText(StringFormatter.oneDecimal(UnitsConverter
-					// .toPreferredLong(metersTracked / 1000F)) +
-					// UnitsConverter.preferredDistLong());
 				}
-				// lastLocationTracked = location;
 			}
 		});
 	}
@@ -112,12 +102,16 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 		return null;
 	}
 
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+
 	@Override
 	protected void onProgressUpdate(final Integer... progress) {
 		try {
-			timeSpanView.setText(UnitsConverter.timeSpan(startTime));
-			// clockView.setText(String.format("%1$tH:%1$tM:%1$tS",
-			// Calendar.getInstance()));
+			if (startTime > 0) {
+				timeSpanView.setText(UnitsConverter.timeSpan(startTime));
+			}
 			groundSpeedMeasure.setText(UnitsConverter.preferredDistLong() + "/h");
 			altitudeView.setText(StringFormatter.noDecimals(UnitsConverter.toPreferredShort(DataAccessObject.get()
 					.getLastAltitude())));
