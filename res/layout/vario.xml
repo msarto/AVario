@@ -487,7 +487,7 @@
                             android:textSize="14sp" >
                         </TextView>
 
-<TextView
+						<TextView
                             android:id="@+id/qfe"
                             android:layout_width="fill_parent"
                             android:layout_height="match_parent"
@@ -510,7 +510,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="@string/span"
+                            android:text="@string/nan"
                             android:textSize="26sp" >
                         </TextView>
                     </LinearLayout>
