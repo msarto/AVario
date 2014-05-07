@@ -16,12 +16,12 @@ public class WavSinkTone extends AsyncTone {
 	private float prevBeepSpeed = 0;
 
 	public WavSinkTone() {
-		listSounds.put(0, player.load(AVarioActivity.CONTEXT, R.raw.s420, 1));
 		listSounds.put(-1, player.load(AVarioActivity.CONTEXT, R.raw.s400, 1));
 		listSounds.put(-2, player.load(AVarioActivity.CONTEXT, R.raw.s380, 1));
 		listSounds.put(-3, player.load(AVarioActivity.CONTEXT, R.raw.s360, 1));
 		listSounds.put(-4, player.load(AVarioActivity.CONTEXT, R.raw.s340, 1));
 		listSounds.put(-5, player.load(AVarioActivity.CONTEXT, R.raw.s320, 1));
+		listSounds.put(-5, player.load(AVarioActivity.CONTEXT, R.raw.s300, 1));
 	}
 
 	@Override
