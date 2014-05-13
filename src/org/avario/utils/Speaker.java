@@ -13,7 +13,8 @@ public class Speaker {
 
 	protected Speaker(Context context) {
 		try {
-			this.talker = new TextToSpeech(context, null);
+			talker = new TextToSpeech(context, null);
+			Logger.get().log("TTS engine: " + talker.getDefaultEngine());
 		} catch (Exception ex) {
 			available = false;
 			Logger.get().log("Speach is not available", ex);
@@ -30,10 +31,9 @@ public class Speaker {
 	}
 
 	public synchronized void say(String text2say) {
-
-		if (!talker.isSpeaking() && available) {
-			if (text2say != null && !text2say.equals("") && !text2say.toLowerCase().equals("nan"))
-				talker.speak(text2say, TextToSpeech.QUEUE_FLUSH, null);
+		if (!talker.isSpeaking() && available && text2say != null && !text2say.equals("")
+				&& !text2say.toLowerCase().equals("nan")) {
+			talker.speak(text2say, TextToSpeech.QUEUE_FLUSH, null);
 		}
 	}
 
