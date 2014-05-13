@@ -16,6 +16,7 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 
 public class Preferences {
+	public static final int STREAM_TYPE =  AudioManager.STREAM_DTMF;
 	public static volatile boolean use_speach = false;
 	public static volatile boolean auto_track = false;
 	public static volatile boolean use_sensbox = false;
@@ -67,8 +68,8 @@ public class Preferences {
 	private static void setAppSoundVolume(int appVolume) {
 		try {
 			AudioManager audio = (AudioManager) Preferences.context.getSystemService(Context.AUDIO_SERVICE);
-			int mediaVal = Math.round((audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 100f) * appVolume);
-			audio.setStreamVolume(AudioManager.STREAM_MUSIC, mediaVal, 0);
+			int mediaVal = Math.round((audio.getStreamMaxVolume(Preferences.STREAM_TYPE) / 100f) * appVolume);
+			audio.setStreamVolume(Preferences.STREAM_TYPE, mediaVal, 0);
 		} catch (Exception e) {
 			Logger.get().log("Unable o set app volume...", e);
 		}
@@ -82,7 +83,7 @@ public class Preferences {
 
 			if (baroSetting.equals("-1")) {
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-				int defaultValue = getDefaultBaroSensitivity();
+				int defaultValue = getDefaultBaroSensitivity();				
 				Logger.get().log(Build.MODEL + " set default baro sensitivity " + defaultValue);
 				Editor ed = prefs.edit();
 				// ed.clear();
@@ -146,7 +147,7 @@ public class Preferences {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			return Float.valueOf(prefs.getString(name, String.valueOf(defaultValue)));
 		} catch (Exception ex) {
-			Logger.get().log("Fail getting " + name);
+			Logger.get().log("Fail getting " + name, ex);
 		}
 		return defaultValue;
 	}
@@ -156,7 +157,7 @@ public class Preferences {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			return Integer.valueOf(prefs.getString(name, String.valueOf(defaultValue)));
 		} catch (Exception ex) {
-			Logger.get().log("Fail getting " + name);
+			Logger.get().log("Fail getting " + name, ex);
 		}
 		return defaultValue;
 	}
@@ -166,7 +167,7 @@ public class Preferences {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			return prefs.getString(name, defaultValue);
 		} catch (Exception ex) {
-			Logger.get().log("Fail getting " + name);
+			Logger.get().log("Fail getting " + name, ex);
 		}
 		return defaultValue;
 	}
@@ -176,9 +177,21 @@ public class Preferences {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			return prefs.getBoolean(name, defaultValue);
 		} catch (Exception ex) {
-			Logger.get().log("Fail getting " + name);
+			Logger.get().log("Fail getting " + name, ex);
 		}
 		return defaultValue;
+	}
+
+	public static String getAppVersion() {
+		String version = "unknown";
+		PackageInfo pInfo = null;
+		try {
+			pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+			version = pInfo.versionName + "." + pInfo.versionCode;
+		} catch (NameNotFoundException e) {
+			Logger.get().log("Fail getting version", e);
+		}
+		return version;
 	}
 
 	public static void updateVersion(PreferencesMenu preferencesMenu) {

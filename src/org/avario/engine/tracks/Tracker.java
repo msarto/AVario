@@ -1,43 +1,53 @@
 package org.avario.engine.tracks;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.security.spec.EncodedKeySpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.avario.AVarioActivity;
-import org.avario.R;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.consumerdef.BarometerConsumer;
 import org.avario.engine.consumerdef.LocationConsumer;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
-import org.avario.engine.sounds.TonePlayer;
-import org.avario.engine.sounds.TonePlayer.ToneType;
+import org.avario.engine.sounds.tone.TonePlayer;
+import org.avario.engine.sounds.tone.TonePlayer.ToneType;
+import org.avario.ui.NumericViewUpdater;
 import org.avario.utils.Logger;
 
 import android.app.Activity;
 import android.location.Location;
+import android.os.Build;
 import android.os.Environment;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.widget.TextView;
+import android.util.Base64;
 
 public class Tracker implements LocationConsumer, BarometerConsumer {
 	private static Tracker THIS = new Tracker();
-	private FileOutputStream trackStream = null;
+	private OutputStream trackStream = null;
 	private Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
 	private Location lastNotification;
-	private TextView recView;
 	private boolean tracking = false;
 	private boolean needTracking = false;
 	private TrackInfo metaInfo = new TrackInfo();
 	private String trackFileName;
-	private static final Animation recAnimation = new AlphaAnimation(0.0f, 1.0f);
+	private Signature sign;
+	private boolean useSignature = false;
+	private static final String igcK = "";
 
 	protected Tracker() {
+
 	}
 
 	public static Tracker get() {
@@ -46,15 +56,15 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 
 	public static void init(Activity context) {
 		THIS = new Tracker();
-		THIS.recView = (TextView) context.findViewById(R.id.rec_status);
 		SensorProducer.get().registerConsumer(THIS);
 	}
 
 	public synchronized boolean startTracking() {
 		float speed = DataAccessObject.get().getLastlocation() == null ? 0f : DataAccessObject.get().getLastlocation()
-				.getSpeed();
-		if (tracking == false && speed > 3) {
+				.getSpeed();		
+		if (tracking == false && speed > 3) {			
 			Logger.get().log("Start tracking " + tracking);
+			initSignature();
 			TonePlayer startTrack = new TonePlayer();
 			for (int i = 0; i < 3; i++) {
 				startTrack.play(400f, ToneType.HIGH);
@@ -69,15 +79,27 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 			tracking = true;
 		}
 
-		recView.setText(R.string.rec);
-		recAnimation.setDuration(500);
-		recAnimation.setStartOffset(20);
-		recAnimation.setRepeatMode(Animation.REVERSE);
-		recAnimation.setRepeatCount(Animation.INFINITE);
-		recView.startAnimation(recAnimation);
-
+		NumericViewUpdater.getInstance().notifyStartTracking();
 		needTracking = !tracking;
 		return tracking;
+	}
+
+	private boolean initSignature() {
+		try {
+			sign = Signature.getInstance("SHA1withRSA");
+			KeyFactory fac = KeyFactory.getInstance("RSA");
+			EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(Base64.decode(igcK, Base64.DEFAULT));
+			PrivateKey pk = fac.generatePrivate(privKeySpec);
+			sign.initSign(pk);
+			return true;
+		} catch (NoSuchAlgorithmException e) {
+			Logger.get().log("Can not make a signature", e);
+		} catch (InvalidKeySpecException e) {
+			Logger.get().log("Invalid key spec to sign the igc", e);
+		} catch (InvalidKeyException e) {
+			Logger.get().log("Invalid key to sign the igc", e);
+		}
+		return false;
 	}
 
 	public synchronized void stopTracking() {
@@ -87,8 +109,7 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 			tracking = false;
 			stopTrack();
 		}
-		recView.setText(Preferences.units_system == 1 ? R.string.ms : R.string.fs);
-		recAnimation.setRepeatCount(0);
+		NumericViewUpdater.getInstance().notifyStopTracking();
 	}
 
 	public boolean isTracking() {
@@ -97,7 +118,7 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 
 	protected void startTrack() {
 		try {
-			String HEADER = "AXMP Sony Xperia Active - AVario 0.1\r\n";
+			String HEADER = "AXMP " + Build.MANUFACTURER + " " + Build.MODEL + "\r\n";
 			HEADER += "HFDTE" + String.format("%1$td%1$tm%1$ty", new GregorianCalendar(TimeZone.getTimeZone("GMT")))
 					+ "\r\n";
 			HEADER += "HFFXA50\r\n";
@@ -106,6 +127,7 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 			HEADER += "HFGPS: Internal GPS (Android)\r\n";
 			HEADER += "HODTM100GPSDATUM: WGS-84\r\n";
 			HEADER += "HOCCLCOMPETITION CLASS: Paraglider open\r\n";
+			HEADER += "HFRFWFIRMWAREVERSION: " + Preferences.getAppVersion() + "\r\n";
 			HEADER += "I013638GSP\r\n";
 			trackFileName = String.format("%1$ty%1$tm%1$td%1$tH%1$tM%1$tS", new GregorianCalendar());
 			final File trackFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
@@ -115,7 +137,8 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 			}
 
 			Logger.get().log("Start writting " + trackFile.getAbsolutePath());
-			trackStream = new FileOutputStream(trackFile);
+			trackStream = initSignature() ? new SignedOutputStream(new FileOutputStream(trackFile), sign)
+					: new BufferedOutputStream(new FileOutputStream(trackFile));
 			trackStream.write(HEADER.getBytes());
 			metaInfo.setFlightStart(System.currentTimeMillis());
 
@@ -124,9 +147,10 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 		}
 	}
 
-	protected void stopTrack() {
+	protected synchronized void stopTrack() {
 		if (trackStream != null) {
 			try {
+
 				if (lastNotification != null) {
 					metaInfo.setEndAlt((int) Math.round(lastNotification.getAltitude()));
 				}
@@ -136,6 +160,20 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 					metaInfo.writeTo(trackMetaFile);
 				}
 
+				if (useSignature) {
+					// Write the G record
+					final String sigStr = Base64.encodeToString(sign.sign(), Base64.DEFAULT).replaceAll("[\\r\\n]", "");
+					final short baseSign = 64;
+					StringBuilder sb = new StringBuilder("G");
+					for (int i = 0; i < sigStr.length() / baseSign; i++) {
+						sb.append(sigStr.substring(i * baseSign, i * baseSign + baseSign));
+					}
+					if (sigStr.length() % baseSign > 0) {
+						sb.append(sigStr.substring(((int) (sigStr.length() / baseSign)) * baseSign));
+					}
+					trackStream.write(sb.toString().getBytes());
+				}
+				trackStream.flush();
 				trackStream.close();
 				Logger.get().log("Track closed");
 			} catch (Exception e) {
@@ -148,12 +186,7 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 	public synchronized void notifyWithLocation(final Location location) {
 		// Start the track if selected
 		if (needTracking || (Preferences.auto_track && !isTracking())) {
-			AVarioActivity.CONTEXT.runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					startTracking();
-				}
-			});
+			startTracking();
 			return;
 		}
 
@@ -215,6 +248,11 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 
 		return String.format(Locale.US, (isLatitude ? "%02d" : "%03d") + "%02d%03d%c", (int) degIn, minwhole, minfract,
 				dirLetter);
+	}
+
+	protected String getSignature() {
+		String gSign = "G";
+		return gSign;
 	}
 
 	@Override

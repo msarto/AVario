@@ -6,6 +6,7 @@ import org.avario.engine.SensorProducer;
 import org.avario.engine.consumerdef.LocationConsumer;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
+import org.avario.engine.sensors.LocationThread;
 import org.avario.utils.Logger;
 import org.avario.utils.StringFormatter;
 import org.avario.utils.UnitsConverter;
@@ -14,7 +15,10 @@ import android.app.Activity;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> implements LocationConsumer {
 	private Activity context = null;
@@ -29,6 +33,7 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 	protected TextView timeSpanView = null;
 	protected TextView recView = null;
 	protected TextView glideRatio = null;
+	private final Animation recAnimation = new AlphaAnimation(0.0f, 1.0f);
 
 	protected NumericViewUpdater(Activity context) {
 		this.context = context;
@@ -48,6 +53,10 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 		qfeView.setTypeface(font);
 		timeSpanView = (TextView) context.findViewById(R.id.ftimeValue);
 		glideRatio = (TextView) context.findViewById(R.id.ratio);
+	}
+
+	public static NumericViewUpdater getInstance() {
+		return THIS;
 	}
 
 	public static void init(Activity context) {
@@ -102,8 +111,28 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 		return null;
 	}
 
-	public void setStartTime(long startTime) {
-		this.startTime = startTime;
+	public void notifyStartTracking() {
+		AVarioActivity.CONTEXT.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				recView.setText(R.string.rec);
+				recAnimation.setDuration(500);
+				recAnimation.setStartOffset(20);
+				recAnimation.setRepeatMode(Animation.REVERSE);
+				recAnimation.setRepeatCount(Animation.INFINITE);
+				recView.startAnimation(recAnimation);
+			}
+		});
+	}
+
+	public void notifyStopTracking() {
+		AVarioActivity.CONTEXT.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				recView.setText(Preferences.units_system == 1 ? R.string.ms : R.string.fs);
+				recAnimation.setRepeatCount(0);
+			}
+		});
 	}
 
 	@Override

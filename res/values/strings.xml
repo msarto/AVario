@@ -99,7 +99,7 @@
     <string name="location_history_t">Location history</string>
     <string name="heading_interval_s">Interval to recompute heading</string>
     <string name="heading_interval_t">Heading interval</string>
-    <string name="auto_track_s">Start tracking when application starts</string>
+    <string name="auto_track_s">Start tracking when flight starts</string>
     <string name="auto_track_t">Auto start tracking</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>

@@ -35,7 +35,6 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 							AVarioActivity.CONTEXT.getApplicationContext().getString(R.string.gps_fail),
 							Toast.LENGTH_LONG).show();
 				}
-
 			}
 		});
 	}
@@ -47,13 +46,17 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 
 	@Override
 	public synchronized void onLocationChanged(final Location newLocation) {
-		if (newLocation.hasAltitude() && (DataAccessObject.get().getMovementFactor() instanceof GpsMovement)) {
-			DataAccessObject.get().setLastAltitude((float) newLocation.getAltitude());
-		}
-
-		DataAccessObject.get().setLastlocation(newLocation);
-		SensorProducer.get().notifyGpsConsumers(DataAccessObject.get().getLastlocation());
-		SensorProducer.get().notifyBaroConsumers(DataAccessObject.get().getLastAltitude());
+		callbackThreadPool.execute(new Runnable() {
+			@Override
+			public void run() {
+				if (newLocation.hasAltitude() && (DataAccessObject.get().getMovementFactor() instanceof GpsMovement)) {
+					DataAccessObject.get().setLastAltitude((float) newLocation.getAltitude());
+				}
+				DataAccessObject.get().setLastlocation(newLocation);
+				SensorProducer.get().notifyGpsConsumers(DataAccessObject.get().getLastlocation());
+				SensorProducer.get().notifyBaroConsumers(DataAccessObject.get().getLastAltitude());
+			}
+		});
 	}
 
 	@Override

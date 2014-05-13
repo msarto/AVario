@@ -2,9 +2,9 @@ package org.avario.engine.sounds;
 
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
-import org.avario.engine.sounds.tones.wav.WavLiftTone;
-import org.avario.engine.sounds.tones.wav.WavPrenotifyTone;
-import org.avario.engine.sounds.tones.wav.WavSinkTone;
+import org.avario.engine.sounds.wav.WavLiftTone;
+import org.avario.engine.sounds.wav.WavPrenotifyTone;
+import org.avario.engine.sounds.wav.WavSinkTone;
 import org.avario.utils.Logger;
 import org.avario.utils.Speaker;
 import org.avario.utils.StringFormatter;

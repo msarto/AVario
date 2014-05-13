@@ -87,7 +87,7 @@ public class AVarioActivity extends Activity {
 
 		viewCreated = true;
 		AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-		startVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
+		startVolume = audio.getStreamVolume(Preferences.STREAM_TYPE);
 
 		Preferences.update(this);
 		Logger.init();
@@ -214,7 +214,7 @@ public class AVarioActivity extends Activity {
 			notifier.cancel(22313);
 			if (startVolume != Integer.MIN_VALUE) {
 				AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-				audio.setStreamVolume(AudioManager.STREAM_MUSIC, startVolume, 0);
+				audio.setStreamVolume(Preferences.STREAM_TYPE, startVolume, 0);
 			}
 		} catch (Exception ex) {
 			Logger.get().log("Fail to restore volume", ex);
