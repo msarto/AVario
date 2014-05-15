@@ -2,9 +2,6 @@ package org.avario.engine.sounds;
 
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
-import org.avario.engine.sounds.wav.WavLiftTone;
-import org.avario.engine.sounds.wav.WavPrenotifyTone;
-import org.avario.engine.sounds.wav.WavSinkTone;
 import org.avario.utils.Logger;
 import org.avario.utils.Speaker;
 import org.avario.utils.StringFormatter;
@@ -16,10 +13,6 @@ public class BeepBeeper implements Runnable {
 
 	private Thread thr;
 	private static BeepBeeper THIS;
-
-	private AsyncTone liftBeep;
-	private AsyncTone sinkBeep;
-	private AsyncTone prenotifyBeep;
 
 	protected BeepBeeper() {
 		thr = new Thread(this);
@@ -37,10 +30,6 @@ public class BeepBeeper implements Runnable {
 	@Override
 	public void run() {
 		try {
-			liftBeep = new WavLiftTone();
-			sinkBeep = new WavSinkTone();
-			prenotifyBeep = new WavPrenotifyTone();
-
 			while (thr.isAlive()) {
 				try {
 					float beepSpeed = DataAccessObject.get().getLastVSpeed();
@@ -50,9 +39,11 @@ public class BeepBeeper implements Runnable {
 						Thread.sleep(200);
 					} else {
 						if (beepSpeed > 0) {
+							AsyncTone liftBeep = ToneProducer.get().getLiftTone();
 							liftBeep.setSpeed(beepSpeed);
 							liftBeep.beep();
 						} else if (beepSpeed < 0) {
+							AsyncTone sinkBeep = ToneProducer.get().getSyncTone();
 							sinkBeep.setSpeed(beepSpeed);
 							sinkBeep.beep();
 						}
@@ -102,7 +93,7 @@ public class BeepBeeper implements Runnable {
 
 	private void prenotifyThermal() {
 		if (Preferences.prenotify_interval > 0 && DataAccessObject.get().isGPSFix()) {
-			prenotifyBeep.beep();
+			ToneProducer.get().getPrenotifyTone().beep();
 		}
 	}
 
@@ -111,15 +102,9 @@ public class BeepBeeper implements Runnable {
 	}
 
 	public void stop() {
-		if (liftBeep != null) {
-			liftBeep.stop();
-		}
-		if (sinkBeep != null) {
-			sinkBeep.stop();
-		}
-		if (prenotifyBeep != null) {
-			prenotifyBeep.stop();
-		}
+		ToneProducer.get().getLiftTone().stop();
+		ToneProducer.get().getSyncTone().stop();
+		ToneProducer.get().getPrenotifyTone().stop();
 		thr.interrupt();
 	}
 }

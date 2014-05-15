@@ -13,6 +13,15 @@
                 android:summary="@string/volume_s"
                 android:title="@string/volume_t" />
 
+            <ListPreference
+                android:capitalize="words"
+                android:defaultValue="2"
+                android:entries="@array/sound_types_names"
+                android:entryValues="@array/units_system_vals"
+                android:key="sound_type"
+                android:summary="@string/sound_type_s"
+                android:title="@string/sound_type_t" />
+
             <CheckBoxPreference
                 android:defaultValue="false"
                 android:key="use_speach"

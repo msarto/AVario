@@ -115,6 +115,8 @@
     <string name="qnh_t">Reference pressure</string>
     <string name="ref_alt_title">Current altitude</string>
     <string name="ref_alt_description">Setting current altitude will make automatic computaion of QNH value. Please insert current altitude in meters.</string>
+    <string name="sound_type_s">Vario sound type</string>
+    <string name="sound_type_t">Sound type</string>
 
     <string-array name="units_system_names">
         <item>Metric</item>
@@ -124,5 +126,9 @@
         <item>1</item>
         <item>2</item>
     </string-array>
-
+    <string-array name="sound_types_names">
+        <item>Static</item>
+        <item>Dynamic</item>
+    </string-array>
+    
 </resources>
