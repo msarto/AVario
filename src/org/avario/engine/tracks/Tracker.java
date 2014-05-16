@@ -61,8 +61,8 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 
 	public synchronized boolean startTracking() {
 		float speed = DataAccessObject.get().getLastlocation() == null ? 0f : DataAccessObject.get().getLastlocation()
-				.getSpeed();		
-		if (tracking == false && speed > 3) {			
+				.getSpeed();
+		if (tracking == false && speed > 3) {
 			Logger.get().log("Start tracking " + tracking);
 			initSignature();
 			TonePlayer startTrack = new TonePlayer();
@@ -197,9 +197,7 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 				if (lastNotification != null && (location.getTime() - lastNotification.getTime() < 1000)) {
 					return;
 				}
-				int altitude = (int) (location.hasAltitude() ? location.getAltitude() : DataAccessObject.get()
-						.getLastAltitude());
-
+				int altitude = Math.round(DataAccessObject.get().getLastAltitude());
 				strSeq = String.format(Locale.US, "B%02d%02d%02d%s%s%c%05d%05d%03d\r\n", cal.get(Calendar.HOUR_OF_DAY),
 						cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), degreeStr(location.getLatitude(), true),
 						degreeStr(location.getLongitude(), false), 'A', altitude, altitude, (int) location.getSpeed());

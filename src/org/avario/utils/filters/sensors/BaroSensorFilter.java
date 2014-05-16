@@ -36,9 +36,9 @@ public class BaroSensorFilter implements LocationConsumer {
 	// filter the pressure and transform it to altitude
 	public synchronized float toAltitude(float currentPresure) {
 		lastPresureNotified = currentPresure;
-			for (Filter filter : baroFilters) {
-				lastPresureNotified = filter.doFilter(lastPresureNotified)[0];
-			}
+		for (Filter filter : baroFilters) {
+			lastPresureNotified = filter.doFilter(lastPresureNotified)[0];
+		}
 
 		if (referrencePresure != Preferences.ref_qnh) {
 			resetFilters();
@@ -53,17 +53,17 @@ public class BaroSensorFilter implements LocationConsumer {
 	@Override
 	public void notifyWithLocation(final Location location) {
 		if (!gpsAltitude && location.hasAltitude() && lastPresureNotified > 0f && location.getAccuracy() < 10) {
-			Logger.get().log("GPS Altitude " + location.getAltitude());
+			final double altitude = location.getAltitude();
+			final double gHeight = DataAccessObject.get().getGeoidHeight();
+			Logger.get().log("Adjust altitude with GPS Altitude " + altitude + " and geoidHeight " + gHeight);
 			gpsAltitude = true;
-			adjustAltitude(location.getAltitude());
+			adjustAltitude(Math.max(0, altitude - gHeight));
 			AVarioActivity.CONTEXT.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					String altitudeChangeNotif = AVarioActivity.CONTEXT.getApplicationContext()
-							.getString(
-									R.string.altitude_from_gps,
-									StringFormatter.noDecimals(UnitsConverter.toPreferredShort((float) location
-											.getAltitude())));
+					String altitudeChangeNotif = AVarioActivity.CONTEXT.getApplicationContext().getString(
+							R.string.altitude_from_gps,
+							StringFormatter.noDecimals(UnitsConverter.toPreferredShort((float) (altitude - gHeight))));
 					Toast.makeText(AVarioActivity.CONTEXT, altitudeChangeNotif, Toast.LENGTH_LONG).show();
 				}
 			});

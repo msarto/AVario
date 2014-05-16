@@ -1,5 +1,7 @@
 package org.avario.engine.datastore;
 
+import java.util.StringTokenizer;
+
 import org.avario.engine.sensors.GpsMovement;
 import org.avario.engine.sensors.MovementFactor;
 import org.avario.utils.Logger;
@@ -14,6 +16,7 @@ public class DataAccessObject {
 	protected volatile float bearing = 0f;
 	protected volatile float lastAltitude = -1;
 	protected volatile float refAltitude = -1;
+	protected volatile String nmeaGGA;
 
 	private volatile float windDirectionBearing = -1f;
 	private volatile float temperature = 0f;
@@ -144,5 +147,38 @@ public class DataAccessObject {
 
 	public double getHistoryAltimeterGain() {
 		return altitudeGainTask.getAltitudeGain();
+	}
+
+	public double getGeoidHeight() {
+		// $GPGGA,102010.0,4646.486229,N,02336.101507,E,1,07,0.6,391.7,M,37.0,M,,*52
+		double geoidHeight = 0f;
+		try {
+			if (nmeaGGA != null) {
+				StringTokenizer st = new StringTokenizer(nmeaGGA, ",");
+				String prevValue = "0";
+				boolean firstM = true;
+				while (st.hasMoreTokens()) {
+					String currentValue = st.nextToken();
+					if (currentValue.equals("M")) {
+						if (firstM) { // First M is the altitude from NMEA
+							Logger.get().log("Nmea altitude: " + prevValue);
+							firstM = false;
+						} else {
+							Logger.get().log("Nmea geoid height: " + prevValue);
+							geoidHeight = Double.valueOf(prevValue);
+							break;
+						}
+					}
+					prevValue = currentValue;
+				}
+			}
+		} catch (Exception ex) {
+			Logger.get().log("Fail computing geoid H ", ex);
+		}
+		return geoidHeight;
+	}
+
+	public void setNmeaGGA(String nmeaGGA) {
+		this.nmeaGGA = nmeaGGA;
 	}
 }

@@ -8,13 +8,14 @@ import org.avario.engine.datastore.DataAccessObject;
 
 import android.content.Context;
 import android.hardware.SensorEvent;
+import android.location.GpsStatus.NmeaListener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
-public class LocationThread extends SensorThread<Location> implements LocationListener {
+public class LocationThread extends SensorThread<Location> implements LocationListener, NmeaListener {
 
 	private final LocationManager locationManager;
 
@@ -30,6 +31,7 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 			public void run() {
 				try {
 					locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, LocationThread.this);
+					locationManager.addNmeaListener(LocationThread.this);
 				} catch (Exception e) {
 					Toast.makeText(AVarioActivity.CONTEXT,
 							AVarioActivity.CONTEXT.getApplicationContext().getString(R.string.gps_fail),
@@ -42,6 +44,7 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 	@Override
 	public void stop() {
 		locationManager.removeUpdates(LocationThread.this);
+		locationManager.removeNmeaListener(LocationThread.this);
 	}
 
 	@Override
@@ -53,7 +56,7 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 					DataAccessObject.get().setLastAltitude((float) newLocation.getAltitude());
 				}
 				DataAccessObject.get().setLastlocation(newLocation);
-				SensorProducer.get().notifyGpsConsumers(DataAccessObject.get().getLastlocation());
+				SensorProducer.get().notifyGpsConsumers(newLocation);
 				SensorProducer.get().notifyBaroConsumers(DataAccessObject.get().getLastAltitude());
 			}
 		});
@@ -80,4 +83,11 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	public void onNmeaReceived(long ts, final String nmea) {
+		// $GPGGA,102010.0,4646.486229,N,02336.101507,E,1,07,0.6,391.7,M,37.0,M,,*52
+		if (nmea != null && nmea.startsWith("$GPGGA,") && !nmea.startsWith("$GPGGA,,,")) {
+			DataAccessObject.get().setNmeaGGA(nmea);
+		}
+	}
 }
