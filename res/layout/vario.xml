@@ -203,7 +203,7 @@
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="30dp"
+                android:layout_height="33dp"
                 android:layout_gravity="center" >
 
                 <TextView
@@ -214,7 +214,7 @@
                     android:background="@drawable/round_border"
                     android:gravity="bottom|center"
                     android:text="@string/nan"
-                    android:textSize="25sp"
+                    android:textSize="30sp"
                     android:textStyle="bold" >
                 </TextView>
             </LinearLayout>

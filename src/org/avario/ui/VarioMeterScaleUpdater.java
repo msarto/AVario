@@ -81,7 +81,7 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 	private void resizeScaleWithDeviceHeight(LinearLayout parent) {
 		final float density = context.getResources().getDisplayMetrics().density;
 		final float screenH = context.getResources().getDisplayMetrics().heightPixels;
-		scaleHeight = Math.round((screenH - density * 30 - density * 140) / 40);
+		scaleHeight = Math.round((screenH - density * 30 - density * 150) / 40);
 		for (int i = -20; i < 21; i++) {
 			MarkedLayout scaleItem = scaleView.get(i);
 			if (scaleItem != null) {
@@ -167,7 +167,7 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 		float prevSpeed = 0f;
 		while (!THIS.isCancelled()) {
 			try {
-				Thread.sleep(100);
+				Thread.sleep(200);
 				float speed = DataAccessObject.get().getLastVSpeed();
 				float vSpeed = Math.abs(speed) > Preferences.lift_start ? speed : 0.0f;
 				vSpeed = vSpeed > 5 ? 5 : vSpeed;
