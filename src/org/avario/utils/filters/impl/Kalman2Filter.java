@@ -18,7 +18,7 @@ public class Kalman2Filter implements Filter {
 	@Override
 	public synchronized float[] doFilter(float... value) {
 		float[] result = new float[1];
-		history.add(value[0]);
+		history.add(value.clone()[0]);
 		result[0] = doKalman2();
 		if (history.size() > filterSizeFactor) {
 			history.poll();

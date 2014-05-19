@@ -5,7 +5,7 @@ import org.avario.utils.filters.Filter;
 
 public class StabiloFilter implements Filter {
 	// The lower the noise is the higher the filtering is
-	private float previousValue = 0.0f;
+	private volatile float previousValue = 0.0f;
 	protected float factor = 1;
 
 	public StabiloFilter() {
@@ -17,8 +17,8 @@ public class StabiloFilter implements Filter {
 	}
 
 	@Override
-	public synchronized float[] doFilter(final float... value) {
-		float ret = value[0];
+	public float[] doFilter(final float... value) {
+		float ret = value.clone()[0];		
 		float stabiloMaxNoise = ((0.2f - Preferences.baro_sensitivity * 0.003f) / 1000f) * factor;
 		final float stabiloMinNoise = 0.000003f * factor;
 		float delta = Math.abs(ret - previousValue);

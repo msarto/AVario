@@ -31,7 +31,7 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 			public void run() {
 				try {
 					locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, LocationThread.this);
-					locationManager.addNmeaListener(LocationThread.this);
+					locationManager.addNmeaListener(LocationThread.this);									
 				} catch (Exception e) {
 					Toast.makeText(AVarioActivity.CONTEXT,
 							AVarioActivity.CONTEXT.getApplicationContext().getString(R.string.gps_fail),
@@ -39,6 +39,23 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 				}
 			}
 		});
+		/*
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		onNmeaReceived(0, "$GPGGA,102010.0,4646.486229,N,02336.101507,E,1,07,0.6,391.7,M,37.0,M,,*52");
+
+		new MockLocation(){
+			@Override
+			public void notifyLocation(Location location) {
+				LocationThread.this.onLocationChanged(location);
+			}
+		}.run();								
+*/
 	}
 
 	@Override
@@ -53,7 +70,8 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 			@Override
 			public void run() {
 				if (newLocation.hasAltitude() && (DataAccessObject.get().getMovementFactor() instanceof GpsMovement)) {
-					DataAccessObject.get().setLastAltitude((float) newLocation.getAltitude());
+					DataAccessObject.get().setLastAltitude(
+							(float) (newLocation.getAltitude() - DataAccessObject.get().getGeoidHeight()));
 				}
 				DataAccessObject.get().setLastlocation(newLocation);
 				SensorProducer.get().notifyGpsConsumers(newLocation);

@@ -13,9 +13,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
 public class BaroSensorThread extends SensorThread<Float> {
-	private BaroSensorFilter baroFilter = new BaroSensorFilter(
-			new StabiloFilter(0.7f - Preferences.baro_sensitivity / 100f),
-			new Kalman2Filter(Preferences.baro_sensitivity));
+	private BaroSensorFilter baroFilter = new BaroSensorFilter(new StabiloFilter(
+			0.7f - Preferences.baro_sensitivity / 100f), new Kalman2Filter(Preferences.baro_sensitivity));
 
 	public BaroSensorThread() {
 		init();
@@ -38,8 +37,7 @@ public class BaroSensorThread extends SensorThread<Float> {
 				final float altitude = baroFilter.toAltitude(currentPresure);
 				if (altitude >= 0) {
 					DataAccessObject.get().setLastAltitude(altitude);
-					DataAccessObject.get().getMovementFactor()
-							.notify(System.nanoTime() / 1000000d, altitude);
+					DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, altitude);
 					SensorProducer.get().notifyBaroConsumers(altitude);
 				}
 			}

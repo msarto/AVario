@@ -88,6 +88,7 @@ public class BaroSensorFilter implements LocationConsumer {
 		// altitudeFilter.reset();
 		DataAccessObject.get().resetVSpeed();
 		referrencePresure = ref;
+		Preferences.ref_qnh = referrencePresure;
 	}
 
 	private void resetFilters() {

@@ -87,9 +87,9 @@ public class Logger {
 					}
 				}
 			}
-		} catch (IOException e) {
-		} finally {
 			Log.i(LOG_TAG, msg, ex);
+		} catch (Throwable e) {
+			System.err.print(msg);
 		}
 	}
 }

@@ -6,7 +6,6 @@ import org.avario.engine.SensorProducer;
 import org.avario.engine.consumerdef.LocationConsumer;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
-import org.avario.engine.sensors.LocationThread;
 import org.avario.utils.Logger;
 import org.avario.utils.StringFormatter;
 import org.avario.utils.UnitsConverter;
@@ -18,7 +17,6 @@ import android.os.AsyncTask;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> implements LocationConsumer {
 	private Activity context = null;
@@ -160,4 +158,5 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 	public static void clear() {
 		THIS.cancel(true);
 	}
+
 }
