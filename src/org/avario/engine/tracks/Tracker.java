@@ -18,7 +18,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import org.avario.engine.SensorProducer;
-import org.avario.engine.consumerdef.BarometerConsumer;
 import org.avario.engine.consumerdef.LocationConsumer;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
@@ -33,7 +32,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Base64;
 
-public class Tracker implements LocationConsumer, BarometerConsumer {
+public class Tracker implements LocationConsumer {
 	private static Tracker THIS = new Tracker();
 	private OutputStream trackStream = null;
 	private Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
@@ -189,22 +188,24 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 			startTracking();
 			return;
 		}
-
+		
+		Location loc = DataAccessObject.get().getLastlocation();
 		if (trackStream != null && tracking) {
 			String strSeq = null;
 			try {
-				cal.setTimeInMillis(location.getTime());
-				if (lastNotification != null && (location.getTime() - lastNotification.getTime() < 1000)) {
+				cal.setTimeInMillis(loc.getTime());
+				if (lastNotification != null && (loc.getTime() - lastNotification.getTime() < 1000)) {
 					return;
 				}
 				int altitude = Math.round(DataAccessObject.get().getLastAltitude());
 				strSeq = String.format(Locale.US, "B%02d%02d%02d%s%s%c%05d%05d%03d\r\n", cal.get(Calendar.HOUR_OF_DAY),
-						cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), degreeStr(location.getLatitude(), true),
-						degreeStr(location.getLongitude(), false), 'A', altitude, altitude, (int) location.getSpeed());
+						cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), degreeStr(loc.getLatitude(), true),
+						degreeStr(loc.getLongitude(), false), 'A', altitude, altitude, (int) loc.getSpeed());
 
 				trackStream.write(strSeq.getBytes());
-				updateMetaInfo(location);
-				lastNotification = location;
+				updateMetaInfo(loc);
+				updateHeight(DataAccessObject.get().getLastAltitude());
+				lastNotification = loc;
 			} catch (Exception e) {
 				Logger.get().log("Fail writing seq: " + strSeq, e);
 			}
@@ -253,8 +254,7 @@ public class Tracker implements LocationConsumer, BarometerConsumer {
 		return gSign;
 	}
 
-	@Override
-	public synchronized void notifyWithAltFromPreasure(float altitude) {
+	private void updateHeight(float altitude) {
 		if (tracking) {
 			if (metaInfo.getHighestAlt() < altitude) {
 				metaInfo.setHighestAlt((int) Math.round(altitude));

@@ -33,12 +33,19 @@ public class BaroSensorThread extends SensorThread<Float> {
 		callbackThreadPool.execute(new Runnable() {
 			@Override
 			public void run() {
-				float currentPresure = sensorEvent.values.clone()[0];
-				final float altitude = baroFilter.toAltitude(currentPresure);
-				if (altitude >= 0) {
-					DataAccessObject.get().setLastAltitude(altitude);
-					DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, altitude);
-					SensorProducer.get().notifyBaroConsumers(altitude);
+				try {
+					if (!isSensorProcessed) {
+						isSensorProcessed = true;
+						float currentPresure = sensorEvent.values.clone()[0];
+						final float altitude = baroFilter.toAltitude(currentPresure);
+						if (altitude >= 0) {
+							DataAccessObject.get().setLastAltitude(altitude);
+							DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, altitude);
+							SensorProducer.get().notifyBaroConsumers(altitude);
+						}
+					}
+				} finally {
+					isSensorProcessed = false;
 				}
 			}
 		});

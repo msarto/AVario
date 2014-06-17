@@ -23,6 +23,8 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 	protected int sensorSpeed;
 	protected SensorManager sensorManager;
 	private boolean isSensorActive = false;
+	protected volatile boolean isSensorProcessed = false;
+	
 
 	protected SensorThread() {
 		this.sensorManager = (SensorManager) AVarioActivity.CONTEXT.getSystemService(Context.SENSOR_SERVICE);

@@ -26,11 +26,18 @@ public class CompasSensorThread extends SensorThread<Float> {
 		callbackThreadPool.execute(new Runnable() {
 			@Override
 			public void run() {
-				if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-					float bearing = compasFilter.toBearing(sensorEvent.values.clone());
-					compassTask.setBearing(bearing);
-				} else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-					compasFilter.notifyAccelerometer(sensorEvent.values.clone());
+				try {
+					if (!isSensorProcessed) {
+						isSensorProcessed = true;
+						if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+							float bearing = compasFilter.toBearing(sensorEvent.values.clone());
+							compassTask.setBearing(bearing);
+						} else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+							compasFilter.notifyAccelerometer(sensorEvent.values.clone());
+						}
+					}
+				} finally {
+					isSensorProcessed = false;
 				}
 			}
 		});
