@@ -7,8 +7,6 @@ import org.avario.utils.Speaker;
 import org.avario.utils.StringFormatter;
 import org.avario.utils.UnitsConverter;
 
-import android.app.Activity;
-
 public class BeepBeeper implements Runnable {
 
 	private volatile boolean doBeep = false;
@@ -17,7 +15,7 @@ public class BeepBeeper implements Runnable {
 	protected BeepBeeper() {
 	}
 
-	public static void init(Activity context) {
+	public static void init() {
 		THIS = new BeepBeeper();
 		THIS.start();
 	}
@@ -31,9 +29,11 @@ public class BeepBeeper implements Runnable {
 		try {
 			while (doBeep) {
 				try {
+					DataAccessObject.get().upadteVSpeed();
 					float beepSpeed = DataAccessObject.get().getLastVSpeed();
 					beepSpeed = beepSpeed > 5 ? 5 : beepSpeed;
 					beepSpeed = beepSpeed < -5 ? -5 : beepSpeed;
+
 					if (!validateThisSpeed(beepSpeed)) {
 						Thread.sleep(200);
 					} else {
@@ -45,20 +45,20 @@ public class BeepBeeper implements Runnable {
 							AsyncTone sinkBeep = ToneProducer.get().getSyncTone();
 							sinkBeep.setSpeed(beepSpeed);
 							sinkBeep.beep();
-						}
+						}						
 						if (Preferences.use_speach) {
 							float saySpeed = UnitsConverter.toPreferredVSpeed(beepSpeed);
 							Speaker.get().say(
 									Preferences.units_system == 2 ? StringFormatter.noDecimals(saySpeed)
 											: StringFormatter.oneDecimal(saySpeed));
-						}
-						Thread.sleep(Math.round(200 - 40 * beepSpeed));
+						}						
+						 Thread.sleep(Math.round(100 - 20 * beepSpeed));
 					}
 				} catch (InterruptedException e) {
 					break;
 				} catch (Exception ex) {
 					Logger.get().log("Fail in beep: ", ex);
-				}
+				} 
 			}
 		} catch (Exception ex) {
 			Logger.get().log("Fail init beep: ", ex);

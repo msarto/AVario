@@ -11,7 +11,6 @@ import org.avario.ui.poi.PoiView;
 import org.avario.ui.view.NavigationView;
 import org.avario.utils.StringFormatter;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -49,7 +48,6 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		headingMarkPaint.setColor(Color.BLUE);
 	}
 
-	private Activity context;
 	private NavigationView navView;
 
 	protected int radius = 80;
@@ -64,13 +62,12 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 	private PoiView poiView;
 	private float prevBearing = 0;
 
-	protected NavigatorUpdater(Activity context) {
-		this.context = context;
-		windsock = BitmapFactory.decodeResource(context.getResources(), R.drawable.windsock);
-		thermal = BitmapFactory.decodeResource(context.getResources(), R.drawable.spiral);
-		heading = BitmapFactory.decodeResource(context.getResources(), R.drawable.heading);
-		font = StringFormatter.getLargeFont(context.getApplicationContext());
-		densityMultiplier = context.getResources().getDisplayMetrics().density;
+	protected NavigatorUpdater() {
+		windsock = BitmapFactory.decodeResource(AVarioActivity.CONTEXT.getResources(), R.drawable.windsock);
+		thermal = BitmapFactory.decodeResource(AVarioActivity.CONTEXT.getResources(), R.drawable.spiral);
+		heading = BitmapFactory.decodeResource(AVarioActivity.CONTEXT.getResources(), R.drawable.heading);
+		font = StringFormatter.getLargeFont(AVarioActivity.CONTEXT.getApplicationContext());
+		densityMultiplier = AVarioActivity.CONTEXT.getResources().getDisplayMetrics().density;
 
 		cardinals.setAntiAlias(true);
 		cardinals.setTextSize(30 * densityMultiplier);
@@ -85,8 +82,8 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 
 	}
 
-	public static void init(Activity context) {
-		THIS = new NavigatorUpdater(context);
+	public static void init() {
+		THIS = new NavigatorUpdater();
 		SensorProducer.get().registerConsumer(THIS);
 	}
 
@@ -100,9 +97,9 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 
 		navCanvas.rotate(DataAccessObject.get().getBearing(), this.xCenter, this.yCenter);
 		if (navView == null) {
-			navView = (NavigationView) context.findViewById(R.id.navLayout);
+			navView = (NavigationView) AVarioActivity.CONTEXT.findViewById(R.id.navLayout);
 			radius = (int) Math.round(navView.getWidth() / 3);
-			poiView = new PoiView(context, navCanvas, xCenter, yCenter);
+			poiView = new PoiView(AVarioActivity.CONTEXT, navCanvas, xCenter, yCenter);
 		}
 
 		drawCompass(navCanvas);
@@ -118,14 +115,14 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 	private void drawCompass(Canvas navigationCanvas) {
 		circlePaint.setColor(DataAccessObject.get().isGPSFix() ? Color.BLACK : Color.RED);
 		navigationCanvas.drawCircle(xCenter, yCenter, radius, circlePaint);
-		
-		navigationCanvas.drawText(context.getString(R.string.north), xCenter,
+
+		navigationCanvas.drawText(AVarioActivity.CONTEXT.getString(R.string.north), xCenter,
 				yCenter - Math.round(radius + 5 * densityMultiplier), cardinals);
-		navigationCanvas.drawText(context.getString(R.string.south), xCenter,
+		navigationCanvas.drawText(AVarioActivity.CONTEXT.getString(R.string.south), xCenter,
 				yCenter + Math.round(radius + 25 * densityMultiplier), cardinals);
-		navigationCanvas.drawText(context.getString(R.string.west),
+		navigationCanvas.drawText(AVarioActivity.CONTEXT.getString(R.string.west),
 				xCenter - Math.round(radius + 15 * densityMultiplier), yCenter, cardinals);
-		navigationCanvas.drawText(context.getString(R.string.east),
+		navigationCanvas.drawText(AVarioActivity.CONTEXT.getString(R.string.east),
 				xCenter + Math.round(radius + 15 * densityMultiplier), yCenter, cardinals);
 	}
 

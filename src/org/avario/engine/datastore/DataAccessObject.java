@@ -16,7 +16,9 @@ public class DataAccessObject {
 	protected float bearing = 0f;
 	protected float lastAltitude = -1;
 	protected float lastPresure = -1;
+	protected volatile float lastVSpeed = 0;
 	protected float refAltitude = -1;
+	
 	protected String nmeaGGA;
 
 	private float windDirectionBearing = -1f;
@@ -64,8 +66,12 @@ public class DataAccessObject {
 		return thermalTask.getLastThermal();
 	}
 
-	public synchronized float getLastVSpeed() {
-		return movementFactor.getValue();
+	public float getLastVSpeed() {
+		return lastVSpeed;
+	}
+	
+	public synchronized void upadteVSpeed() {
+		lastVSpeed = movementFactor.getValue();
 	}
 
 	public synchronized void resetVSpeed() {

@@ -19,7 +19,6 @@ import android.view.animation.Animation;
 import android.widget.TextView;
 
 public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> implements LocationConsumer {
-	private Activity context = null;
 	private static NumericViewUpdater THIS;
 	protected long startTime;
 	protected TextView altitudeView = null;
@@ -33,8 +32,8 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 	protected TextView glideRatio = null;
 	private final Animation recAnimation = new AlphaAnimation(0.0f, 1.0f);
 
-	protected NumericViewUpdater(Activity context) {
-		this.context = context;
+	protected NumericViewUpdater() {
+		final Activity context = AVarioActivity.CONTEXT;
 		final Typeface font = StringFormatter.getLargeFont(context.getApplicationContext());
 		altitudeView = (TextView) context.findViewById(R.id.altValue);
 		altitudeView.setTypeface(font);
@@ -57,8 +56,8 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 		return THIS;
 	}
 
-	public static void init(Activity context) {
-		THIS = new NumericViewUpdater(context);
+	public static void init() {
+		THIS = new NumericViewUpdater();
 		THIS.execute();
 		SensorProducer.get().registerConsumer(THIS);
 	}
@@ -78,7 +77,7 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 				}
 				double lastGain = UnitsConverter.toPreferredShort(Math.round(DataAccessObject.get()
 						.getHistoryAltimeterGain()));
-				hGainView.setText(context.getApplicationContext().getString(R.string.lastgainvalue,
+				hGainView.setText(AVarioActivity.CONTEXT.getApplicationContext().getString(R.string.lastgainvalue,
 						StringFormatter.noDecimals(lastGain)));
 
 				float vSpeed = DataAccessObject.get().getLastVSpeed();
@@ -142,12 +141,12 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 			groundSpeedMeasure.setText(UnitsConverter.preferredDistLong() + "/h");
 			altitudeView.setText(StringFormatter.noDecimals(UnitsConverter.toPreferredShort(DataAccessObject.get()
 					.getLastAltitude())));
-			altitudeMeasure.setText(context.getApplicationContext().getString(
+			altitudeMeasure.setText(AVarioActivity.CONTEXT.getApplicationContext().getString(
 					Preferences.units_system == 2 ? R.string.feet : R.string.meters));
 
 			double lastGain = UnitsConverter.toPreferredShort(Math.round(DataAccessObject.get()
 					.getHistoryAltimeterGain()));
-			hGainView.setText(context.getApplicationContext().getString(R.string.lastgainvalue,
+			hGainView.setText(AVarioActivity.CONTEXT.getApplicationContext().getString(R.string.lastgainvalue,
 					StringFormatter.noDecimals(lastGain)));
 			qfeView.setText(StringFormatter.noDecimals(UnitsConverter.toPreferredShort(DataAccessObject.get().getQFE())));
 		} catch (Exception e) {

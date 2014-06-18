@@ -59,14 +59,15 @@ public class AVarioActivity extends Activity {
 				SensorProducer.init(this, true);
 			}
 			// Draw the UI from the vario.xml layout
-
-			BeepBeeper.init(this);
-			NavigatorUpdater.init(this);
+			
+			NavigatorUpdater.init();
 			Tracker.init(this);
 			PoiManager.init();
-			Speaker.init(this);
-			NumericViewUpdater.init(this);
-			VarioMeterScaleUpdater.init(this);
+			Speaker.init();
+			NumericViewUpdater.init();
+			VarioMeterScaleUpdater.init();
+			BeepBeeper.init();
+			
 			addNotification();
 		} catch (Exception ex) {
 			Logger.get().log("Fail initializing ", ex);
@@ -189,7 +190,6 @@ public class AVarioActivity extends Activity {
 			Speaker.clear();
 			SensorProducer.clear();
 			BeepBeeper.clear();
-			VarioMeterScaleUpdater.clear();
 			NumericViewUpdater.clear();
 			DataAccessObject.clear();
 			if (Preferences.use_sensbox) {

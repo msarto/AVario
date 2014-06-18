@@ -1,5 +1,6 @@
 package org.avario.ui;
 
+import org.avario.AVarioActivity;
 import org.avario.R;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
@@ -21,15 +22,12 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 	protected final SparseArray<MarkedLayout> scaleView = new SparseArray<MarkedLayout>();
 	protected TextView varioView = null;
 	protected int scaleHeight = 6;
-	private Activity context;
 	private int currentUnitsMark = 0;
-
 	private volatile boolean updatingUI = false;
 
-	protected VarioMeterScaleUpdater(Activity context) {
-		this.context = context;
+	protected VarioMeterScaleUpdater() {
+		Activity context = AVarioActivity.CONTEXT;
 		final Typeface font = StringFormatter.getLargeFont(context.getApplicationContext());
-
 		int i = -20;
 		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down20)));
 		scaleView.put(Integer.valueOf(i++), new MarkedLayout((LinearLayout) context.findViewById(R.id.down19)));
@@ -79,8 +77,8 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 	}
 
 	private void resizeScaleWithDeviceHeight(LinearLayout parent) {
-		final float density = context.getResources().getDisplayMetrics().density;
-		final float screenH = context.getResources().getDisplayMetrics().heightPixels;
+		final float density = AVarioActivity.CONTEXT.getResources().getDisplayMetrics().density;
+		final float screenH = AVarioActivity.CONTEXT.getResources().getDisplayMetrics().heightPixels;
 		scaleHeight = Math.round((screenH - density * 30 - density * 150) / 40);
 		for (int i = -20; i < 21; i++) {
 			MarkedLayout scaleItem = scaleView.get(i);
@@ -92,8 +90,8 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 		}
 	}
 
-	public static void init(Activity context) {
-		THIS = new VarioMeterScaleUpdater(context);
+	public static void init() {
+		THIS = new VarioMeterScaleUpdater();
 		THIS.execute();
 	}
 
@@ -108,7 +106,6 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 	protected synchronized void updateSpeed(float vSpeed) {
 		try {
 			updatingUI = true;
-
 			float displaySpeed = UnitsConverter.toPreferredVSpeed(vSpeed);
 			varioView.setText(Preferences.units_system == 2 ? StringFormatter.noDecimals(displaySpeed)
 					: StringFormatter.oneDecimal(displaySpeed));
@@ -168,14 +165,14 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 		while (!THIS.isCancelled()) {
 			try {
 				Thread.sleep(200);
-				float speed = DataAccessObject.get().getLastVSpeed();
-				float vSpeed = Math.abs(speed) > Preferences.lift_start ? speed : 0.0f;
-				vSpeed = vSpeed > 5 ? 5 : vSpeed;
-				vSpeed = vSpeed < -5 ? -5 : vSpeed;
-				if (Math.abs(vSpeed - prevSpeed) > 0.1f) {
-					publishProgress(vSpeed);
+				float viewSpeed = DataAccessObject.get().getLastVSpeed();
+				if (Math.abs(viewSpeed - prevSpeed) > 0.05f) {
+					viewSpeed = viewSpeed > 5 ? 5 : viewSpeed;
+					viewSpeed = viewSpeed < -5 ? -5 : viewSpeed;
+					viewSpeed = Math.abs(viewSpeed) > Preferences.lift_start ? viewSpeed : 0.0f;
+					publishProgress(viewSpeed);
 				}
-				prevSpeed = vSpeed;
+				prevSpeed = viewSpeed;
 			} catch (InterruptedException e) {
 				THIS.cancel(false);
 				break;

@@ -1,8 +1,8 @@
 package org.avario.utils;
 
+import org.avario.AVarioActivity;
 import org.avario.R;
 
-import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
@@ -11,19 +11,19 @@ public class Speaker {
 	private TextToSpeech talker;
 	private boolean available = true;
 
-	protected Speaker(Context context) {
+	protected Speaker() {
 		try {
-			talker = new TextToSpeech(context, null);
+			talker = new TextToSpeech(AVarioActivity.CONTEXT, null);
 			Logger.get().log("TTS engine: " + talker.getDefaultEngine());
 		} catch (Exception ex) {
 			available = false;
 			Logger.get().log("Speach is not available", ex);
-			Toast.makeText(context, R.string.speaker_fail, Toast.LENGTH_LONG).show();
+			Toast.makeText(AVarioActivity.CONTEXT, R.string.speaker_fail, Toast.LENGTH_LONG).show();
 		}
 	}
 
-	public static void init(Context context) {
-		THIS = new Speaker(context);
+	public static void init() {
+		THIS = new Speaker();
 	}
 
 	public static Speaker get() {
