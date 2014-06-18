@@ -8,7 +8,7 @@ import org.avario.utils.filters.impl.StabiloFilter;
 
 public class LinearRegression implements MovementFactor {
 
-	private volatile Queue<Sample> samples = new ArrayDeque<Sample>();
+	private Queue<Sample> samples = new ArrayDeque<Sample>();
 	private StabiloFilter filter = new StabiloFilter();
 	private boolean needNewSlope = false;
 	private float currentSlope = 0f;

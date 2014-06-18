@@ -3,7 +3,6 @@ package org.avario.ui.prefs;
 import org.avario.R;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.utils.StringFormatter;
-import org.avario.utils.filters.sensors.BaroSensorFilter;
 
 import android.content.Context;
 import android.hardware.SensorManager;
@@ -58,11 +57,12 @@ public class EditQNHValue extends EditTextPreference {
 		// double h = location.getAltitude();
 		// adjust the reference pressure until the pressure sensor
 		// altitude match the gps altitude +-2m
-		if (BaroSensorFilter.lastPresureNotified > 0 && newAltitude > 0 && newAltitude < 10000) {
-			double delta = Math.abs(SensorManager.getAltitude(ref, BaroSensorFilter.lastPresureNotified) - newAltitude);
+		float lastPresure = DataAccessObject.get().getLastPresure();
+		if (lastPresure > 0 && newAltitude > 0 && newAltitude < 10000) {
+			double delta = Math.abs(SensorManager.getAltitude(ref, lastPresure) - newAltitude);
 			while (delta > 2 && ref > 0) {
 				ref -= 0.1 * delta;
-				delta = Math.abs(SensorManager.getAltitude(ref, BaroSensorFilter.lastPresureNotified) - newAltitude);
+				delta = Math.abs(SensorManager.getAltitude(ref, lastPresure) - newAltitude);
 			}
 		} else {
 			ref = SensorManager.PRESSURE_STANDARD_ATMOSPHERE;

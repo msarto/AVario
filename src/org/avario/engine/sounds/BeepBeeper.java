@@ -11,11 +11,10 @@ import android.app.Activity;
 
 public class BeepBeeper implements Runnable {
 
-	private Thread thr;
+	private volatile boolean doBeep = false;
 	private static BeepBeeper THIS;
 
 	protected BeepBeeper() {
-		thr = new Thread(this);
 	}
 
 	public static void init(Activity context) {
@@ -30,7 +29,7 @@ public class BeepBeeper implements Runnable {
 	@Override
 	public void run() {
 		try {
-			while (thr.isAlive()) {
+			while (doBeep) {
 				try {
 					float beepSpeed = DataAccessObject.get().getLastVSpeed();
 					beepSpeed = beepSpeed > 5 ? 5 : beepSpeed;
@@ -98,13 +97,14 @@ public class BeepBeeper implements Runnable {
 	}
 
 	private void start() {
-		thr.start();
+		doBeep = true;
+		new Thread(this).start();
 	}
 
 	public void stop() {
 		ToneProducer.get().getLiftTone().stop();
 		ToneProducer.get().getSyncTone().stop();
 		ToneProducer.get().getPrenotifyTone().stop();
-		thr.interrupt();
+		doBeep = false;
 	}
 }

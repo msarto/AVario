@@ -19,9 +19,7 @@ public class BaroSensorFilter implements LocationConsumer {
 
 	private Filter[] baroFilters;
 	private volatile float referrencePresure = Preferences.ref_qnh;
-
-	public static volatile float lastPresureNotified = -1f;
-	private volatile boolean gpsAltitude = false;
+	private boolean gpsAltitude = false;
 
 	public BaroSensorFilter(Filter... filters) {
 		Logger.get().log("Filter baro with % " + Preferences.baro_sensitivity);
@@ -35,11 +33,11 @@ public class BaroSensorFilter implements LocationConsumer {
 
 	// filter the pressure and transform it to altitude
 	public synchronized float toAltitude(float currentPresure) {
-		lastPresureNotified = currentPresure;
+		float lastPresureNotified = currentPresure;
 		for (Filter filter : baroFilters) {
 			lastPresureNotified = filter.doFilter(lastPresureNotified)[0];
 		}
-
+		DataAccessObject.get().setLastPresure(lastPresureNotified);
 		if (referrencePresure != Preferences.ref_qnh) {
 			resetFilters();
 			// altitudeFilter.reset();
@@ -52,7 +50,8 @@ public class BaroSensorFilter implements LocationConsumer {
 
 	@Override
 	public void notifyWithLocation(final Location location) {
-		if (!gpsAltitude && location.hasAltitude() && lastPresureNotified > 0f && location.getAccuracy() < 10) {
+		if (!gpsAltitude && location.hasAltitude() && DataAccessObject.get().getLastPresure() > 0f
+				&& location.getAccuracy() < 10) {
 			final double altitude = location.getAltitude();
 			final double gHeight = DataAccessObject.get().getGeoidHeight();
 			Logger.get().log("Adjust altitude with GPS Altitude " + altitude + " and geoidHeight " + gHeight);
@@ -76,10 +75,11 @@ public class BaroSensorFilter implements LocationConsumer {
 		// adjust the reference pressure until the pressure sensor
 		// altitude match the gps altitude +-5m
 		if (h > 0) {
-			double delta = Math.abs(SensorManager.getAltitude(ref, lastPresureNotified) - h);
+			float lastPresure = DataAccessObject.get().getLastPresure();
+			double delta = Math.abs(SensorManager.getAltitude(ref, lastPresure) - h);
 			while (delta > 2 && ref > 0) {
 				ref -= 0.1 * delta;
-				delta = Math.abs(SensorManager.getAltitude(ref, lastPresureNotified) - h);
+				delta = Math.abs(SensorManager.getAltitude(ref, lastPresure) - h);
 			}
 		} else {
 			ref = SensorManager.PRESSURE_STANDARD_ATMOSPHERE;

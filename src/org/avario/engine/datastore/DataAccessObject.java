@@ -11,16 +11,17 @@ import android.location.Location;
 public class DataAccessObject {
 	protected static DataAccessObject THIS;
 
-	protected volatile Location lastlocation;
+	protected Location lastlocation;
 
-	protected volatile float bearing = 0f;
-	protected volatile float lastAltitude = -1;
-	protected volatile float refAltitude = -1;
-	protected volatile String nmeaGGA;
+	protected float bearing = 0f;
+	protected float lastAltitude = -1;
+	protected float lastPresure = -1;
+	protected float refAltitude = -1;
+	protected String nmeaGGA;
 
-	private volatile float windDirectionBearing = -1f;
-	private volatile float temperature = 0f;
-	private volatile float maxSpeed = 0f;
+	private float windDirectionBearing = -1f;
+	private float temperature = 0f;
+	private float maxSpeed = 0f;
 
 	private MovementFactor movementFactor = new GpsMovement();
 	private ThermalingTask thermalTask = new ThermalingTask();
@@ -63,11 +64,11 @@ public class DataAccessObject {
 		return thermalTask.getLastThermal();
 	}
 
-	public float getLastVSpeed() {
+	public synchronized float getLastVSpeed() {
 		return movementFactor.getValue();
 	}
 
-	public void resetVSpeed() {
+	public synchronized void resetVSpeed() {
 		movementFactor.reset();
 		altitudeGainTask.reset();
 	}
@@ -92,7 +93,7 @@ public class DataAccessObject {
 		return lastAltitude;
 	}
 
-	public synchronized void setLastAltitude(float lastAltitude) {
+	public void setLastAltitude(float lastAltitude) {
 		this.lastAltitude = lastAltitude;
 	}
 
@@ -181,4 +182,13 @@ public class DataAccessObject {
 	public void setNmeaGGA(String nmeaGGA) {
 		this.nmeaGGA = nmeaGGA;
 	}
+	
+	public float getLastPresure() {
+		return lastPresure;
+	}
+
+	public void setLastPresure(float lastPresure) {
+		this.lastPresure = lastPresure;
+	}
+
 }
