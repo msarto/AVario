@@ -16,7 +16,7 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 
 public class Preferences {
-	public static final int STREAM_TYPE =  AudioManager.STREAM_DTMF;
+	public static final int STREAM_TYPE = AudioManager.STREAM_SYSTEM;
 	public static volatile boolean use_speach = false;
 	public static volatile boolean auto_track = false;
 	public static volatile boolean use_sensbox = false;
@@ -25,7 +25,7 @@ public class Preferences {
 	public static volatile float sink_start = -1.5f;
 	public static volatile float lift_start = 0.2f;
 	public static volatile int tone_variation = 50;
-	public static volatile int prenotify_interval = 3000;
+	public static volatile int prenotify_interval = 0;
 
 	public static volatile int location_history = 5;
 	public static volatile int heading_interval = 2000;
@@ -131,7 +131,7 @@ public class Preferences {
 		lift_hz = getInt("lift_hz", lift_hz);
 		sink_hz = -1 * getInt("sink_hz", sink_hz);
 
-		prenotify_interval = Math.round(1000f * getFloat("prenotify_interval", 0.3f));
+		prenotify_interval = Math.round(1000f * getFloat("prenotify_interval", 0f));
 		location_history = getInt("location_history", location_history);
 		heading_interval = Math.round(1000f * getFloat("heading_interval", 2f));
 		tone_variation = getInt("tone_variation", tone_variation);
