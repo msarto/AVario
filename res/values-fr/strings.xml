@@ -117,6 +117,9 @@
     <string name="ref_alt_description">Setting current altitude will make automatic computaion of QNH value. Please insert current altitude in meters.</string>
     <string name="sound_type_s">Vario sound type</string>
     <string name="sound_type_t">Sound type</string>
+    <string name="sink_alarm_s">Alarme de descendance (m/s))</string>
+    <string name="sink_alarm_t">Alarme de descendance</string>
+    
     
     <string-array name="units_system_names">
         <item>Métrique</item>

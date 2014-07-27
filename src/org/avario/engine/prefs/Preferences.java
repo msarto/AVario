@@ -23,6 +23,7 @@ public class Preferences {
 
 	public static volatile int beep_interval = 500;
 	public static volatile float sink_start = -1.5f;
+	public static volatile float sink_alarm = -5f;
 	public static volatile float lift_start = 0.2f;
 	public static volatile int tone_variation = 50;
 	public static volatile int prenotify_interval = 0;
@@ -40,7 +41,7 @@ public class Preferences {
 
 	public static volatile int lift_hz = 600;
 	public static volatile int sink_hz = 400;
-	
+
 	public static volatile int sound_type = 2;
 
 	public static volatile float ref_qnh = SensorManager.PRESSURE_STANDARD_ATMOSPHERE;
@@ -85,7 +86,7 @@ public class Preferences {
 
 			if (baroSetting.equals("-1")) {
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-				int defaultValue = getDefaultBaroSensitivity();				
+				int defaultValue = getDefaultBaroSensitivity();
 				Logger.get().log(Build.MODEL + " set default baro sensitivity " + defaultValue);
 				Editor ed = prefs.edit();
 				// ed.clear();
@@ -124,6 +125,7 @@ public class Preferences {
 
 		beep_interval = Math.round(1000f * getFloat("beep_interval", 0.5f));
 		sink_start = -1f * getFloat("sink_start", 1.5f);
+		sink_alarm = -1f * getFloat("sink_alarm", 5f);
 		lift_start = getFloat("lift_start", lift_start);
 		int appVolume = getInt("app_volume", 100);
 		setAppSoundVolume(appVolume);

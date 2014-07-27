@@ -31,11 +31,14 @@ public class BeepBeeper implements Runnable {
 				try {
 					DataAccessObject.get().upadteVSpeed();
 					float beepSpeed = DataAccessObject.get().getLastVSpeed();
+					boolean bAlarm = beepSpeed < Math.min(Preferences.sink_start, Preferences.sink_alarm);
 					beepSpeed = beepSpeed > 5 ? 5 : beepSpeed;
 					beepSpeed = beepSpeed < -5 ? -5 : beepSpeed;
-
+					if (bAlarm) {
+						ToneProducer.get().getAlarmTone().beep();
+					}
 					if (!validateThisSpeed(beepSpeed)) {
-						Thread.sleep(200);
+						Thread.sleep(100);
 					} else {
 						if (beepSpeed > 0) {
 							AsyncTone liftBeep = ToneProducer.get().getLiftTone();
@@ -45,20 +48,20 @@ public class BeepBeeper implements Runnable {
 							AsyncTone sinkBeep = ToneProducer.get().getSyncTone();
 							sinkBeep.setSpeed(beepSpeed);
 							sinkBeep.beep();
-						}						
+						}
 						if (Preferences.use_speach) {
 							float saySpeed = UnitsConverter.toPreferredVSpeed(beepSpeed);
 							Speaker.get().say(
 									Preferences.units_system == 2 ? StringFormatter.noDecimals(saySpeed)
 											: StringFormatter.oneDecimal(saySpeed));
-						}						
-						 Thread.sleep(Math.round(100 - 20 * beepSpeed));
+						}
+						Thread.sleep(Math.round(100 - 20 * beepSpeed));
 					}
 				} catch (InterruptedException e) {
 					break;
 				} catch (Exception ex) {
 					Logger.get().log("Fail in beep: ", ex);
-				} 
+				}
 			}
 		} catch (Exception ex) {
 			Logger.get().log("Fail init beep: ", ex);

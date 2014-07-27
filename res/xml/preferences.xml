@@ -56,6 +56,13 @@
                 android:singleLine="true"
                 android:summary="@string/sink_start_s"
                 android:title="@string/sink_start_t" />
+            <org.avario.ui.prefs.EditTextPreferenceWithValue
+                android:defaultValue="5"
+                android:inputType="numberDecimal"
+                android:key="sink_alarm"
+                android:singleLine="true"
+                android:summary="@string/sink_alarm_s"
+                android:title="@string/sink_alarm_t" />
         </PreferenceScreen>
         <PreferenceScreen
             android:key="thermal_prefs"

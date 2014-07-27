@@ -6,11 +6,10 @@ import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sounds.AsyncTone;
 import org.avario.utils.Logger;
 
-import android.media.SoundPool;
 import android.util.SparseIntArray;
 
 public class WavLiftTone extends AsyncTone {
-	private SoundPool player = new SoundPool(5, Preferences.STREAM_TYPE, 0);
+
 	private SparseIntArray listSounds = new SparseIntArray(5);
 	private float prevBeepSpeed = 0;
 
@@ -25,18 +24,17 @@ public class WavLiftTone extends AsyncTone {
 
 	@Override
 	public void beep() {
+		int iSoundId = listSounds.get(Math.round(beepSpeed));
 		try {
 			if (!isPlaying) {
 				isPlaying = true;
-				int iSoundId = listSounds.get(Math.round(beepSpeed));
 				player.play(iSoundId, 1f, 1f, 1, 0, 1);
 				Thread.sleep(Math.round(Preferences.beep_interval - (Preferences.beep_interval / 6) * beepSpeed));
-				player.stop(iSoundId);
 			}
-
 		} catch (InterruptedException e) {
 			Logger.get().log("Fail lift beep ", e);
 		} finally {
+			player.stop(iSoundId);
 			isPlaying = false;
 		}
 	}
@@ -47,7 +45,7 @@ public class WavLiftTone extends AsyncTone {
 		prevBeepSpeed = beepSpeed;
 		return offset;
 	}
-	
+
 	@Override
 	public void stop() {
 		player.release();

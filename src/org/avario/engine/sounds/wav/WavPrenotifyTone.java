@@ -4,13 +4,12 @@ import org.avario.AVarioActivity;
 import org.avario.R;
 import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sounds.AsyncTone;
+import org.avario.utils.Logger;
 
-import android.media.SoundPool;
 import android.util.SparseIntArray;
 
 public class WavPrenotifyTone extends AsyncTone {
 	private long prenotifyLast = 0;
-	private SoundPool player = new SoundPool(1, Preferences.STREAM_TYPE, 0);;
 	private SparseIntArray listSounds = new SparseIntArray(5);
 
 	public WavPrenotifyTone() {
@@ -19,19 +18,23 @@ public class WavPrenotifyTone extends AsyncTone {
 
 	@Override
 	public void beep() {
+		int iSoundId = listSounds.get(0);
 		try {
 			long now = System.currentTimeMillis();
 			if (!isPlaying && (now - prenotifyLast > Preferences.prenotify_interval)) {
 				isPlaying = true;
 				prenotifyLast = now;
-				int iSoundId = listSounds.get(0);
 				player.play(iSoundId, 1f, 1f, 0, 0, 1);
+				Thread.sleep(100);
 			}
+		} catch (InterruptedException e) {
+			Logger.get().log("Fail lift prenotify ", e);
 		} finally {
+			player.stop(iSoundId);
 			isPlaying = false;
 		}
 	}
-	
+
 	@Override
 	public void stop() {
 		player.release();

@@ -112,11 +112,13 @@
     <string name="sensbox_not_supported">SensBox BT is not supported by your device</string>
     <string name="sensbox_found">SensBox BT found</string>
     <string name="qnh_s">QNH</string>
-    <string name="qnh_t">Reference pressure</string>
+    <string name="qnh_t">Presiunea de referinta</string>
     <string name="ref_alt_title">Current altitude</string>
     <string name="ref_alt_description">Setting current altitude will make automatic computaion of QNH value. Please insert current altitude in meters.</string>
-    <string name="sound_type_s">Vario sound type</string>
-    <string name="sound_type_t">Sound type</string>
+    <string name="sound_type_s">Tip de sunet vario</string>
+    <string name="sound_type_t">Tip sunet</string>
+    <string name="sink_alarm_s">Alarma coborare (m/s))</string>
+    <string name="sink_alarm_t">Alarma coborare</string>
     
     <string-array name="units_system_names">
         <item>Metric</item>
