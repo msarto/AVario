@@ -4,6 +4,7 @@ import java.util.StringTokenizer;
 
 import org.avario.engine.sensors.GpsMovement;
 import org.avario.engine.sensors.MovementFactor;
+import org.avario.engine.wind.WindCalculator;
 import org.avario.utils.Logger;
 
 import android.location.Location;
@@ -21,14 +22,14 @@ public class DataAccessObject {
 	
 	protected String nmeaGGA;
 
-	private float windDirectionBearing = -1f;
+	private double windDirectionBearing = -1d;
 	private float temperature = 0f;
-	private float maxSpeed = 0f;
 
 	private MovementFactor movementFactor = new GpsMovement();
 	private ThermalingTask thermalTask = new ThermalingTask();
 	private HeadingTask headingTask = new HeadingTask();
 	private AltitudeGainTask altitudeGainTask = new AltitudeGainTask();
+	private WindCalculator windCalculator = new WindCalculator(16, 0.3, 300);
 
 	protected DataAccessObject() {
 	}
@@ -88,7 +89,7 @@ public class DataAccessObject {
 		makeQFE(lastlocation);
 	}
 
-	public float getWindDirectionBearing() {
+	public double getWindDirectionBearing() {
 		return windDirectionBearing;
 	}
 
@@ -127,14 +128,10 @@ public class DataAccessObject {
 		return (lastlocation != null && (System.currentTimeMillis() - lastlocation.getTime()) < 5000);
 	}
 
-	protected void makeWind(Location location) {
-		if (location != null && location.hasSpeed()) {
-			float speed = location.getSpeed();
-			if (maxSpeed < speed) {
-				maxSpeed = speed;
-				windDirectionBearing = (180 + location.getBearing()) % 360;
-				Logger.get().log("wind direction bearing at" + windDirectionBearing + " on speed " + maxSpeed);
-			}
+	protected void makeWind(Location location) {		
+		if (location != null && location.hasSpeed()) {			
+			windCalculator.addSpeedVector(location.getBearing(), location.getSpeed(), location.getTime() / 1000.0);
+			windDirectionBearing = windCalculator.getWindDirection();
 		}
 	}
 

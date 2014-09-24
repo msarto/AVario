@@ -126,7 +126,7 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 				xCenter + Math.round(radius + 15 * densityMultiplier), yCenter, cardinals);
 	}
 
-	private void drawIcon(Canvas navCanvas, float bearing, Bitmap bitmap) {
+	private void drawIcon(Canvas navCanvas, double bearing, Bitmap bitmap) {
 		if (bearing != -1) {
 			bearing = bearing % 360;
 			float angle = (float) (bearing * Math.PI / 180f - Math.PI / 2);
