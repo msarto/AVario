@@ -13,13 +13,14 @@ public class DataAccessObject {
 	protected static DataAccessObject THIS;
 
 	protected Location lastlocation;
+	protected long lastSystemFix;
 
 	protected float bearing = 0f;
 	protected float lastAltitude = -1;
 	protected float lastPresure = -1;
 	protected volatile float lastVSpeed = 0;
 	protected float refAltitude = -1;
-	
+
 	protected String nmeaGGA;
 
 	private double windDirectionBearing = -1d;
@@ -70,7 +71,7 @@ public class DataAccessObject {
 	public float getLastVSpeed() {
 		return lastVSpeed;
 	}
-	
+
 	public synchronized void upadteVSpeed() {
 		lastVSpeed = movementFactor.getValue();
 	}
@@ -80,8 +81,11 @@ public class DataAccessObject {
 		altitudeGainTask.reset();
 	}
 
-	public void setLastlocation(Location nowlocation) {
+	public synchronized void setLastlocation(Location nowlocation) {
 		lastlocation = nowlocation;
+		if (lastlocation != null) {
+			lastSystemFix = System.currentTimeMillis();
+		}
 		if (lastAltitude > 0) {
 			lastlocation.setAltitude(lastAltitude);
 		}
@@ -105,7 +109,7 @@ public class DataAccessObject {
 	}
 
 	public float getBearing() {
-		return bearing;
+		return lastlocation != null && lastlocation.hasBearing() ? lastlocation.getBearing() : bearing;
 	}
 
 	public float getHeading() {
@@ -124,12 +128,12 @@ public class DataAccessObject {
 		this.temperature = temperature;
 	}
 
-	public boolean isGPSFix() {
-		return (lastlocation != null && (System.currentTimeMillis() - lastlocation.getTime()) < 5000);
+	public synchronized boolean isGPSFix() {
+		return (System.currentTimeMillis() - lastSystemFix) < 3000;
 	}
 
-	protected void makeWind(Location location) {		
-		if (location != null && location.hasSpeed()) {			
+	protected void makeWind(Location location) {
+		if (location != null && location.hasSpeed() && location.hasBearing()) {
 			windCalculator.addSpeedVector(location.getBearing(), location.getSpeed(), location.getTime() / 1000.0);
 			windDirectionBearing = windCalculator.getWindDirection();
 		}
@@ -185,7 +189,7 @@ public class DataAccessObject {
 	public void setNmeaGGA(String nmeaGGA) {
 		this.nmeaGGA = nmeaGGA;
 	}
-	
+
 	public float getLastPresure() {
 		return lastPresure;
 	}
