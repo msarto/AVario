@@ -10,7 +10,6 @@ import org.avario.utils.filters.sensors.BaroSensorFilter;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorManager;
 
 public class BaroSensorThread extends SensorThread<Float> {
 
@@ -25,7 +24,7 @@ public class BaroSensorThread extends SensorThread<Float> {
 
 	protected void init() {
 		sensors = new int[] { Sensor.TYPE_PRESSURE };
-		sensorSpeed = SensorManager.SENSOR_DELAY_FASTEST;
+		sensorSpeed = Math.round(Preferences.baro_sensitivity * 3 / 50);
 	}
 
 	@Override
