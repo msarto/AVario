@@ -8,6 +8,7 @@ public class POI {
 	private String name;
 	private double latitude;
 	private double longitude;
+	private double altitude = 0;
 
 	public POI(int version) {
 		this.version = version;
@@ -18,17 +19,20 @@ public class POI {
 		this.version = version;
 	}
 
-	public POI(String name, double latitude, double longitude, int version) {
+	public POI(String name, double latitude, double longitude, double altitude,
+			int version) {
 		this.name = name;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.version = version;
+		this.altitude = altitude;
 	}
 
 	public POI(String name, Location location, int version) {
 		this.name = name;
 		this.latitude = location.getLatitude();
 		this.longitude = location.getLongitude();
+		this.altitude = location.getAltitude();
 		this.version = version;
 	}
 
@@ -82,5 +86,13 @@ public class POI {
 
 	public int getVersion() {
 		return version;
+	}
+
+	public double getAltitude() {
+		return altitude;
+	}
+
+	public void setAltitude(double altitude) {
+		this.altitude = altitude;
 	}
 }

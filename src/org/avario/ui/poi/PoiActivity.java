@@ -6,6 +6,7 @@ import org.avario.engine.PoiProducer;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.poi.POI;
 import org.avario.utils.Logger;
+import org.avario.utils.UnitsConverter;
 
 import android.app.Activity;
 import android.content.pm.PackageInfo;
@@ -20,6 +21,7 @@ public class PoiActivity extends Activity {
 	private EditText nameEdit;
 	private EditText latEdit;
 	private EditText longEdit;
+	private EditText altitudeEdit;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class PoiActivity extends Activity {
 		nameEdit = (EditText) this.findViewById(R.id.poiName);
 		latEdit = (EditText) this.findViewById(R.id.poiLat);
 		longEdit = (EditText) this.findViewById(R.id.poiLong);
+		altitudeEdit = (EditText) this.findViewById(R.id.poiAlt);
 
 		loadDefaults();
 
@@ -44,17 +47,25 @@ public class PoiActivity extends Activity {
 		save.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if (nameEdit.getText().toString().equals("") || latEdit.getText().toString().equals("")
+				if (nameEdit.getText().toString().equals("")
+						|| latEdit.getText().toString().equals("")
 						|| longEdit.getText().toString().equals("")) {
 					return;
 				}
 				String poiName = nameEdit.getText().toString();
 				Double poiLat = Double.valueOf(latEdit.getText().toString());
 				Double poiLong = Double.valueOf(longEdit.getText().toString());
+				Double poiAlt = Double.valueOf(altitudeEdit.getText()
+						.toString());
+
 				try {
-					PackageInfo pInfo = AVarioActivity.CONTEXT.getPackageManager().getPackageInfo(
-							AVarioActivity.CONTEXT.getPackageName(), 0);
-					PoiProducer.get().notify(new POI(poiName, poiLat, poiLong, pInfo.versionCode));
+					PackageInfo pInfo = AVarioActivity.CONTEXT
+							.getPackageManager().getPackageInfo(
+									AVarioActivity.CONTEXT.getPackageName(), 0);
+					PoiProducer.get().notify(
+							new POI(poiName, poiLat, poiLong, UnitsConverter
+									.fromPreferredShort(poiAlt.floatValue()),
+									pInfo.versionCode));
 				} catch (NameNotFoundException e) {
 					Logger.get().log("Fail to record POI ", e);
 				} finally {
@@ -68,8 +79,14 @@ public class PoiActivity extends Activity {
 
 	protected void loadDefaults() {
 		if (DataAccessObject.get().getLastlocation() != null) {
-			latEdit.setText("" + DataAccessObject.get().getLastlocation().getLatitude());
-			longEdit.setText("" + DataAccessObject.get().getLastlocation().getLongitude());
+			latEdit.setText(""
+					+ DataAccessObject.get().getLastlocation().getLatitude());
+			longEdit.setText(""
+					+ DataAccessObject.get().getLastlocation().getLongitude());
+			double metricAlt = DataAccessObject.get().getLastlocation()
+					.getAltitude();
+			altitudeEdit.setText(""
+					+ UnitsConverter.toPreferredShort((float) metricAlt));
 		}
 	}
 }

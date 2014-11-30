@@ -18,23 +18,31 @@ public class UnitsConverter {
 	public static String timeSpan(long since) {
 		long diffInSeconds = (System.currentTimeMillis() - since) / 1000;
 		long diff[] = new long[] { 0, 0, 0 };
-		/* sec */diff[2] = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
-		/* min */diff[1] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
-		/* hours */diff[0] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
+		/* sec */diff[2] = (diffInSeconds >= 60 ? diffInSeconds % 60
+				: diffInSeconds);
+		/* min */diff[1] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60
+				: diffInSeconds;
+		/* hours */diff[0] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24
+				: diffInSeconds;
 		return String.format("%02d:%02d:%02d", diff[0], diff[1], diff[2]);
 	}
 
 	public static String humanTimeSpan(long diffInMSeconds) {
 		long diffInSeconds = diffInMSeconds / 1000;
 		long diff[] = new long[] { 0, 0, 0 };
-		/* sec */diff[2] = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
-		/* min */diff[1] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
-		/* hours */diff[0] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
-		String humanString = String.format("%02d:%02d:%02d", diff[0], diff[1], diff[2]);
+		/* sec */diff[2] = (diffInSeconds >= 60 ? diffInSeconds % 60
+				: diffInSeconds);
+		/* min */diff[1] = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60
+				: diffInSeconds;
+		/* hours */diff[0] = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24
+				: diffInSeconds;
+		String humanString = String.format("%02d:%02d:%02d", diff[0], diff[1],
+				diff[2]);
 		return humanString;
 	}
 
-	public static float verticalSpeed(float lastAltitudeValue, long lastAltitudeTimestamp, float newAltitude,
+	public static float verticalSpeed(float lastAltitudeValue,
+			long lastAltitudeTimestamp, float newAltitude,
 			long newAltitudeTimestamp) {
 		if (newAltitudeTimestamp == lastAltitudeTimestamp) {
 			return 0f;
@@ -52,6 +60,10 @@ public class UnitsConverter {
 
 	public static float m2feets(float meters) {
 		return 3.280839895f * meters;
+	}
+
+	public static float feets2m(float feets) {
+		return feets / 3.280839895f;
 	}
 
 	public static float km2miles(float km) {
@@ -98,6 +110,18 @@ public class UnitsConverter {
 		return ret;
 	}
 
+	public static float fromPreferredShort(float preferred) {
+		float ret = preferred;
+		switch (Preferences.units_system) {
+		case 1: // Metric
+			break;
+		case 2: // Imperial
+			ret = m2feets(preferred);
+			break;
+		}
+		return ret;
+	}
+
 	public static String preferredDistLong() {
 		String ret = " km";
 		switch (Preferences.units_system) {
@@ -124,10 +148,12 @@ public class UnitsConverter {
 
 	public static String normalizedDistance(float distance) {
 		String tooLong = Preferences.units_system == 1 ? ">500km" : ">300miles";
-		String distStr = distance > 500000 ? tooLong : StringFormatter.noDecimals(UnitsConverter
-				.toPreferredShort(distance)) + UnitsConverter.preferredDistShort();
+		String distStr = distance > 500000 ? tooLong : StringFormatter
+				.noDecimals(UnitsConverter.toPreferredShort(distance))
+				+ UnitsConverter.preferredDistShort();
 		if (distance < 500000 && distance > 5000f) {
-			distStr = StringFormatter.noDecimals(UnitsConverter.toPreferredLong(distance / 1000f))
+			distStr = StringFormatter.noDecimals(UnitsConverter
+					.toPreferredLong(distance / 1000f))
 					+ UnitsConverter.preferredDistLong();
 		}
 		return distStr;

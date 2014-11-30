@@ -78,6 +78,30 @@
             android:ems="10"
             android:inputType="numberDecimal|numberSigned" />
     </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dip"
+        android:layout_marginLeft="15dip"
+        android:layout_marginRight="6dip"
+        android:layout_marginTop="6dip"
+        android:layout_weight="1" >
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/alt"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/poiAlt"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="numberDecimal|numberSigned" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="200dp"
