@@ -10,6 +10,7 @@ import org.avario.engine.prefs.Preferences;
 import org.avario.ui.poi.PoiView;
 import org.avario.ui.view.NavigationView;
 import org.avario.utils.StringFormatter;
+import org.avario.utils.UnitsConverter;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,6 +25,7 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 	private static Paint lastThermalPaint = new Paint();
 	private static Paint windMarkPaint = new Paint();
 	private static Paint headingMarkPaint = new Paint();
+	private static Paint gForcePaint = new Paint();
 	private Paint cardinals = new Paint();
 	private Paint circlePaint = new Paint();
 	private float densityMultiplier = 1;
@@ -40,6 +42,12 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 		windMarkPaint.setFakeBoldText(true);
 		windMarkPaint.setTextAlign(Paint.Align.CENTER);
 		windMarkPaint.setColor(Color.YELLOW);
+
+		gForcePaint.setAntiAlias(true);
+		gForcePaint.setTextSize(18);
+		gForcePaint.setFakeBoldText(true);
+		// gForcePaint.setTextAlign(Paint.Align.CENTER);
+		gForcePaint.setColor(Color.BLACK);
 
 		headingMarkPaint.setAntiAlias(true);
 		headingMarkPaint.setTextSize(24);
@@ -63,11 +71,16 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 	private float prevBearing = 0;
 
 	protected NavigatorUpdater() {
-		windsock = BitmapFactory.decodeResource(AVarioActivity.CONTEXT.getResources(), R.drawable.windsock);
-		thermal = BitmapFactory.decodeResource(AVarioActivity.CONTEXT.getResources(), R.drawable.spiral);
-		heading = BitmapFactory.decodeResource(AVarioActivity.CONTEXT.getResources(), R.drawable.heading);
-		font = StringFormatter.getLargeFont(AVarioActivity.CONTEXT.getApplicationContext());
-		densityMultiplier = AVarioActivity.CONTEXT.getResources().getDisplayMetrics().density;
+		windsock = BitmapFactory.decodeResource(
+				AVarioActivity.CONTEXT.getResources(), R.drawable.windsock);
+		thermal = BitmapFactory.decodeResource(
+				AVarioActivity.CONTEXT.getResources(), R.drawable.spiral);
+		heading = BitmapFactory.decodeResource(
+				AVarioActivity.CONTEXT.getResources(), R.drawable.heading);
+		font = StringFormatter.getLargeFont(AVarioActivity.CONTEXT
+				.getApplicationContext());
+		densityMultiplier = AVarioActivity.CONTEXT.getResources()
+				.getDisplayMetrics().density;
 
 		cardinals.setAntiAlias(true);
 		cardinals.setTextSize(30 * densityMultiplier);
@@ -94,17 +107,22 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 	public void draw(Canvas navCanvas, int xCenter, int yCenter) {
 		this.xCenter = xCenter;
 		this.yCenter = yCenter;
-
-		navCanvas.rotate(DataAccessObject.get().getBearing(), this.xCenter, this.yCenter);
+		//drawGForce(navCanvas);
+		navCanvas.rotate(DataAccessObject.get().getBearing(), this.xCenter,
+				this.yCenter);
 		if (navView == null) {
-			navView = (NavigationView) AVarioActivity.CONTEXT.findViewById(R.id.navLayout);
+			navView = (NavigationView) AVarioActivity.CONTEXT
+					.findViewById(R.id.navLayout);
 			radius = (int) Math.round(navView.getWidth() / 3);
-			poiView = new PoiView(AVarioActivity.CONTEXT, navCanvas, xCenter, yCenter);
+			poiView = new PoiView(AVarioActivity.CONTEXT, navCanvas, xCenter,
+					yCenter);
 		}
 
 		drawCompass(navCanvas);
 		drawPOIInfo(navCanvas);
-		drawIcon(navCanvas, DataAccessObject.get().getWindDirectionBearing(), windsock);
+
+		drawIcon(navCanvas, DataAccessObject.get().getWindDirectionBearing(),
+				windsock);
 		// Disable drawing heading this version
 		drawIcon(navCanvas, DataAccessObject.get().getHeading(), heading);
 		if (DataAccessObject.get().isGPSFix()) {
@@ -113,25 +131,37 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 	}
 
 	private void drawCompass(Canvas navigationCanvas) {
-		circlePaint.setColor(DataAccessObject.get().isGPSFix() ? Color.BLACK : Color.RED);
+		circlePaint.setColor(DataAccessObject.get().isGPSFix() ? Color.BLACK
+				: Color.RED);
 		navigationCanvas.drawCircle(xCenter, yCenter, radius, circlePaint);
 
-		navigationCanvas.drawText(AVarioActivity.CONTEXT.getString(R.string.north), xCenter,
-				yCenter - Math.round(radius + 5 * densityMultiplier), cardinals);
-		navigationCanvas.drawText(AVarioActivity.CONTEXT.getString(R.string.south), xCenter,
-				yCenter + Math.round(radius + 25 * densityMultiplier), cardinals);
-		navigationCanvas.drawText(AVarioActivity.CONTEXT.getString(R.string.west),
-				xCenter - Math.round(radius + 15 * densityMultiplier), yCenter, cardinals);
-		navigationCanvas.drawText(AVarioActivity.CONTEXT.getString(R.string.east),
-				xCenter + Math.round(radius + 15 * densityMultiplier), yCenter, cardinals);
+		navigationCanvas
+				.drawText(AVarioActivity.CONTEXT.getString(R.string.north),
+						xCenter,
+						yCenter - Math.round(radius + 5 * densityMultiplier),
+						cardinals);
+		navigationCanvas.drawText(
+				AVarioActivity.CONTEXT.getString(R.string.south), xCenter,
+				yCenter + Math.round(radius + 25 * densityMultiplier),
+				cardinals);
+		navigationCanvas.drawText(
+				AVarioActivity.CONTEXT.getString(R.string.west),
+				xCenter - Math.round(radius + 15 * densityMultiplier), yCenter,
+				cardinals);
+		navigationCanvas.drawText(
+				AVarioActivity.CONTEXT.getString(R.string.east),
+				xCenter + Math.round(radius + 15 * densityMultiplier), yCenter,
+				cardinals);
 	}
 
 	private void drawIcon(Canvas navCanvas, double bearing, Bitmap bitmap) {
 		if (bearing != -1) {
 			bearing = bearing % 360;
 			float angle = (float) (bearing * Math.PI / 180f - Math.PI / 2);
-			float theX = (float) ((radius + 5 * densityMultiplier) * Math.cos(angle) + xCenter);
-			float theY = (float) ((radius + 5 * densityMultiplier) * Math.sin(angle) + yCenter);
+			float theX = (float) ((radius + 5 * densityMultiplier)
+					* Math.cos(angle) + xCenter);
+			float theY = (float) ((radius + 5 * densityMultiplier)
+					* Math.sin(angle) + yCenter);
 			navCanvas.save();
 			navCanvas.drawBitmap(bitmap, theX, theY, windMarkPaint);
 			navCanvas.restore();
@@ -147,7 +177,8 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 			float distanceToThermal = lastLocation.distanceTo(lastThermal);
 			if (distanceToThermal < Preferences.max_last_thermal_distance) {
 				float maxThermalUIDistance = radius + 15 * densityMultiplier;
-				distanceToThermal = distanceToThermal > maxThermalUIDistance ? maxThermalUIDistance : distanceToThermal;
+				distanceToThermal = distanceToThermal > maxThermalUIDistance ? maxThermalUIDistance
+						: distanceToThermal;
 				angle = (float) (Math.PI - angle);
 				float theX = (float) (distanceToThermal * Math.cos(angle) + xCenter);
 				float theY = (float) (distanceToThermal * Math.sin(angle) + yCenter);
@@ -160,6 +191,16 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 
 	private void drawPOIInfo(Canvas navCanvas) {
 		poiView.drawActivePoi();
+	}
+
+	private void drawGForce(Canvas navCanvas) {
+		navCanvas.save();
+		navCanvas.translate(xCenter, yCenter);
+		double gForce = DataAccessObject.get().getGForce();
+		navCanvas.drawText(StringFormatter.noDecimals((float) gForce) + " G",
+				-xCenter + Math.round(10 * densityMultiplier),
+				yCenter - Math.round(10 * densityMultiplier), gForcePaint);
+		navCanvas.restore();
 	}
 
 	@Override

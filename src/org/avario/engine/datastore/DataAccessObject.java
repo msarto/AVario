@@ -24,6 +24,7 @@ public class DataAccessObject {
 	protected String nmeaGGA;
 
 	private double windDirectionBearing = -1d;
+	private double gForce = 1f;
 	private float temperature = 0f;
 
 	private MovementFactor movementFactor = new GpsMovement();
@@ -109,7 +110,8 @@ public class DataAccessObject {
 	}
 
 	public float getBearing() {
-		return lastlocation != null && lastlocation.hasBearing() ? lastlocation.getBearing() : bearing;
+		return lastlocation != null && lastlocation.hasBearing() ? lastlocation
+				.getBearing() : bearing;
 	}
 
 	public float getHeading() {
@@ -134,7 +136,8 @@ public class DataAccessObject {
 
 	protected void makeWind(Location location) {
 		if (location != null && location.hasSpeed() && location.hasBearing()) {
-			windCalculator.addSpeedVector(location.getBearing(), location.getSpeed(), location.getTime() / 1000.0);
+			windCalculator.addSpeedVector(location.getBearing(),
+					location.getSpeed(), location.getTime() / 1000.0);
 			windDirectionBearing = windCalculator.getWindDirection();
 		}
 	}
@@ -196,6 +199,14 @@ public class DataAccessObject {
 
 	public void setLastPresure(float lastPresure) {
 		this.lastPresure = lastPresure;
+	}
+
+	public double getGForce() {
+		return gForce;
+	}
+
+	public void setGForce(double gForce) {
+		this.gForce = gForce;
 	}
 
 }
