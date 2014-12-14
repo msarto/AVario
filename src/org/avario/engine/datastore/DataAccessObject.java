@@ -2,10 +2,12 @@ package org.avario.engine.datastore;
 
 import java.util.StringTokenizer;
 
+import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sensors.GpsMovement;
 import org.avario.engine.sensors.MovementFactor;
 import org.avario.engine.wind.WindCalculator;
 import org.avario.utils.Logger;
+import org.avario.utils.filters.impl.IIRFilter;
 
 import android.location.Location;
 
@@ -26,6 +28,9 @@ public class DataAccessObject {
 	private double windDirectionBearing = -1d;
 	private double gForce = 1f;
 	private float temperature = 0f;
+
+	private IIRFilter zAccFilter = new IIRFilter(0.5f);
+	private float[] xyzAcc = new float[] { 0, 0, 0 };
 
 	private MovementFactor movementFactor = new GpsMovement();
 	private ThermalingTask thermalTask = new ThermalingTask();
@@ -128,6 +133,17 @@ public class DataAccessObject {
 
 	public void setTemperature(float temperature) {
 		this.temperature = temperature;
+	}
+
+	public void setAcc(float x, float y, float z) {
+		xyzAcc = zAccFilter.doFilter(x, y, z);
+	}
+
+	public float getSensitivity() {
+		float dec = Preferences.baro_sensitivity / 10;
+		float dinamicSensivity = (float) (Preferences.baro_sensitivity - Math
+				.min(Preferences.baro_sensitivity / 2, Math.abs(gForce) * dec));
+		return dinamicSensivity;
 	}
 
 	public synchronized boolean isGPSFix() {

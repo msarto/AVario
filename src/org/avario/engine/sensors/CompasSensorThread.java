@@ -5,6 +5,7 @@ import org.avario.engine.SensorThread;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
 import org.avario.utils.Logger;
+import org.avario.utils.filters.impl.IIRFilter;
 import org.avario.utils.filters.sensors.CompasSensorFilter;
 
 import android.hardware.Sensor;
@@ -15,6 +16,7 @@ public class CompasSensorThread extends SensorThread<Float> {
 	private CompasSensorFilter compasFilter = new CompasSensorFilter(
 			Preferences.compass_filter_sensitivity);
 	private SmoothCompassTask compassTask = new SmoothCompassTask();
+	private IIRFilter accFilter = new IIRFilter(0.5f);
 
 	public CompasSensorThread() {
 		sensors = new int[] { Sensor.TYPE_MAGNETIC_FIELD,
@@ -36,15 +38,17 @@ public class CompasSensorThread extends SensorThread<Float> {
 									.toBearing(sensorEvent.values.clone());
 							compassTask.setBearing(bearing);
 						} else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-							float[] accelerometer = sensorEvent.values.clone();
+							float[] accelerometer = accFilter
+									.doFilter(sensorEvent.values.clone());
 							compasFilter.notifyAccelerometer(accelerometer);
+							float x = accelerometer[0];
+							float y = accelerometer[1];
+							float z = accelerometer[2];
 							if (DataAccessObject.get() != null) {
-								double gForce = accelerometer[0]
-										* accelerometer[0];
-								gForce += accelerometer[1] * accelerometer[1];
-								gForce += accelerometer[2] * accelerometer[2];
-								gForce = Math.sqrt(gForce)
-										- SensorManager.GRAVITY_EARTH;
+								float gForce = x * x;
+								gForce += y * y;
+								gForce += z * z;
+								gForce = (float) (Math.sqrt(gForce) - SensorManager.GRAVITY_EARTH);
 								DataAccessObject.get().setGForce(gForce);
 							}
 						}

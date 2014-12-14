@@ -3,16 +3,14 @@ package org.avario.utils.filters.impl;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import org.avario.engine.prefs.Preferences;
+import org.avario.engine.datastore.DataAccessObject;
 import org.avario.utils.filters.Filter;
 
 public class Kalman2Filter implements Filter {
 
 	protected volatile Queue<Float> history = new ArrayDeque<Float>();
-	private double filterSizeFactor = Preferences.baro_sensitivity;
 
-	public Kalman2Filter(double medianSizeFactor) {
-		this.filterSizeFactor = medianSizeFactor;
+	public Kalman2Filter() {
 	}
 
 	@Override
@@ -20,7 +18,7 @@ public class Kalman2Filter implements Filter {
 		float[] result = new float[1];
 		history.add(value.clone()[0]);
 		result[0] = doKalman2();
-		if (history.size() > filterSizeFactor) {
+		if (history.size() > DataAccessObject.get().getSensitivity()) {
 			history.poll();
 		}
 		return result;
@@ -45,7 +43,7 @@ public class Kalman2Filter implements Filter {
 	}
 
 	public static void main(String[] args) {
-		Kalman2Filter filter = new Kalman2Filter(2);
+		Kalman2Filter filter = new Kalman2Filter();
 		filter.doFilter(1);
 		filter.doFilter(3);
 		filter.doFilter(5);

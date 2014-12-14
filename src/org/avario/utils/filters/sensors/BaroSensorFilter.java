@@ -22,7 +22,6 @@ public class BaroSensorFilter implements LocationConsumer {
 	private boolean gpsAltitude = false;
 
 	public BaroSensorFilter(Filter... filters) {
-		Logger.get().log("Filter baro with % " + Preferences.baro_sensitivity);
 		SensorProducer.get().registerConsumer(this);
 		baroFilters = filters;
 	}

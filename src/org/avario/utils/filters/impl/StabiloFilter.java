@@ -1,25 +1,21 @@
 package org.avario.utils.filters.impl;
 
-import org.avario.engine.prefs.Preferences;
+import org.avario.engine.datastore.DataAccessObject;
 import org.avario.utils.filters.Filter;
 
 public class StabiloFilter implements Filter {
 	// The lower the noise is the higher the filtering is
 	private volatile float previousValue = 0.0f;
-	protected float factor = 1;
 
 	public StabiloFilter() {
 
 	}
 
-	public StabiloFilter(float factor) {
-		this.factor = factor;
-	}
-
 	@Override
 	public float[] doFilter(final float... value) {
+		float factor = 0.7f - DataAccessObject.get().getSensitivity();
 		float ret = value.clone()[0];		
-		float stabiloMaxNoise = ((0.2f - Preferences.baro_sensitivity * 0.003f) / 1000f) * factor;
+		float stabiloMaxNoise = ((0.2f - DataAccessObject.get().getSensitivity() * 0.003f) / 1000f) * factor;
 		final float stabiloMinNoise = 0.000003f * factor;
 		float delta = Math.abs(ret - previousValue);
 		if (delta > 0.001f * factor)/* 1mps */{

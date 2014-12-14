@@ -3,7 +3,7 @@ package org.avario.engine.sensors;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import org.avario.engine.prefs.Preferences;
+import org.avario.engine.datastore.DataAccessObject;
 import org.avario.utils.filters.impl.StabiloFilter;
 
 public class LinearRegression implements MovementFactor {
@@ -33,7 +33,7 @@ public class LinearRegression implements MovementFactor {
 		samples.add(newSample);
 		needNewSlope = true;
 		// Cull old entries
-		double oldest = x - (40 * Preferences.baro_sensitivity);
+		double oldest = x - (40 * DataAccessObject.get().getSensitivity());
 		while (samples.peek().x < oldest) {
 			Sample s = samples.remove();
 			sumx -= s.x;

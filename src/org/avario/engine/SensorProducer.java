@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.avario.R;
+import org.avario.engine.consumerdef.AccelerometerConsumer;
 import org.avario.engine.consumerdef.BarometerConsumer;
 import org.avario.engine.consumerdef.CompasConsumer;
 import org.avario.engine.consumerdef.LocationConsumer;
@@ -23,6 +24,7 @@ public class SensorProducer {
 	private final List<LocationConsumer> gspConsumers = new ArrayList<LocationConsumer>();
 	private final List<BarometerConsumer> baroConsumers = new ArrayList<BarometerConsumer>();
 	private final List<CompasConsumer> compasConsumers = new ArrayList<CompasConsumer>();
+	private final List<AccelerometerConsumer> accelerometerConsumers = new ArrayList<AccelerometerConsumer>();
 
 	protected CompasSensorThread compasThread;
 	protected BaroSensorThread baroThread;
@@ -68,17 +70,28 @@ public class SensorProducer {
 		Logger.get().log("Register consumer " + consumer);
 		if (consumer instanceof LocationConsumer) {
 			gspConsumers.add((LocationConsumer) consumer);
-			Logger.get().log("Register GPS consumer " + consumer.getClass().getName());
+			Logger.get().log(
+					"Register GPS consumer " + consumer.getClass().getName());
 		}
 
 		if (consumer instanceof BarometerConsumer) {
 			baroConsumers.add((BarometerConsumer) consumer);
-			Logger.get().log("Register baro consumer " + consumer.getClass().getName());
+			Logger.get().log(
+					"Register baro consumer " + consumer.getClass().getName());
 		}
 
 		if (consumer instanceof CompasConsumer) {
 			compasConsumers.add((CompasConsumer) consumer);
-			Logger.get().log("Register compas consumer " + consumer.getClass().getName());
+			Logger.get()
+					.log("Register compas consumer "
+							+ consumer.getClass().getName());
+		}
+
+		if (consumer instanceof AccelerometerConsumer) {
+			accelerometerConsumers.add((AccelerometerConsumer) consumer);
+			Logger.get().log(
+					"Register accelerometer consumer "
+							+ consumer.getClass().getName());
 		}
 	}
 
@@ -91,7 +104,8 @@ public class SensorProducer {
 		baroThread.startSensor();
 		locationThread.startSensor();
 
-		Toast.makeText(activity, R.string.initalizing_sensors, Toast.LENGTH_LONG).show();
+		Toast.makeText(activity, R.string.initalizing_sensors,
+				Toast.LENGTH_LONG).show();
 	}
 
 	public void notifyGpsConsumers(Location location) {
@@ -114,6 +128,14 @@ public class SensorProducer {
 		synchronized (compasConsumers) {
 			for (CompasConsumer consumer : compasConsumers) {
 				consumer.notifyNorth(bearing);
+			}
+		}
+	}
+
+	public void notifyAccelerometerConsumers(float x, float y, float z) {
+		synchronized (accelerometerConsumers) {
+			for (AccelerometerConsumer consumer : accelerometerConsumers) {
+				consumer.notifyAcceleration(x, y, z);
 			}
 		}
 	}

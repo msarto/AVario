@@ -107,7 +107,7 @@ public class NavigatorUpdater implements LocationConsumer, CompasConsumer {
 	public void draw(Canvas navCanvas, int xCenter, int yCenter) {
 		this.xCenter = xCenter;
 		this.yCenter = yCenter;
-		//drawGForce(navCanvas);
+		// drawGForce(navCanvas);
 		navCanvas.rotate(DataAccessObject.get().getBearing(), this.xCenter,
 				this.yCenter);
 		if (navView == null) {
