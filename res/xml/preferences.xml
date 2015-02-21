@@ -27,6 +27,12 @@
                 android:key="use_speach"
                 android:summary="@string/use_speach_s"
                 android:title="@string/use_speach_t" />
+            
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="sound_inflight"
+                android:summary="@string/sound_inflight_s"
+                android:title="@string/sound_inflight_t" />
 
             <org.avario.ui.prefs.EditTextPreferenceWithValue
                 android:defaultValue="0.5"

@@ -119,7 +119,8 @@
     <string name="sound_type_t">Sound type</string>
     <string name="sink_alarm_s">Alarme de descendance (m/s))</string>
     <string name="sink_alarm_t">Alarme de descendance</string>
-    
+    <string name="sound_inflight_s">Sound only when inflight</string>
+    <string name="sound_inflight_t">Parawaiting silent</string>
     
     <string-array name="units_system_names">
         <item>Métrique</item>

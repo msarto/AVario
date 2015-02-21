@@ -33,7 +33,8 @@ public class LinearRegression implements MovementFactor {
 		samples.add(newSample);
 		needNewSlope = true;
 		// Cull old entries
-		double oldest = x - (40 * DataAccessObject.get().getSensitivity());
+		float sensitivity = DataAccessObject.get().getSensitivity();
+		double oldest = x - sensitivity * sensitivity;
 		while (samples.peek().x < oldest) {
 			Sample s = samples.remove();
 			sumx -= s.x;

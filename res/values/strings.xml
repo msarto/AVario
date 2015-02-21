@@ -119,6 +119,8 @@
     <string name="sound_type_t">Sound type</string>
     <string name="sink_alarm_s">Sink speed to start alarm (m/s)</string>
     <string name="sink_alarm_t">Sink alarm</string>
+    <string name="sound_inflight_s">Sound only when inflight</string>
+    <string name="sound_inflight_t">Parawaiting silent</string>
     
 
     <string-array name="units_system_names">

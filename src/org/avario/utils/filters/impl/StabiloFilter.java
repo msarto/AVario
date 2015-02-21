@@ -6,33 +6,16 @@ import org.avario.utils.filters.Filter;
 public class StabiloFilter implements Filter {
 	// The lower the noise is the higher the filtering is
 	private volatile float previousValue = 0.0f;
-
-	public StabiloFilter() {
-
-	}
+	ProgressiveFilter progresive = new ProgressiveFilter(0);
 
 	@Override
-	public float[] doFilter(final float... value) {
-		float factor = 0.7f - DataAccessObject.get().getSensitivity();
-		float ret = value.clone()[0];		
-		float stabiloMaxNoise = ((0.2f - DataAccessObject.get().getSensitivity() * 0.003f) / 1000f) * factor;
-		final float stabiloMinNoise = 0.000003f * factor;
+	public synchronized float[] doFilter(final float... value) {
+		float sensitivity = DataAccessObject.get().getSensitivity();
+		float ret = value.clone()[0];
 		float delta = Math.abs(ret - previousValue);
-		if (delta > 0.001f * factor)/* 1mps */{
-			previousValue = ret;
-			return new float[] { previousValue };
-		}
-		float deltaSign = (ret - previousValue) < 0 ? -1 : 1;
-		if (previousValue != 0.0f && delta > stabiloMinNoise) {
-			// noise > MIN
-			if (delta > stabiloMaxNoise) {
-				// noise > MAX
-				ret = previousValue + deltaSign * stabiloMaxNoise;
-			} else {
-				// Noise between MIN and MAX
-				ret = previousValue + deltaSign * delta
-						* (1 - (delta - stabiloMinNoise) / (stabiloMaxNoise - stabiloMinNoise));
-			}
+		if (previousValue != 0.0f) {
+			progresive.setStep(delta * (1 - 0.01f * sensitivity));
+			ret = progresive.doFilter(ret)[0];
 		}
 		previousValue = ret;
 		return new float[] { ret };

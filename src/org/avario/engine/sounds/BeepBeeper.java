@@ -90,6 +90,10 @@ public class BeepBeeper implements Runnable {
 			return false;
 		}
 
+		if (Preferences.sound_inflight && !DataAccessObject.get().isInFlight()) {
+			return false;
+		}
+
 		return true;
 	}
 

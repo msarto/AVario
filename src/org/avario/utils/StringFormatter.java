@@ -11,11 +11,17 @@ public class StringFormatter {
 	private static final DecimalFormat twoDecimalsFormatter = new DecimalFormat("0.00");
 	private static final NumberFormat noDecimalsFormatter = new DecimalFormat("#");
 	private static final DecimalFormat oneDecimalFormatter = new DecimalFormat("0.0");
+	private static final DecimalFormat multipleDecimalFormatter = new DecimalFormat("0.000000000000000");
 
+	
 	public static String twoDecimals(double value) {
 		return twoDecimalsFormatter.format(value);
 	}
 
+	public static String multipleDecimals(float value) {
+		return multipleDecimalFormatter.format(value);
+	}
+	
 	public static String twoDecimals(float value) {
 		return twoDecimalsFormatter.format(value);
 	}

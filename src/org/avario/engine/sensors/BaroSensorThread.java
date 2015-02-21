@@ -15,8 +15,7 @@ public class BaroSensorThread extends SensorThread<Float> {
 
 	private static final Object baroLock = new Object();
 	private volatile boolean bSensorOn = false;
-	private BaroSensorFilter baroFilter = new BaroSensorFilter(
-			new StabiloFilter(), new Kalman2Filter());
+	private BaroSensorFilter baroFilter = new BaroSensorFilter(new StabiloFilter(), new Kalman2Filter());
 
 	public BaroSensorThread() {
 		init();
@@ -35,16 +34,13 @@ public class BaroSensorThread extends SensorThread<Float> {
 				synchronized (baroLock) {
 					if (!bSensorOn) {
 						bSensorOn = true;
-						DataAccessObject.get().setMovementFactor(
-								new LinearRegression());
+						DataAccessObject.get().setMovementFactor(new LinearRegression());
 					}
 					float currentPresure = sensorEvent.values.clone()[0];
-					final float altitude = baroFilter
-							.toAltitude(currentPresure);
+					final float altitude = baroFilter.toAltitude(currentPresure);
 					if (altitude >= 0) {
 						DataAccessObject.get().setLastAltitude(altitude);
-						DataAccessObject.get().getMovementFactor()
-								.notify(System.nanoTime() / 1000000d, altitude);
+						DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, altitude);
 						SensorProducer.get().notifyBaroConsumers(altitude);
 					}
 				}

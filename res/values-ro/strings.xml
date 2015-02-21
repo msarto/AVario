@@ -119,6 +119,8 @@
     <string name="sound_type_t">Tip sunet</string>
     <string name="sink_alarm_s">Alarma coborare (m/s))</string>
     <string name="sink_alarm_t">Alarma coborare</string>
+    <string name="sound_inflight_s">Sunet doar in zbor</string>
+    <string name="sound_inflight_t">Parawaiting linistit</string>
     
     <string-array name="units_system_names">
         <item>Metric</item>
