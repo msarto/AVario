@@ -71,7 +71,7 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 					groundSpeedView.setText(StringFormatter.noDecimals(UnitsConverter.toPreferredLong(UnitsConverter
 							.msTokmh(location.getSpeed()))));
 					groundSpeedMeasure.setText(UnitsConverter.preferredDistLong() + "/h");
-					if (startTime == 0 && location.getSpeed() > 3f) {
+					if (startTime == 0 && DataAccessObject.get().isInFlight()) {
 						startTime = System.currentTimeMillis();
 					}
 				}

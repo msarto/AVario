@@ -59,16 +59,9 @@ public class Tracker implements LocationConsumer {
 	}
 
 	public synchronized boolean startTracking() {
-		float speed = DataAccessObject.get().getLastlocation() == null ? 0f : DataAccessObject.get().getLastlocation()
-				.getSpeed();
-		if (tracking == false && speed > 3) {
+		if (tracking == false && DataAccessObject.get().isInFlight()) {
 			Logger.get().log("Start tracking " + tracking);
 			initSignature();
-			TonePlayer startTrack = new TonePlayer();
-			for (int i = 0; i < 3; i++) {
-				startTrack.play(400f, ToneType.HIGH);
-				startTrack.stop();
-			}
 			trackStream = null;
 			cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
 			lastNotification = null;
@@ -184,31 +177,55 @@ public class Tracker implements LocationConsumer {
 	@Override
 	public synchronized void notifyWithLocation(final Location location) {
 		// Start the track if selected
-		if (needTracking || (Preferences.auto_track && !isTracking())) {
-			startTracking();
-			return;
-		}
-		
-		Location loc = DataAccessObject.get().getLastlocation();
-		if (trackStream != null && tracking) {
-			String strSeq = null;
-			try {
-				cal.setTimeInMillis(loc.getTime());
-				if (lastNotification != null && (loc.getTime() - lastNotification.getTime() < 1000)) {
-					return;
+		try {
+			if (needTracking || (Preferences.auto_track && !isTracking())) {
+				startTracking();
+				TonePlayer startTrack = new TonePlayer();
+				for (int i = 0; i < 3; i++) {
+					startTrack.play(400f, ToneType.HIGH);
+					startTrack.stop();
+					Thread.sleep(100);
 				}
-				int altitude = Math.round(DataAccessObject.get().getLastAltitude());
-				strSeq = String.format(Locale.US, "B%02d%02d%02d%s%s%c%05d%05d%03d\r\n", cal.get(Calendar.HOUR_OF_DAY),
-						cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), degreeStr(loc.getLatitude(), true),
-						degreeStr(loc.getLongitude(), false), 'A', altitude, altitude, (int) loc.getSpeed());
-
-				trackStream.write(strSeq.getBytes());
-				updateMetaInfo(loc);
-				updateHeight(DataAccessObject.get().getLastAltitude());
-				lastNotification = loc;
-			} catch (Exception e) {
-				Logger.get().log("Fail writing seq: " + strSeq, e);
+				return;
 			}
+
+			if (tracking && !DataAccessObject.get().isInFlight()) {
+				// Not in flight anymore
+				stopTracking();
+				TonePlayer startTrack = new TonePlayer();
+				for (int i = 0; i < 3; i++) {
+					startTrack.play(400f, ToneType.HIGH);
+					startTrack.stop();
+					Thread.sleep(100);
+				}
+				return;
+			}
+
+			Location loc = DataAccessObject.get().getLastlocation();
+			if (trackStream != null && tracking) {
+				String strSeq = null;
+				try {
+					cal.setTimeInMillis(loc.getTime());
+					if (lastNotification != null && (loc.getTime() - lastNotification.getTime() < 1000)) {
+						return;
+					}
+					int altitude = Math.round(DataAccessObject.get().getLastAltitude());
+					int gpsAltitude = Math.round(DataAccessObject.get().getGPSAltitude());
+					strSeq = String.format(Locale.US, "B%02d%02d%02d%s%s%c%05d%05d%03d\r\n",
+							cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND),
+							degreeStr(loc.getLatitude(), true), degreeStr(loc.getLongitude(), false), 'A', altitude,
+							gpsAltitude, (int) loc.getSpeed());
+
+					trackStream.write(strSeq.getBytes());
+					updateMetaInfo(loc);
+					updateHeight(DataAccessObject.get().getLastAltitude());
+					lastNotification = loc;
+				} catch (Exception e) {
+					Logger.get().log("Fail writing seq: " + strSeq, e);
+				}
+			}
+		} catch (Exception e) {
+			Logger.get().log("Fail handling track", e);
 		}
 	}
 

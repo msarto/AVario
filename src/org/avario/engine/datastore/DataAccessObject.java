@@ -28,11 +28,13 @@ public class DataAccessObject {
 	private double windDirectionBearing = -1d;
 	private double gForce = 1f;
 	private float temperature = 0f;
+	private float gpsAltitude = 0f;
 
 	private IIRFilter zAccFilter = new IIRFilter(0.5f);
 	private float[] xyzAcc = new float[] { 0, 0, 0 };
 
 	private MovementFactor movementFactor = new GpsMovement();
+	private FlightStatusTask flightTask = new FlightStatusTask();
 	private ThermalingTask thermalTask = new ThermalingTask();
 	private HeadingTask headingTask = new HeadingTask();
 	private AltitudeGainTask altitudeGainTask = new AltitudeGainTask();
@@ -46,12 +48,14 @@ public class DataAccessObject {
 		THIS.thermalTask.start();
 		THIS.headingTask.start();
 		THIS.altitudeGainTask.start();
+		THIS.flightTask.start();
 	}
 
 	public static void clear() {
 		THIS.thermalTask.stop();
 		THIS.headingTask.stop();
 		THIS.altitudeGainTask.stop();
+		THIS.flightTask.stop();
 	}
 
 	public static DataAccessObject get() {
@@ -91,12 +95,21 @@ public class DataAccessObject {
 		lastlocation = nowlocation;
 		if (lastlocation != null) {
 			lastSystemFix = System.currentTimeMillis();
+			gpsAltitude = nowlocation.hasAltitude() ? (float) nowlocation.getAltitude() : gpsAltitude;
 		}
 		if (lastAltitude > 0) {
 			lastlocation.setAltitude(lastAltitude);
 		}
 		makeWind(lastlocation);
 		makeQFE(lastlocation);
+	}
+
+	public float getGPSAltitude() {
+		return gpsAltitude;
+	}
+
+	public boolean isInFlight() {
+		return flightTask.isInFlight();
 	}
 
 	public double getWindDirectionBearing() {
@@ -115,8 +128,7 @@ public class DataAccessObject {
 	}
 
 	public float getBearing() {
-		return lastlocation != null && lastlocation.hasBearing() ? lastlocation
-				.getBearing() : bearing;
+		return lastlocation != null && lastlocation.hasBearing() ? lastlocation.getBearing() : bearing;
 	}
 
 	public float getHeading() {
@@ -141,8 +153,8 @@ public class DataAccessObject {
 
 	public float getSensitivity() {
 		float dec = Preferences.baro_sensitivity / 10;
-		float dinamicSensivity = (float) (Preferences.baro_sensitivity - Math
-				.min(Preferences.baro_sensitivity / 2, Math.abs(gForce) * dec));
+		float dinamicSensivity = (float) (Preferences.baro_sensitivity - Math.min(Preferences.baro_sensitivity / 2,
+				Math.abs(gForce) * dec));
 		return dinamicSensivity;
 	}
 
@@ -152,8 +164,7 @@ public class DataAccessObject {
 
 	protected void makeWind(Location location) {
 		if (location != null && location.hasSpeed() && location.hasBearing()) {
-			windCalculator.addSpeedVector(location.getBearing(),
-					location.getSpeed(), location.getTime() / 1000.0);
+			windCalculator.addSpeedVector(location.getBearing(), location.getSpeed(), location.getTime() / 1000.0);
 			windDirectionBearing = windCalculator.getWindDirection();
 		}
 	}
