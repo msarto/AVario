@@ -31,15 +31,18 @@ public class BeepBeeper implements Runnable {
 				try {
 					DataAccessObject.get().upadteVSpeed();
 					float beepSpeed = DataAccessObject.get().getLastVSpeed();
-					boolean bAlarm = beepSpeed < Math.min(Preferences.sink_start, Preferences.sink_alarm);
 					beepSpeed = beepSpeed > 5 ? 5 : beepSpeed;
 					beepSpeed = beepSpeed < -5 ? -5 : beepSpeed;
-					if (bAlarm) {
-						ToneProducer.get().getAlarmTone().beep();
-					}
+					float sensitivity = DataAccessObject.get().getSensitivity();
+
 					if (!validateThisSpeed(beepSpeed)) {
-						Thread.sleep(100);
+						Thread.sleep(Math.round(5f * sensitivity));
 					} else {
+						boolean bAlarm = beepSpeed < Math.min(Preferences.sink_start, Preferences.sink_alarm);
+						if (bAlarm) {
+							ToneProducer.get().getAlarmTone().beep();
+						}
+
 						if (beepSpeed > 0) {
 							AsyncTone liftBeep = ToneProducer.get().getLiftTone();
 							liftBeep.setSpeed(beepSpeed);
