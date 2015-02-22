@@ -4,14 +4,13 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import org.avario.engine.datastore.DataAccessObject;
-import org.avario.utils.filters.impl.StabiloFilter;
 
 public class LinearRegression implements MovementFactor {
 
 	private Queue<Sample> samples = new ArrayDeque<Sample>();
-	private StabiloFilter filter = new StabiloFilter();
 	private boolean needNewSlope = false;
 	private float currentSlope = 0f;
+	//private IIRFilter slopeFilter = new IIRFilter(0.5f);
 
 	// / Invariants
 	private double sumx;
@@ -19,7 +18,6 @@ public class LinearRegression implements MovementFactor {
 
 	@Override
 	public synchronized void reset() {
-		filter.reset();
 		samples.clear();
 		sumx = 0;
 		sumy = 0f;
@@ -56,9 +54,11 @@ public class LinearRegression implements MovementFactor {
 			xxbar += (s.x - xbar) * (s.x - xbar);
 			xybar += (s.x - xbar) * (s.y - ybar);
 		}
-		float beta1 = xybar / xxbar;
-		currentSlope = filter.doFilter(beta1)[0];
-		return currentSlope * 1000f;
+		float currSlope = xybar / xxbar;
+//		float sensitivity = 1.0f - Math.min(0.3f, DataAccessObject.get().getSensitivity() * 0.01f);
+//		slopeFilter.setFactor(sensitivity);
+		//currSlope = slopeFilter.doFilter(currSlope)[0];
+		return currSlope * 1000f;
 	}
 
 }

@@ -73,7 +73,7 @@ public class BeepBeeper implements Runnable {
 	}
 
 	private boolean validateThisSpeed(float beepSpeed) {
-		if (beepSpeed == Float.NaN) {
+		if (Float.isNaN(beepSpeed)) {
 			return false;
 		}
 

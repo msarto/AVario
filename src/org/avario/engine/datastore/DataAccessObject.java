@@ -147,7 +147,7 @@ public class DataAccessObject {
 		float dec = Preferences.baro_sensitivity / 10;
 		float dinamicSensivity = (float) (Preferences.baro_sensitivity - Math.min(Preferences.baro_sensitivity / 2,
 				gForce * dec));
-		return dinamicSensivity;
+		return Math.abs(dinamicSensivity);
 	}
 
 	public synchronized boolean isGPSFix() {
