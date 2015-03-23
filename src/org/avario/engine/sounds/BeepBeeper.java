@@ -1,5 +1,7 @@
 package org.avario.engine.sounds;
 
+import org.avario.engine.SensorProducer;
+import org.avario.engine.consumerdef.AccelerometerConsumer;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;
 import org.avario.utils.Logger;
@@ -11,6 +13,7 @@ public class BeepBeeper implements Runnable {
 
 	private volatile boolean doBeep = false;
 	private static BeepBeeper THIS;
+	private final AccelerationBeep accelerationBeep = new AccelerationBeep();
 
 	protected BeepBeeper() {
 	}
@@ -27,6 +30,7 @@ public class BeepBeeper implements Runnable {
 	@Override
 	public void run() {
 		try {
+
 			while (doBeep) {
 				try {
 					DataAccessObject.get().upadteVSpeed();
@@ -77,10 +81,6 @@ public class BeepBeeper implements Runnable {
 			return false;
 		}
 
-		if ((beepSpeed > -Preferences.lift_start) && (beepSpeed < Preferences.lift_start)) {
-			prenotifyThermal();
-		}
-
 		if (Math.abs(beepSpeed) < Preferences.lift_start) {
 			return false;
 		}
@@ -100,21 +100,33 @@ public class BeepBeeper implements Runnable {
 		return true;
 	}
 
-	private void prenotifyThermal() {
-		if (Preferences.prenotify_interval > 0 && DataAccessObject.get().isGPSFix()) {
-			ToneProducer.get().getPrenotifyTone().beep();
-		}
-	}
-
 	private void start() {
 		doBeep = true;
 		new Thread(this).start();
+		SensorProducer.get().registerConsumer(accelerationBeep);
 	}
 
 	public void stop() {
+		SensorProducer.get().registerConsumer(accelerationBeep);
 		ToneProducer.get().getLiftTone().stop();
 		ToneProducer.get().getSyncTone().stop();
 		ToneProducer.get().getPrenotifyTone().stop();
 		doBeep = false;
+	}
+
+	private static class AccelerationBeep implements AccelerometerConsumer {
+		long lastAcceleration = System.currentTimeMillis();
+
+		@Override
+		public void notifyAcceleration(float x, float y, float z) {
+			if (Preferences.prenotify_interval > 0
+					&& System.currentTimeMillis() - lastAcceleration > Preferences.prenotify_interval) {
+				if (z < (8f - (Preferences.baro_sensitivity * 0.1f))) {
+					ToneProducer.get().getPrenotifyTone().beep();
+					lastAcceleration = System.currentTimeMillis();
+				}
+			}
+		}
+
 	}
 }

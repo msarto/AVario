@@ -37,9 +37,12 @@ public class CompasSensorThread extends SensorThread<Float> {
 						} else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 							float[] accelerometer = accFilter.doFilter(sensorEvent.values.clone());
 							compasFilter.notifyAccelerometer(accelerometer);
+
 							float x = accelerometer[0];
 							float y = accelerometer[1];
 							float z = accelerometer[2];
+							SensorProducer.get().notifyAccelerometerConsumers(x, y, z);
+							
 							if (DataAccessObject.get() != null) {
 								float gForce = x * x;
 								gForce += y * y;

@@ -1,6 +1,5 @@
 package org.avario.engine.sounds.tone;
 
-import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sounds.AsyncTone;
 
 public class PrenotifyTone extends AsyncTone {
@@ -12,13 +11,13 @@ public class PrenotifyTone extends AsyncTone {
 		if (!hadPrenotify) {
 			hadPrenotify = true;
 			tonePlayer.play(4001, TonePlayer.ToneType.LOW);
-			tonePlayer.stop();
 
 			try {
-				Thread.sleep(Math.round(Preferences.prenotify_interval));
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} finally {
+				tonePlayer.stop();
 				hadPrenotify = false;
 			}
 		}
