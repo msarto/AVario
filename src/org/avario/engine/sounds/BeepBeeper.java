@@ -119,6 +119,10 @@ public class BeepBeeper implements Runnable {
 
 		@Override
 		public void notifyAcceleration(float x, float y, float z) {
+			if (Preferences.sound_inflight && !DataAccessObject.get().isInFlight()) {
+				return;
+			}
+
 			if (Preferences.prenotify_interval > 0
 					&& System.currentTimeMillis() - lastAcceleration > Preferences.prenotify_interval) {
 				if (z < (8f - (Preferences.baro_sensitivity * 0.1f))) {
