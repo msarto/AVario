@@ -14,6 +14,8 @@ public class BeepBeeper implements Runnable {
 	private volatile boolean doBeep = false;
 	private static BeepBeeper THIS;
 	private final AccelerationBeep accelerationBeep = new AccelerationBeep();
+	private volatile boolean isLift = false;
+	private volatile boolean isSink = false;
 
 	protected BeepBeeper() {
 	}
@@ -40,6 +42,8 @@ public class BeepBeeper implements Runnable {
 					float sensitivity = DataAccessObject.get().getSensitivity();
 
 					if (!validateThisSpeed(beepSpeed)) {
+						isLift = false;
+						isSink = false;
 						Thread.sleep(Math.round(5f * sensitivity));
 					} else {
 						boolean bAlarm = beepSpeed < Math.min(Preferences.sink_start, Preferences.sink_alarm);
@@ -48,10 +52,14 @@ public class BeepBeeper implements Runnable {
 						}
 
 						if (beepSpeed > 0) {
+							isLift = true;
+							isSink = false;
 							AsyncTone liftBeep = ToneProducer.get().getLiftTone();
 							liftBeep.setSpeed(beepSpeed);
 							liftBeep.beep();
 						} else if (beepSpeed < 0) {
+							isLift = false;
+							isSink = true;
 							AsyncTone sinkBeep = ToneProducer.get().getSyncTone();
 							sinkBeep.setSpeed(beepSpeed);
 							sinkBeep.beep();
@@ -114,7 +122,7 @@ public class BeepBeeper implements Runnable {
 		doBeep = false;
 	}
 
-	private static class AccelerationBeep implements AccelerometerConsumer {
+	private class AccelerationBeep implements AccelerometerConsumer {
 		long lastAcceleration = System.currentTimeMillis();
 
 		@Override
@@ -123,7 +131,7 @@ public class BeepBeeper implements Runnable {
 				return;
 			}
 
-			if (Preferences.prenotify_interval > 0
+			if (Preferences.prenotify_interval > 0 && !isLift
 					&& System.currentTimeMillis() - lastAcceleration > Preferences.prenotify_interval) {
 				if (z < (8f - (Preferences.baro_sensitivity * 0.1f))) {
 					ToneProducer.get().getPrenotifyTone().beep();

@@ -2,7 +2,6 @@ package org.avario.engine.sounds;
 
 import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sounds.tone.LiftTone;
-import org.avario.engine.sounds.tone.PrenotifyTone;
 import org.avario.engine.sounds.tone.SinkTone;
 import org.avario.engine.sounds.wav.WavAlarmTone;
 import org.avario.engine.sounds.wav.WavLiftTone;
@@ -14,7 +13,7 @@ public class ToneProducer {
 
 	protected final AsyncTone[] dinamicTones = new AsyncTone[] { new WavLiftTone(), new WavSinkTone(),
 			new WavPrenotifyTone(), new WavAlarmTone() };
-	protected final AsyncTone[] staticTones = new AsyncTone[] { new LiftTone(), new SinkTone(), new PrenotifyTone(),
+	protected final AsyncTone[] staticTones = new AsyncTone[] { new LiftTone(), new SinkTone(), new WavPrenotifyTone(),
 			new WavAlarmTone() };
 
 	protected ToneProducer() {
