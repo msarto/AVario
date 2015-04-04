@@ -133,7 +133,8 @@ public class BeepBeeper implements Runnable {
 
 			if (Preferences.prenotify_interval > 0 && !isLift
 					&& System.currentTimeMillis() - lastAcceleration > Preferences.prenotify_interval) {
-				if (z < (8f - (Preferences.baro_sensitivity * 0.1f))) {
+				double gF = Math.sqrt(x * x + y * y + z * z);
+				if (gF < (8f - (Preferences.baro_sensitivity * 0.1f))) {
 					ToneProducer.get().getPrenotifyTone().beep();
 					lastAcceleration = System.currentTimeMillis();
 				}

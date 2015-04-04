@@ -18,7 +18,7 @@ import android.preference.PreferenceManager;
 public class Preferences {
 	public static final int STREAM_TYPE = AudioManager.STREAM_SYSTEM;
 	public static volatile boolean use_speach = false;
-	public static volatile boolean auto_track = false;
+	public static volatile boolean auto_track = true;
 	public static volatile boolean use_sensbox = false;
 	public static volatile boolean sound_inflight = false;
 
@@ -27,7 +27,7 @@ public class Preferences {
 	public static volatile float sink_alarm = -5f;
 	public static volatile float lift_start = 0.2f;
 	public static volatile int tone_variation = 50;
-	public static volatile int prenotify_interval = 0;
+	public static volatile int prenotify_interval = 1000;
 
 	public static volatile int location_history = 5;
 	public static volatile int heading_interval = 2000;

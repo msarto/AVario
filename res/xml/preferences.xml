@@ -42,7 +42,7 @@
                 android:summary="@string/beep_interval_s"
                 android:title="@string/beep_interval_t" />
             <org.avario.ui.prefs.EditTextPreferenceWithValue
-                android:defaultValue="0"
+                android:defaultValue="1"
                 android:inputType="numberDecimal"
                 android:key="prenotify_interval"
                 android:singleLine="true"
@@ -130,7 +130,7 @@
             android:title="@string/location_history_t" />
 
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="auto_track"
             android:summary="@string/auto_track_s"
             android:title="@string/auto_track_t" />
