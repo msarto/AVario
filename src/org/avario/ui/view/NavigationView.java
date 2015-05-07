@@ -25,7 +25,7 @@ public class NavigationView extends LinearLayout {
 			int vScroll = computeVerticalScrollRange();
 			LayoutParams params = (LayoutParams) getLayoutParams();
 			// Changes the height
-			params.height = hScroll;
+			params.height = vScroll;
 			NavigatorUpdater.get().draw(canvas, hScroll / 2, vScroll / 2);
 		} catch (Exception ex) {
 			Logger.get().log("Fail to draw navigation ...", ex);

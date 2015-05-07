@@ -39,7 +39,8 @@ public class Preferences {
 	public static volatile float min_thermal_interval = 3000;
 	public static volatile float min_thermal_gain = 3;
 	public static volatile int units_system = 1; // 1-metric; 2-imperial
-
+	public static volatile int orientation = 1; // 1-portrait; 2-landscape
+	
 	public static volatile int lift_hz = 600;
 	public static volatile int sink_hz = 400;
 
@@ -142,6 +143,8 @@ public class Preferences {
 		baro_sensitivity = getInt("baro_sensitivity", 25);
 		compass_filter_sensitivity = getFloat("compass_filter_sensitivity", compass_filter_sensitivity);
 		units_system = getInt("units_system", units_system);
+		orientation = getInt("orientation", orientation);
+		
 		sound_type = getInt("sound_type", sound_type);
 		max_last_thermal_distance = getInt("max_last_thermal_distance", max_last_thermal_distance);
 		min_thermal_interval = 1000 * getFloat("min_thermal_interval", min_thermal_interval / 1000f);

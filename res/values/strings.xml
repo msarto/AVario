@@ -121,7 +121,8 @@
     <string name="sink_alarm_t">Sink alarm</string>
     <string name="sound_inflight_s">Sound only when inflight</string>
     <string name="sound_inflight_t">Parawaiting silent</string>
-    
+    <string name="orientation_s">Requires application restart</string>
+    <string name="orientation_t">Screen orientation</string>
 
     <string-array name="units_system_names">
         <item>Metric</item>
@@ -134,6 +135,14 @@
     <string-array name="sound_types_names">
         <item>Static</item>
         <item>Dynamic</item>
+    </string-array>
+    <string-array name="orientation_names">
+        <item>Portrait</item>
+        <item>Landscape</item>
+    </string-array>
+    <string-array name="orientation_vals">
+        <item>1</item>
+        <item>2</item>
     </string-array>
     
 </resources>

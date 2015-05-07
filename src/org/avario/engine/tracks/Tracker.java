@@ -33,7 +33,7 @@ import android.os.Environment;
 import android.util.Base64;
 
 public class Tracker implements LocationConsumer {
-	private static Tracker THIS = new Tracker();
+	private static Tracker THIS;
 	private OutputStream trackStream = null;
 	private Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
 	private Location lastNotification;
@@ -54,8 +54,10 @@ public class Tracker implements LocationConsumer {
 	}
 
 	public static void init(Activity context) {
-		THIS = new Tracker();
-		SensorProducer.get().registerConsumer(THIS);
+		if (THIS == null) {
+			THIS = new Tracker();
+			SensorProducer.get().registerConsumer(THIS);
+		}
 	}
 
 	public synchronized boolean startTracking() {

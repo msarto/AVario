@@ -22,6 +22,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -49,6 +50,7 @@ public class AVarioActivity extends Activity {
 	protected void initializeSensors() {
 		super.onStart();
 		try {
+
 			DataAccessObject.init();
 			setContentView(R.layout.vario);
 			if (Preferences.use_sensbox) {
@@ -58,16 +60,16 @@ public class AVarioActivity extends Activity {
 			} else {
 				SensorProducer.init(this, true);
 			}
-			// Draw the UI from the vario.xml layout
-			
-			NavigatorUpdater.init();
 			Tracker.init(this);
 			PoiManager.init();
 			Speaker.init();
+			// Draw the UI from the vario.xml layout
+
+			NavigatorUpdater.init();
 			NumericViewUpdater.init();
 			VarioMeterScaleUpdater.init();
 			BeepBeeper.init();
-			
+
 			addNotification();
 		} catch (Exception ex) {
 			Logger.get().log("Fail initializing ", ex);
@@ -77,9 +79,14 @@ public class AVarioActivity extends Activity {
 	/** Called with the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		if (viewCreated) {
 			return;
+		}
+		Preferences.update(this);
+		if (Preferences.orientation == 2) {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		}
 		// Keep the screen awake
 		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -90,7 +97,6 @@ public class AVarioActivity extends Activity {
 		AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		startVolume = audio.getStreamVolume(Preferences.STREAM_TYPE);
 
-		Preferences.update(this);
 		Logger.init();
 		initializeSensors();
 

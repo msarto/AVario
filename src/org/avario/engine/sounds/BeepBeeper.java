@@ -21,12 +21,15 @@ public class BeepBeeper implements Runnable {
 	}
 
 	public static void init() {
+		clear();
 		THIS = new BeepBeeper();
 		THIS.start();
 	}
 
 	public static void clear() {
-		THIS.stop();
+		if (THIS != null) {
+			THIS.stop();
+		}
 	}
 
 	@Override

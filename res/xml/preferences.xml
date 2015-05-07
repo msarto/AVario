@@ -70,6 +70,14 @@
                 android:summary="@string/sink_alarm_s"
                 android:title="@string/sink_alarm_t" />
         </PreferenceScreen>
+        <ListPreference
+            android:capitalize="words"
+            android:defaultValue="1"
+            android:entries="@array/orientation_names"
+            android:entryValues="@array/orientation_vals"
+            android:key="orientation"
+            android:summary="@string/orientation_s"
+            android:title="@string/orientation_t" />
         <PreferenceScreen
             android:key="thermal_prefs"
             android:summary="@string/thermal_prefs_s"

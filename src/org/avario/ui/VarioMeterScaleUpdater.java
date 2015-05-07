@@ -100,7 +100,9 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 	}
 
 	public static void clear() {
-		THIS.cancel(false);
+		if (THIS != null) {
+			THIS.cancel(true);
+		}
 	}
 
 	protected synchronized void updateSpeed(float vSpeed) {

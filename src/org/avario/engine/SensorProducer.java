@@ -21,10 +21,10 @@ import android.widget.Toast;
 public class SensorProducer {
 	private static SensorProducer THIS;
 
-	private final List<LocationConsumer> gspConsumers = new ArrayList<LocationConsumer>();
-	private final List<BarometerConsumer> baroConsumers = new ArrayList<BarometerConsumer>();
-	private final List<CompasConsumer> compasConsumers = new ArrayList<CompasConsumer>();
-	private final List<AccelerometerConsumer> accelerometerConsumers = new ArrayList<AccelerometerConsumer>();
+	private final List<VarioConsumer> gspConsumers = new ArrayList<VarioConsumer>();
+	private final List<VarioConsumer> baroConsumers = new ArrayList<VarioConsumer>();
+	private final List<VarioConsumer> compasConsumers = new ArrayList<VarioConsumer>();
+	private final List<VarioConsumer> accelerometerConsumers = new ArrayList<VarioConsumer>();
 
 	protected CompasSensorThread compasThread;
 	protected BaroSensorThread baroThread;
@@ -66,32 +66,51 @@ public class SensorProducer {
 		}
 	}
 
-	public void registerConsumer(VarioConsumer consumer) {
+	public synchronized void registerConsumer(VarioConsumer consumer) {
 		Logger.get().log("Register consumer " + consumer);
 		if (consumer instanceof LocationConsumer) {
 			gspConsumers.add((LocationConsumer) consumer);
-			Logger.get().log(
-					"Register GPS consumer " + consumer.getClass().getName());
+			Logger.get().log("Register GPS consumer " + consumer.getClass().getName());
 		}
 
 		if (consumer instanceof BarometerConsumer) {
 			baroConsumers.add((BarometerConsumer) consumer);
-			Logger.get().log(
-					"Register baro consumer " + consumer.getClass().getName());
+			Logger.get().log("Register baro consumer " + consumer.getClass().getName());
 		}
 
 		if (consumer instanceof CompasConsumer) {
 			compasConsumers.add((CompasConsumer) consumer);
-			Logger.get()
-					.log("Register compas consumer "
-							+ consumer.getClass().getName());
+			Logger.get().log("Register compas consumer " + consumer.getClass().getName());
 		}
 
 		if (consumer instanceof AccelerometerConsumer) {
 			accelerometerConsumers.add((AccelerometerConsumer) consumer);
-			Logger.get().log(
-					"Register accelerometer consumer "
-							+ consumer.getClass().getName());
+			Logger.get().log("Register accelerometer consumer " + consumer.getClass().getName());
+		}
+	}
+
+	public synchronized void unregisterConsumer(VarioConsumer consumer) {
+		Logger.get().log("UnRegister consumer " + consumer);
+		if (consumer instanceof LocationConsumer) {
+			Logger.get().log("UnRegister GPS consumer " + consumer.getClass().getName());
+			gspConsumers.remove(consumer);
+		}
+
+		if (consumer instanceof BarometerConsumer) {
+			Logger.get().log("UnRegister baro consumer " + consumer.getClass().getName());
+			baroConsumers.remove(consumer);
+
+		}
+
+		if (consumer instanceof CompasConsumer) {
+			Logger.get().log("UnRegister compas consumer " + consumer.getClass().getName());
+			compasConsumers.remove(consumer);
+		}
+
+		if (consumer instanceof AccelerometerConsumer) {
+			Logger.get().log("UnRegister accelerometer consumer " + consumer.getClass().getName());
+			accelerometerConsumers.remove(consumer);
+
 		}
 	}
 
@@ -104,39 +123,39 @@ public class SensorProducer {
 		baroThread.startSensor();
 		locationThread.startSensor();
 
-		Toast.makeText(activity, R.string.initalizing_sensors,
-				Toast.LENGTH_LONG).show();
+		Toast.makeText(activity, R.string.initalizing_sensors, Toast.LENGTH_LONG).show();
 	}
 
 	public void notifyGpsConsumers(Location location) {
 		synchronized (gspConsumers) {
-			for (LocationConsumer consumer : gspConsumers) {
-				consumer.notifyWithLocation(location);
+			for (VarioConsumer consumer : gspConsumers) {
+				((LocationConsumer) consumer).notifyWithLocation(location);
 			}
 		}
 	}
 
 	public void notifyBaroConsumers(float altitude) {
 		synchronized (baroConsumers) {
-			for (BarometerConsumer consumer : baroConsumers) {
-				consumer.notifyWithAltFromPreasure(altitude);
+			for (VarioConsumer consumer : baroConsumers) {
+				((BarometerConsumer) consumer).notifyWithAltFromPreasure(altitude);
 			}
 		}
 	}
 
 	public void notifyCompasConsumers(float bearing) {
 		synchronized (compasConsumers) {
-			for (CompasConsumer consumer : compasConsumers) {
-				consumer.notifyNorth(bearing);
+			for (VarioConsumer consumer : compasConsumers) {
+				((CompasConsumer) consumer).notifyNorth(bearing);
 			}
 		}
 	}
 
 	public void notifyAccelerometerConsumers(float x, float y, float z) {
 		synchronized (accelerometerConsumers) {
-			for (AccelerometerConsumer consumer : accelerometerConsumers) {
-				consumer.notifyAcceleration(x, y, z);
+			for (VarioConsumer consumer : accelerometerConsumers) {
+				((AccelerometerConsumer) consumer).notifyAcceleration(x, y, z);
 			}
 		}
 	}
+
 }
