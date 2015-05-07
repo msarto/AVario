@@ -4,7 +4,7 @@ import org.avario.utils.filters.Filter;
 
 public class IIRFilter implements Filter {
 	protected float[] previousValues;
-	private float filterFactor = 0.5f;
+	protected float filterFactor = 0.5f;
 
 	public IIRFilter(float filterFactor) {
 		if (filterFactor >= 0 && filterFactor <= 1) {

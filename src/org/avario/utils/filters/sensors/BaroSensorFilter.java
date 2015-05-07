@@ -36,6 +36,7 @@ public class BaroSensorFilter implements LocationConsumer {
 		for (Filter filter : baroFilters) {
 			lastPresureNotified = filter.doFilter(lastPresureNotified)[0];
 		}
+
 		DataAccessObject.get().setLastPresure(lastPresureNotified);
 		if (referrencePresure != Preferences.ref_qnh) {
 			resetFilters();
