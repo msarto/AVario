@@ -3,7 +3,6 @@ package org.avario.utils.filters.impl;
 import org.avario.engine.datastore.DataAccessObject;
 
 public class StabiloFilter extends IIRFilter {
-	private boolean init = false;
 
 	public StabiloFilter() {
 		super(0.5f);
@@ -15,9 +14,9 @@ public class StabiloFilter extends IIRFilter {
 	@Override
 	public synchronized float[] doFilter(final float... value) {
 		float[] nowValues = value.clone();
-		if (!init) {
-			previousValues = nowValues;
-			init = true;
+		previousValues = nowValues == null ? previousValues : nowValues;
+		if (nowValues == null) {
+			nowValues = previousValues;
 		}
 		float ratio = Math.abs(nowValues[0] - previousValues[0]) / previousValues[0];
 		if (ratio > 0.1f) {
