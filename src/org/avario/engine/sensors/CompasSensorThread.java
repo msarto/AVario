@@ -34,7 +34,6 @@ public class CompasSensorThread extends SensorThread<Float> {
 					if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 						float[] v = sensorEvent.values.clone();
 						float bearing = compasFilter.toBearing(v);
-						Logger.get().log("B " + v[0] + " F " + bearing);
 						compassTask.setBearing(bearing);
 					} else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 						float[] accelerometer = accFilter.doFilter(sensorEvent.values.clone());
