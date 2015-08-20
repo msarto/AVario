@@ -5,8 +5,6 @@ import java.util.Queue;
 
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.utils.Logger;
-import org.avario.utils.StringFormatter;
-import org.avario.utils.filters.impl.IIRFilter;
 
 public class LinearRegression implements MovementFactor {
 
@@ -56,8 +54,8 @@ public class LinearRegression implements MovementFactor {
 			xxbar += (s.x - xbar) * (s.x - xbar);
 			xybar += (s.x - xbar) * (s.y - ybar);
 		}
-		float currSlope = xybar / xxbar;
-		return currSlope * 1000f;
+		currentSlope = xybar / xxbar;
+		return currentSlope * 1000f;
 	}
 
 }
