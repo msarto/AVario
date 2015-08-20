@@ -87,7 +87,7 @@ public class DataAccessObject {
 		altitudeGainTask.reset();
 	}
 
-	public synchronized void setLastlocation(Location nowlocation) {
+	public void setLastlocation(Location nowlocation) {
 		lastlocation = nowlocation;
 		if (lastlocation != null) {
 			lastSystemFix = System.currentTimeMillis();
@@ -124,7 +124,7 @@ public class DataAccessObject {
 	}
 
 	public float getBearing() {
-		return lastlocation != null && lastlocation.hasBearing() ? lastlocation.getBearing() : bearing;
+		return bearing;//lastlocation != null && lastlocation.hasBearing() ? lastlocation.getBearing() : bearing;
 	}
 
 	public float getHeading() {

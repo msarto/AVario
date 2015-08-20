@@ -16,6 +16,7 @@ public class CompasSensorThread extends SensorThread<Float> {
 	private CompasSensorFilter compasFilter = new CompasSensorFilter(Preferences.compass_filter_sensitivity);
 	private SmoothCompassTask compassTask = new SmoothCompassTask();
 	private IIRFilter accFilter = new IIRFilter(0.5f);
+	protected long lastSensorTS = System.currentTimeMillis();
 
 	public CompasSensorThread() {
 		sensors = new int[] { Sensor.TYPE_MAGNETIC_FIELD, Sensor.TYPE_ACCELEROMETER };
@@ -24,39 +25,39 @@ public class CompasSensorThread extends SensorThread<Float> {
 	}
 
 	@Override
-	public void notifySensorChanged(final SensorEvent sensorEvent) {
-		callbackThreadPool.execute(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					if (!isSensorProcessed) {
-						isSensorProcessed = true;
-						if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-							float bearing = compasFilter.toBearing(sensorEvent.values.clone());
-							compassTask.setBearing(bearing);
-						} else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-							float[] accelerometer = accFilter.doFilter(sensorEvent.values.clone());
-							compasFilter.notifyAccelerometer(accelerometer);
+	public synchronized void notifySensorChanged(final SensorEvent sensorEvent) {
+		if (System.currentTimeMillis() - lastSensorTS > 100) {
+			lastSensorTS = System.currentTimeMillis();
+			try {
+				if (!isSensorProcessed) {
+					isSensorProcessed = true;
+					if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+						float[] v = sensorEvent.values.clone();
+						float bearing = compasFilter.toBearing(v);
+						Logger.get().log("B " + v[0] + " F " + bearing);
+						compassTask.setBearing(bearing);
+					} else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+						float[] accelerometer = accFilter.doFilter(sensorEvent.values.clone());
+						compasFilter.notifyAccelerometer(accelerometer);
 
-							float x = accelerometer[0];
-							float y = accelerometer[1];
-							float z = accelerometer[2];
-							SensorProducer.get().notifyAccelerometerConsumers(x, y, z);
-							
-							if (DataAccessObject.get() != null) {
-								float gForce = x * x;
-								gForce += y * y;
-								gForce += z * z;
-								gForce = (float) (Math.sqrt(gForce) - SensorManager.GRAVITY_EARTH);
-								DataAccessObject.get().setGForce(Math.abs(gForce));
-							}
+						float x = accelerometer[0];
+						float y = accelerometer[1];
+						float z = accelerometer[2];
+						SensorProducer.get().notifyAccelerometerConsumers(x, y, z);
+
+						if (DataAccessObject.get() != null) {
+							float gForce = x * x;
+							gForce += y * y;
+							gForce += z * z;
+							gForce = (float) (Math.sqrt(gForce) - SensorManager.GRAVITY_EARTH);
+							DataAccessObject.get().setGForce(Math.abs(gForce));
 						}
 					}
-				} finally {
-					isSensorProcessed = false;
 				}
+			} finally {
+				isSensorProcessed = false;
 			}
-		});
+		}
 
 	}
 
@@ -82,7 +83,7 @@ public class CompasSensorThread extends SensorThread<Float> {
 					}
 
 					long wait = Math.round(80 - Math.abs(smoothBearing - bearing));
-					Thread.sleep(wait > 20 ? wait : 20);
+					Thread.sleep(wait > 50 ? wait : 50);
 				}
 			} catch (Exception ex) {
 				Logger.get().log("Compass stopped...", ex);

@@ -22,6 +22,10 @@ public class StringFormatter {
 		return multipleDecimalFormatter.format(value);
 	}
 	
+	public static String multipleDecimals(double value) {
+		return multipleDecimalFormatter.format(value);
+	}
+	
 	public static String twoDecimals(float value) {
 		return twoDecimalsFormatter.format(value);
 	}
