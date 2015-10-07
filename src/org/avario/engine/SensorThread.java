@@ -42,14 +42,16 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 	@Override
 	public void run() {
 		try {
-			if (sensors != null) {
-				for (int sensorId : sensors) {
-					Logger.get().log("Try initializing sensor " + sensorId);
-					isSensorActive = registerListener(sensorId, sensorSpeed);
-					if (isSensorActive) {
-						semaphore.await(30, TimeUnit.SECONDS);
+			synchronized (callbackThreadPool) {
+				if (sensors != null) {
+					for (int sensorId : sensors) {
+						Logger.get().log("Try initializing sensor " + sensorId);
+						isSensorActive = registerListener(sensorId, sensorSpeed);
+						if (isSensorActive) {
+							semaphore.await(30, TimeUnit.SECONDS);
+						}
+						Logger.get().log(isSensorActive ? "DONE" : "NOT" + " Registered sensor " + sensorId);
 					}
-					Logger.get().log(isSensorActive ? "DONE" : "NOT" + " Registered sensor " + sensorId);
 				}
 			}
 		} catch (Exception e) {

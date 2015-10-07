@@ -5,6 +5,7 @@ import org.avario.R;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.SensorThread;
 import org.avario.engine.datastore.DataAccessObject;
+import org.avario.utils.Logger;
 
 import android.content.Context;
 import android.hardware.SensorEvent;
@@ -39,19 +40,6 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 				}
 			}
 		});
-		/*
-		 * try { Thread.sleep(4000); } catch (InterruptedException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); }
-		 * 
-		 * onNmeaReceived(0,
-		 * "$GPGGA,102010.0,4646.486229,N,02336.101507,E,1,07,0.6,391.7,M,37.0,M,,*52"
-		 * );
-		 * 
-		 * new MockLocation(){
-		 * 
-		 * @Override public void notifyLocation(Location location) {
-		 * LocationThread.this.onLocationChanged(location); } }.run();
-		 */
 	}
 
 	@Override
@@ -65,14 +53,20 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 		callbackThreadPool.execute(new Runnable() {
 			@Override
 			public void run() {
-				if (newLocation.hasAltitude() && (DataAccessObject.get().getMovementFactor() instanceof GpsMovement)) {
-					float nowAltitude = (float) (newLocation.getAltitude() - DataAccessObject.get().getGeoidHeight());
-					DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, nowAltitude);
-					DataAccessObject.get().setLastAltitude(nowAltitude);
+				try {
+					if (newLocation.hasAltitude()
+							&& (DataAccessObject.get().getMovementFactor() instanceof GpsMovement)) {
+						float nowAltitude = (float) (newLocation.getAltitude() - DataAccessObject.get()
+								.getGeoidHeight());
+						DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, nowAltitude);
+						DataAccessObject.get().setLastAltitude(nowAltitude);
+					}
+					DataAccessObject.get().setLastlocation(newLocation);
+					SensorProducer.get().notifyGpsConsumers(newLocation);
+					SensorProducer.get().notifyBaroConsumers(DataAccessObject.get().getLastAltitude());
+				} catch (RuntimeException ex) {
+					Logger.get().log("Fail to notify location changes ", ex);
 				}
-				DataAccessObject.get().setLastlocation(newLocation);
-				SensorProducer.get().notifyGpsConsumers(newLocation);
-				SensorProducer.get().notifyBaroConsumers(DataAccessObject.get().getLastAltitude());
 			}
 		});
 	}

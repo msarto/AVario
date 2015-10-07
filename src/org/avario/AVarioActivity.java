@@ -182,7 +182,11 @@ public class AVarioActivity extends Activity {
 	@Override
 	public void onAttachedToWindow() {
 		// To disable home button
-		this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD);
+		try {
+			this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD);
+		} catch (RuntimeException ex) {
+			Logger.get().log("Fail to enable Key Guard");
+		}
 		super.onAttachedToWindow();
 	}
 
@@ -192,7 +196,7 @@ public class AVarioActivity extends Activity {
 				wakeLock.release();
 			}
 			Tracker.get().stopTracking();
-			removeNotification();
+			undoSoundVolume();
 			Speaker.clear();
 			SensorProducer.clear();
 			BeepBeeper.clear();
@@ -214,7 +218,7 @@ public class AVarioActivity extends Activity {
 		super.onDestroy();
 	}
 
-	private void removeNotification() {
+	private void undoSoundVolume() {
 		try {
 			NotificationManager notifier = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			notifier.cancel(22313);

@@ -1,6 +1,5 @@
 package org.avario.engine.sensors;
 
-import org.avario.engine.SensorProducer;
 import org.avario.engine.SensorThread;
 import org.avario.engine.datastore.DataAccessObject;
 import org.avario.engine.prefs.Preferences;

@@ -2,6 +2,8 @@ package org.avario.engine.datastore;
 
 import java.util.StringTokenizer;
 
+import org.avario.AVarioActivity;
+import org.avario.R;
 import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sensors.GpsMovement;
 import org.avario.engine.sensors.MovementFactor;
@@ -9,6 +11,7 @@ import org.avario.engine.wind.WindCalculator;
 import org.avario.utils.Logger;
 
 import android.location.Location;
+import android.widget.Toast;
 
 public class DataAccessObject {
 	protected static DataAccessObject THIS;
@@ -21,8 +24,7 @@ public class DataAccessObject {
 	protected float lastPresure = -1;
 	protected volatile float lastVSpeed = 0;
 	protected float refAltitude = -1;
-
-	protected String nmeaGGA;
+	protected double geoidHeight = 0f;
 
 	private double windDirectionBearing = -1d;
 	private double gForce = 1f;
@@ -124,7 +126,8 @@ public class DataAccessObject {
 	}
 
 	public float getBearing() {
-		return bearing;//lastlocation != null && lastlocation.hasBearing() ? lastlocation.getBearing() : bearing;
+		return bearing;// lastlocation != null && lastlocation.hasBearing() ?
+						// lastlocation.getBearing() : bearing;
 	}
 
 	public float getHeading() {
@@ -180,10 +183,12 @@ public class DataAccessObject {
 	}
 
 	public double getGeoidHeight() {
-		// $GPGGA,102010.0,4646.486229,N,02336.101507,E,1,07,0.6,391.7,M,37.0,M,,*52
-		double geoidHeight = 0f;
-		try {
-			if (nmeaGGA != null) {
+		return geoidHeight;
+	}
+
+	public void setNmeaGGA(String nmeaGGA) {
+		if (nmeaGGA != null && geoidHeight == 0) {
+			try {
 				StringTokenizer st = new StringTokenizer(nmeaGGA, ",");
 				String prevValue = "0";
 				boolean firstM = true;
@@ -193,7 +198,7 @@ public class DataAccessObject {
 						if (firstM) { // First M is the altitude from NMEA
 							Logger.get().log("Nmea altitude: " + prevValue);
 							firstM = false;
-						} else {
+						} else if (prevValue != null && !"".equals(prevValue)) {
 							Logger.get().log("Nmea geoid height: " + prevValue);
 							geoidHeight = Double.valueOf(prevValue);
 							break;
@@ -201,15 +206,10 @@ public class DataAccessObject {
 					}
 					prevValue = currentValue;
 				}
+			} catch (Exception ex) {
+				Logger.get().log("Invalid GGA " + nmeaGGA, ex);
 			}
-		} catch (Exception ex) {
-			Logger.get().log("Fail computing geoid H ", ex);
 		}
-		return geoidHeight;
-	}
-
-	public void setNmeaGGA(String nmeaGGA) {
-		this.nmeaGGA = nmeaGGA;
 	}
 
 	public float getLastPresure() {
