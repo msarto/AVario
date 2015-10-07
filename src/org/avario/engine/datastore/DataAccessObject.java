@@ -2,8 +2,6 @@ package org.avario.engine.datastore;
 
 import java.util.StringTokenizer;
 
-import org.avario.AVarioActivity;
-import org.avario.R;
 import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sensors.GpsMovement;
 import org.avario.engine.sensors.MovementFactor;
@@ -11,7 +9,6 @@ import org.avario.engine.wind.WindCalculator;
 import org.avario.utils.Logger;
 
 import android.location.Location;
-import android.widget.Toast;
 
 public class DataAccessObject {
 	protected static DataAccessObject THIS;

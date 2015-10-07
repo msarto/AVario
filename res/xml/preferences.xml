@@ -27,7 +27,6 @@
                 android:key="use_speach"
                 android:summary="@string/use_speach_s"
                 android:title="@string/use_speach_t" />
-            
             <CheckBoxPreference
                 android:defaultValue="false"
                 android:key="sound_inflight"
@@ -42,7 +41,7 @@
                 android:summary="@string/beep_interval_s"
                 android:title="@string/beep_interval_t" />
             <org.avario.ui.prefs.EditTextPreferenceWithValue
-                android:defaultValue="1"
+                android:defaultValue="0"
                 android:inputType="numberDecimal"
                 android:key="prenotify_interval"
                 android:singleLine="true"
@@ -70,6 +69,7 @@
                 android:summary="@string/sink_alarm_s"
                 android:title="@string/sink_alarm_t" />
         </PreferenceScreen>
+        <!--
         <ListPreference
             android:capitalize="words"
             android:defaultValue="1"
@@ -77,7 +77,8 @@
             android:entryValues="@array/orientation_vals"
             android:key="orientation"
             android:summary="@string/orientation_s"
-            android:title="@string/orientation_t" />
+            android:title="@string/orientation_t" />
+        -->
         <PreferenceScreen
             android:key="thermal_prefs"
             android:summary="@string/thermal_prefs_s"
