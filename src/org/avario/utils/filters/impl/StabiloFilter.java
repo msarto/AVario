@@ -7,14 +7,13 @@ public class StabiloFilter extends IIRFilter {
 	public StabiloFilter() {
 		super(0.5f);
 		previousValues = new float[] { 0f };
-		float sensitivity = DataAccessObject.get().getSensitivity();
-		filterFactor = Math.min(0.5f, 1 - sensitivity * 0.01f);
 	}
 
 	@Override
 	public synchronized float[] doFilter(final float... value) {
+		float sensitivity = DataAccessObject.get().getSensitivity();
+		filterFactor = Math.min(0.5f, 1 - sensitivity * 0.01f);
 		float[] nowValues = value.clone();
-		previousValues = nowValues == null ? previousValues : nowValues;
 		if (nowValues == null) {
 			nowValues = previousValues;
 		}
@@ -24,6 +23,7 @@ public class StabiloFilter extends IIRFilter {
 		} else {
 			filterFactor = Math.min(0.5f, filterFactor + filterFactor * ratio);
 		}
+		previousValues = nowValues == null ? previousValues : nowValues;
 		float[] newValues = super.doFilter(nowValues);
 		return newValues;
 

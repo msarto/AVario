@@ -4,7 +4,6 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import org.avario.engine.datastore.DataAccessObject;
-import org.avario.utils.Logger;
 
 public class LinearRegression implements MovementFactor {
 
@@ -32,8 +31,8 @@ public class LinearRegression implements MovementFactor {
 		needNewSlope = true;
 		// Cull old entries
 		float sensitivity = DataAccessObject.get().getSensitivity();
-		double oldest = x - sensitivity * sensitivity;
-		while (samples.peek().x < oldest && samples.size() > 2) {
+		int sampleSize = Math.max(2, Math.round(sensitivity * 0.1f));
+		while (samples.size() > sampleSize) {
 			Sample s = samples.remove();
 			sumx -= s.x;
 			sumy -= s.y;

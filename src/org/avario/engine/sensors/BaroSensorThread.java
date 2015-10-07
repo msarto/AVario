@@ -37,11 +37,14 @@ public class BaroSensorThread extends SensorThread<Float> {
 						DataAccessObject.get().setMovementFactor(new LinearRegression());
 					}
 					float currentPresure = sensorEvent.values.clone()[0];
+					if (currentPresure < 700f || currentPresure > 1100f) {
+						return;
+					}
 					final float altitude = baroFilter.toAltitude(currentPresure);
 					if (altitude >= 0) {
 						DataAccessObject.get().setLastAltitude(altitude);
 						DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, altitude);
-						SensorProducer.get().notifyBaroConsumers(altitude);
+						// SensorProducer.get().notifyBaroConsumers(altitude);
 					}
 				}
 			} finally {
