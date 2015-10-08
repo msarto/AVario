@@ -30,7 +30,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 /**
@@ -177,17 +176,6 @@ public class AVarioActivity extends Activity {
 			return false;
 		}
 		return super.onKeyDown(keyCode, event);
-	}
-
-	@Override
-	public void onAttachedToWindow() {
-		// To disable home button
-		try {
-			this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD);
-		} catch (RuntimeException ex) {
-			Logger.get().log("Fail to enable Key Guard");
-		}
-		super.onAttachedToWindow();
 	}
 
 	private void clear() {

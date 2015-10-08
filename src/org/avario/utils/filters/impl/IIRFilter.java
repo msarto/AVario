@@ -19,7 +19,7 @@ public class IIRFilter implements Filter {
 	}
 
 	@Override
-	public synchronized float[] doFilter(float... value) {
+	public synchronized float[] doFilter(final float... value) {
 		float[] ret = value.clone();
 		if (previousValues != null) {
 			for (int i = 0; i < previousValues.length; i++) {

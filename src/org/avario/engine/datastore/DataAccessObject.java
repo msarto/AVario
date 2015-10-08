@@ -144,8 +144,8 @@ public class DataAccessObject {
 	}
 
 	public float getSensitivity() {
-		float dec = Preferences.baro_sensitivity / 10;
-		float dinamicSensivity = (float) (Preferences.baro_sensitivity - Math.min(Preferences.baro_sensitivity / 2,
+		float dec = Preferences.baro_sensitivity / 10f;
+		float dinamicSensivity = (float) (Preferences.baro_sensitivity - Math.min(Preferences.baro_sensitivity / 2f,
 				gForce * dec));
 		return Math.abs(dinamicSensivity);
 	}
@@ -197,14 +197,14 @@ public class DataAccessObject {
 							firstM = false;
 						} else if (prevValue != null && !"".equals(prevValue)) {
 							Logger.get().log("Nmea geoid height: " + prevValue);
-							geoidHeight = Double.valueOf(prevValue);
+							geoidHeight = Double.parseDouble(prevValue);
 							break;
 						}
 					}
 					prevValue = currentValue;
 				}
 			} catch (Exception ex) {
-				Logger.get().log("Invalid GGA " + nmeaGGA, ex);
+				// Logger.get().log("Invalid GGA " + nmeaGGA, ex);
 			}
 		}
 	}

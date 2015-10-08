@@ -8,17 +8,18 @@ import org.avario.utils.filters.Filter;
 
 public class Kalman2Filter implements Filter {
 
-	protected volatile Queue<Float> history = new ArrayDeque<Float>();
+	protected Queue<Float> history = new ArrayDeque<Float>();
 
 	public Kalman2Filter() {
 	}
 
 	@Override
-	public synchronized float[] doFilter(float... value) {
+	public synchronized float[] doFilter(final float... value) {
 		float[] result = new float[1];
-		history.add(value.clone()[0]);
+		float medianInterval = value[1] * (DataAccessObject.get().getSensitivity() * 0.1f);
+		history.add(value[0]);
 		result[0] = doKalman2();
-		if (history.size() > DataAccessObject.get().getSensitivity()) {
+		while (history.size() > medianInterval) {
 			history.poll();
 		}
 		return result;
