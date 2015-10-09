@@ -71,7 +71,7 @@ public class Logger {
 		}
 	}
 
-	public void log(String msg, Exception ex) {
+	public void log(String msg, Throwable ex) {
 		if (!USE_LOG) {
 			return;
 		}

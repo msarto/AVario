@@ -45,7 +45,7 @@ public class DataAccessObject {
 		THIS.headingTask.start();
 		THIS.altitudeGainTask.start();
 		THIS.flightTask.start();
-		THIS.sensorNotification.start();
+		// THIS.sensorNotification.start();
 	}
 
 	public static void clear() {
@@ -53,7 +53,7 @@ public class DataAccessObject {
 		THIS.headingTask.stop();
 		THIS.altitudeGainTask.stop();
 		THIS.flightTask.stop();
-		THIS.sensorNotification.stop();
+		// THIS.sensorNotification.stop();
 	}
 
 	public static DataAccessObject get() {

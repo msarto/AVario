@@ -4,14 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.Signature;
-import java.security.spec.EncodedKeySpec;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -43,10 +36,8 @@ public class Tracker implements LocationConsumer {
 	private String trackFileName;
 	private Signature sign;
 	private boolean useSignature = false;
-	private static final String igcK = "";
 
 	protected Tracker() {
-
 	}
 
 	public static Tracker get() {
@@ -69,30 +60,26 @@ public class Tracker implements LocationConsumer {
 			lastNotification = null;
 			metaInfo = new TrackInfo();
 			trackFileName = null;
-			startTrack();
-			tracking = true;
+			tracking = startTrack();
 		}
-
-		NumericViewUpdater.getInstance().notifyStartTracking();
+		if (tracking) {
+			NumericViewUpdater.getInstance().notifyStartTracking();
+		}
 		needTracking = !tracking;
 		return tracking;
 	}
 
 	private boolean initSignature() {
-		try {
-			sign = Signature.getInstance("SHA1withRSA");
-			KeyFactory fac = KeyFactory.getInstance("RSA");
-			EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(Base64.decode(igcK, Base64.DEFAULT));
-			PrivateKey pk = fac.generatePrivate(privKeySpec);
-			sign.initSign(pk);
-			return true;
-		} catch (NoSuchAlgorithmException e) {
-			Logger.get().log("Can not make a signature", e);
-		} catch (InvalidKeySpecException e) {
-			Logger.get().log("Invalid key spec to sign the igc", e);
-		} catch (InvalidKeyException e) {
-			Logger.get().log("Invalid key to sign the igc", e);
-		}
+		/*
+		 * try {
+		 * 
+		 * sign = Signature.getInstance("SHA1withRSA"); KeyFactory fac =
+		 * KeyFactory.getInstance("RSA"); EncodedKeySpec privKeySpec = new
+		 * PKCS8EncodedKeySpec(Base64.decode(igcK, Base64.DEFAULT)); PrivateKey
+		 * pk = fac.generatePrivate(privKeySpec); sign.initSign(pk); return
+		 * true; } catch (Throwable e) {
+		 * Logger.get().log("Can not make a signature", e); }
+		 */
 		return false;
 	}
 
@@ -110,8 +97,10 @@ public class Tracker implements LocationConsumer {
 		return tracking || needTracking;
 	}
 
-	protected void startTrack() {
+	protected boolean startTrack() {
+		boolean bRet = false;
 		try {
+
 			String HEADER = "AXMP " + Build.MANUFACTURER + " " + Build.MODEL + "\r\n";
 			HEADER += "HFDTE" + String.format("%1$td%1$tm%1$ty", new GregorianCalendar(TimeZone.getTimeZone("GMT")))
 					+ "\r\n";
@@ -126,19 +115,24 @@ public class Tracker implements LocationConsumer {
 			trackFileName = String.format("%1$ty%1$tm%1$td%1$tH%1$tM%1$tS", new GregorianCalendar());
 			final File trackFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
 					+ File.separator + trackFileName + ".igc");
-			if (!trackFile.getParentFile().exists()) {
+			if (trackFile.getParentFile().canRead() && !trackFile.getParentFile().exists()
+					&& trackFile.getParentFile().canWrite()) {
 				trackFile.getParentFile().mkdirs();
 			}
-
-			Logger.get().log("Start writting " + trackFile.getAbsolutePath());
-			trackStream = initSignature() ? new SignedOutputStream(new FileOutputStream(trackFile), sign)
-					: new BufferedOutputStream(new FileOutputStream(trackFile));
-			trackStream.write(HEADER.getBytes());
-			metaInfo.setFlightStart(System.currentTimeMillis());
-
-		} catch (Exception e) {
+			if (trackFile.canWrite()) {
+				Logger.get().log("Start writting " + trackFile.getAbsolutePath());
+				trackStream = initSignature() ? new SignedOutputStream(new FileOutputStream(trackFile), sign)
+						: new BufferedOutputStream(new FileOutputStream(trackFile));
+				trackStream.write(HEADER.getBytes());
+				metaInfo.setFlightStart(System.currentTimeMillis());
+				bRet = true;
+			} else {
+				Logger.get().log("Can not write to " + trackFile.getAbsolutePath());
+			}
+		} catch (Throwable e) {
 			Logger.get().log("Fail starting track ", e);
 		}
+		return bRet;
 	}
 
 	protected synchronized void stopTrack() {
@@ -181,12 +175,14 @@ public class Tracker implements LocationConsumer {
 		// Start the track if selected
 		try {
 			if (needTracking || (Preferences.auto_track && !isTracking())) {
-				startTracking();
-				TonePlayer startTrack = new TonePlayer();
-				for (int i = 0; i < 3; i++) {
-					startTrack.play(400f, ToneType.HIGH);
-					startTrack.stop();
-					Thread.sleep(100);
+				boolean trackSound = startTracking();
+				if (trackSound) {
+					TonePlayer startTrack = new TonePlayer();
+					for (int i = 0; i < 3; i++) {
+						startTrack.play(400f, ToneType.HIGH);
+						startTrack.stop();
+						Thread.sleep(100);
+					}
 				}
 				return;
 			}
