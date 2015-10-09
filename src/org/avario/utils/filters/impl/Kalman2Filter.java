@@ -4,36 +4,63 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import org.avario.engine.datastore.DataAccessObject;
+import org.avario.utils.StringFormatter;
 import org.avario.utils.filters.Filter;
+
+import android.os.SystemClock;
 
 public class Kalman2Filter implements Filter {
 
-	protected Queue<Float> history = new ArrayDeque<Float>();
+	static class Sample {
+		public long timestamp;
+		public float value;
+
+		public Sample(float value) {
+			this.value = value;
+			this.timestamp = SystemClock.elapsedRealtime();
+		}
+
+		public String toString() {
+			return "value: x " + StringFormatter.multipleDecimals(value);
+		}
+	}
+
+	protected Queue<Sample> history = new ArrayDeque<Sample>();
 
 	public Kalman2Filter() {
 	}
 
 	@Override
 	public synchronized float[] doFilter(final float... value) {
-		float[] result = new float[1];
-		float medianInterval = value[1] * (DataAccessObject.get().getSensitivity() * 0.1f);
-		history.add(value[0]);
-		result[0] = doKalman2();
-		while (history.size() > medianInterval) {
-			history.poll();
-		}
+		history.add(new Sample(value[0]));
+		float[] result = new float[] { doKalman2() };
+		trimSamples();
 		return result;
+	}
+
+	private void trimSamples() {
+		float sensitivity = DataAccessObject.get().getSensitivity() * 100;
+		boolean canSample = true;
+		while (canSample && history.size() > 3) {
+			// while (history.size() > Math.max(3, medianInterval)) {
+			Sample item = history.peek();
+			if (SystemClock.elapsedRealtime() - item.timestamp > sensitivity) {
+				history.poll();
+			} else {
+				canSample = false;
+			}
+		}
 	}
 
 	protected float doKalman2() {
 		float median = 0;
 		int N = history.size();
 		if (N == 1) {
-			return history.peek();
+			return history.peek().value;
 		}
 		float I = 0;
-		for (float item : history) {
-			median += item * I;
+		for (Sample item : history) {
+			median += item.value * I;
 			I = I + 1f / (N * (N - 1));
 		}
 		return median * 2;

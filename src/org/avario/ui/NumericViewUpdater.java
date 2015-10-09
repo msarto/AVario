@@ -81,11 +81,11 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 						StringFormatter.noDecimals(lastGain)));
 
 				float vSpeed = DataAccessObject.get().getLastVSpeed();
-				if (vSpeed != 0f) {
+				if (vSpeed != 0f && Math.abs(vSpeed) > 1) {
 					float ratio = location.getSpeed() / vSpeed;
 					ratio = ratio > 99 ? 99 : ratio;
 					ratio = ratio < -99 ? -99 : ratio;
-					glideRatio.setText(StringFormatter.noDecimals(location.getSpeed() / vSpeed) + " : 1");
+					glideRatio.setText(StringFormatter.noDecimals(ratio) + " : 1");
 				}
 			}
 		});

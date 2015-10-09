@@ -34,6 +34,7 @@ public class DataAccessObject {
 	private HeadingTask headingTask = new HeadingTask();
 	private AltitudeGainTask altitudeGainTask = new AltitudeGainTask();
 	private WindCalculator windCalculator = new WindCalculator(16, 0.3, 300);
+	private NotificationTask sensorNotification = new NotificationTask();
 
 	protected DataAccessObject() {
 	}
@@ -44,6 +45,7 @@ public class DataAccessObject {
 		THIS.headingTask.start();
 		THIS.altitudeGainTask.start();
 		THIS.flightTask.start();
+		THIS.sensorNotification.start();
 	}
 
 	public static void clear() {
@@ -51,6 +53,7 @@ public class DataAccessObject {
 		THIS.headingTask.stop();
 		THIS.altitudeGainTask.stop();
 		THIS.flightTask.stop();
+		THIS.sensorNotification.stop();
 	}
 
 	public static DataAccessObject get() {
@@ -223,6 +226,10 @@ public class DataAccessObject {
 
 	public void setGForce(double gForce) {
 		this.gForce = gForce;
+	}
+
+	public float getNps() {
+		return sensorNotification.getNps();
 	}
 
 }

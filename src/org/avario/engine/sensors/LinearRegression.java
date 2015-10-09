@@ -5,6 +5,8 @@ import java.util.Queue;
 
 import org.avario.engine.datastore.DataAccessObject;
 
+import android.os.SystemClock;
+
 public class LinearRegression implements MovementFactor {
 
 	private Queue<Sample> samples = new ArrayDeque<Sample>();
@@ -30,12 +32,17 @@ public class LinearRegression implements MovementFactor {
 		samples.add(newSample);
 		needNewSlope = true;
 		// Cull old entries
-		float sensitivity = DataAccessObject.get().getSensitivity();
-		int sampleSize = Math.max(2, Math.round(sensitivity * 0.1f));
-		while (samples.size() > sampleSize) {
-			Sample s = samples.remove();
-			sumx -= s.x;
-			sumy -= s.y;
+		float sensitivity = DataAccessObject.get().getSensitivity() * 10;
+		boolean canSample = true;
+		while (canSample && samples.size() > 2) {
+			Sample s = samples.peek();
+			if (SystemClock.elapsedRealtime() - s.timestamp > sensitivity) {
+				samples.poll();
+				sumx -= s.x;
+				sumy -= s.y;
+			} else {
+				canSample = false;
+			}
 		}
 	}
 

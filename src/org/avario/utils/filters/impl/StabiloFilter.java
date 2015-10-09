@@ -11,12 +11,9 @@ public class StabiloFilter extends IIRFilter {
 	@Override
 	public synchronized float[] doFilter(final float... nowValues) {
 		float sensitivity = DataAccessObject.get().getSensitivity();
-		filterFactor = Math.min(0.8f, sensitivity * 0.01f);
+		filterFactor = Math.min(0.9f, sensitivity * 0.01f);
 		if (previousValues == null) {
 			previousValues = nowValues;
-		}
-		if (Math.abs(nowValues[0] - previousValues[0]) > 0.1) {
-			return previousValues;
 		}
 		return super.doFilter(nowValues);
 	}

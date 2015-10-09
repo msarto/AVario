@@ -15,26 +15,22 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.widget.Toast;
 
-public class BaroSensorFilter implements LocationConsumer, Runnable {
+public class BaroSensorFilter implements LocationConsumer {
 
 	private Filter[] baroFilters;
 	private volatile float referrencePresure = Preferences.ref_qnh;
 	private boolean gpsAltitude = false;
-	private volatile float nps = 0;
-	private int velocity = 0;
 
 	public BaroSensorFilter(Filter... filters) {
 		SensorProducer.get().registerConsumer(this);
 		baroFilters = filters;
-		new Thread(this).start();
 	}
 
 	// filter the pressure and transform it to altitude
 	public synchronized float toAltitude(float currentPresure) {
-		velocity++;
 		float lastPresureNotified = currentPresure;
 		for (Filter filter : baroFilters) {
-			lastPresureNotified = filter.doFilter(lastPresureNotified, nps)[0];
+			lastPresureNotified = filter.doFilter(lastPresureNotified)[0];
 		}
 
 		DataAccessObject.get().setLastPresure(lastPresureNotified);
@@ -97,20 +93,5 @@ public class BaroSensorFilter implements LocationConsumer, Runnable {
 				filter.reset();
 			}
 		}
-	}
-
-	@Override
-	public void run() {
-		while (true) {
-			try {
-				Thread.sleep(1000);
-				nps = velocity;
-				velocity = 0;
-			} catch (InterruptedException e) {
-				break;
-			}
-
-		}
-
 	}
 }

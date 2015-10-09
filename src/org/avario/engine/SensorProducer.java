@@ -19,8 +19,7 @@ import android.location.Location;
 import android.widget.Toast;
 
 public class SensorProducer {
-	private static SensorProducer THIS;
-
+	private static SensorProducer THIS = new SensorProducer();
 	private final List<VarioConsumer> gspConsumers = new ArrayList<VarioConsumer>();
 	private final List<VarioConsumer> baroConsumers = new ArrayList<VarioConsumer>();
 	private final List<VarioConsumer> compasConsumers = new ArrayList<VarioConsumer>();
@@ -30,16 +29,10 @@ public class SensorProducer {
 	protected BaroSensorThread baroThread;
 	protected LocationThread locationThread;
 
-	protected SensorProducer() {
-
-	}
-
 	public static void init(Activity activity, boolean useInternalSensors) {
-		THIS = new SensorProducer();
 		if (useInternalSensors) {
 			THIS.initSensorsListners(activity);
 		}
-
 	}
 
 	public static SensorProducer get() {
