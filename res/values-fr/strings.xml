@@ -21,7 +21,6 @@
     <string name="poi">Lieux</string>
     <string name="delpoi">Effacer lieu</string>
     <string name="addpoi">Ajouter lieu</string>
-    <string name="add_from_web">Regarder aux alentours</string>
     <string name="poiadded">Lieu %1$s ajouté</string>
     <string name="poiactive">ACTIVE -> %1$s</string>
     <string name="poinotactive">%1$s</string>

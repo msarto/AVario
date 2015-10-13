@@ -7,10 +7,8 @@ import org.avario.R;
 import org.avario.engine.PoiProducer;
 import org.avario.engine.consumerdef.POIConsumer;
 import org.avario.engine.datastore.DataAccessObject;
-import org.avario.engine.poi.KmlPois;
 import org.avario.engine.poi.POI;
 import org.avario.engine.poi.PoiManager;
-import org.avario.utils.Logger;
 import org.avario.utils.UnitsConverter;
 
 import android.app.ExpandableListActivity;
@@ -49,28 +47,6 @@ public class PoiList extends ExpandableListActivity implements POIConsumer {
 		setListAdapter(new PoiListAdapter(this.getApplicationContext()));
 	}
 
-	public void importListFromWeb() {
-		try {
-			Location lastLocation = DataAccessObject.get().getLastlocation();
-			if (lastLocation != null) {
-				Logger.get().log("Get Sites arround");
-				new KmlPois(lastLocation.getLatitude(), lastLocation.getLongitude(), 50) {
-					@Override
-					public void onPoi(POI... poi) {
-						Logger.get().log("Sites arround: " + poi.length);
-						for (POI site : poi) {
-							site.setName("(www) " + site.getName());
-							PoiManager.get().addWebPOI(site);
-							refreshList();
-						}
-					}
-				}.start();
-			}
-		} catch (Exception ex) {
-			Logger.get().log("Internat pg sites not available");
-		}
-	}
-
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) menuInfo;
@@ -87,7 +63,6 @@ public class PoiList extends ExpandableListActivity implements POIConsumer {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(0, 0, Menu.NONE, R.string.addpoi);
-		menu.add(1, 1, Menu.NONE, R.string.add_from_web);
 		return true;
 	}
 
@@ -97,9 +72,6 @@ public class PoiList extends ExpandableListActivity implements POIConsumer {
 		case 0:
 			Intent intent = new Intent(this, PoiActivity.class);
 			startActivity(intent);
-			break;
-		case 1:
-			importListFromWeb();
 			break;
 		}
 

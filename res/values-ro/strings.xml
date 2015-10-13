@@ -21,7 +21,6 @@
     <string name="poi">Puncte</string>
     <string name="delpoi">Sterge punct</string>
     <string name="addpoi">Adauga punct</string>
-    <string name="add_from_web">Vezi p\'aici</string>
     <string name="poiadded">Punctul %1$s a fost adaugat</string>
     <string name="poiactive">ACTIV -> %1$s</string>
     <string name="poinotactive">%1$s</string>

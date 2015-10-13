@@ -21,7 +21,6 @@
     <string name="poi">Places</string>
     <string name="delpoi">Delete place</string>
     <string name="addpoi">Add place</string>
-    <string name="add_from_web">Look around</string>
     <string name="poiadded">Place %1$s added</string>
     <string name="poiactive">ACTIVE -> %1$s</string>
     <string name="poinotactive">%1$s</string>
