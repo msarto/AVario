@@ -119,16 +119,12 @@ public class Tracker implements LocationConsumer {
 					&& trackFile.getParentFile().canWrite()) {
 				trackFile.getParentFile().mkdirs();
 			}
-			if (trackFile.canWrite()) {
-				Logger.get().log("Start writting " + trackFile.getAbsolutePath());
-				trackStream = initSignature() ? new SignedOutputStream(new FileOutputStream(trackFile), sign)
-						: new BufferedOutputStream(new FileOutputStream(trackFile));
-				trackStream.write(HEADER.getBytes());
-				metaInfo.setFlightStart(System.currentTimeMillis());
-				bRet = true;
-			} else {
-				Logger.get().log("Can not write to " + trackFile.getAbsolutePath());
-			}
+			Logger.get().log("Start writting " + trackFile.getAbsolutePath());
+			trackStream = initSignature() ? new SignedOutputStream(new FileOutputStream(trackFile), sign)
+					: new BufferedOutputStream(new FileOutputStream(trackFile));
+			trackStream.write(HEADER.getBytes());
+			metaInfo.setFlightStart(System.currentTimeMillis());
+			bRet = true;
 		} catch (Throwable e) {
 			Logger.get().log("Fail starting track ", e);
 		}
