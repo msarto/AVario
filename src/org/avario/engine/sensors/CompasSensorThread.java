@@ -40,7 +40,6 @@ public class CompasSensorThread extends SensorThread<Float> {
 					&& (System.currentTimeMillis() - lastMagneticTS > sensorAnalyzationInterval)) {
 				lastMagneticTS = System.currentTimeMillis();
 				float bearing = compasFilter.toBearing(v);
-				Logger.get().log("Bearing " + bearing);
 				compassTask.setBearing(bearing);
 			} else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER
 					&& (System.currentTimeMillis() - lastRotationTS > sensorAnalyzationInterval)) {
@@ -60,8 +59,6 @@ public class CompasSensorThread extends SensorThread<Float> {
 					gForce = (float) (Math.sqrt(gForce) - SensorManager.GRAVITY_EARTH);
 					DataAccessObject.get().setGForce(Math.abs(gForce));
 				}
-			} else {
-				Logger.get().log("Unknown compass sensor type " + sensorEvent.sensor.getType());
 			}
 		} catch (Throwable t) {
 			Logger.get().log("Error processing compass ", t);

@@ -29,7 +29,7 @@ public class BaroSensorThread extends SensorThread<Float> {
 
 	@Override
 	public void notifySensorChanged(final SensorEvent sensorEvent) {
-		if (!isSensorProcessed) {
+		if (!isSensorProcessed && (sensorEvent.sensor.getType() == Sensor.TYPE_PRESSURE)) {
 			isSensorProcessed = true;
 			try {
 				if (!bSensorOn) {
