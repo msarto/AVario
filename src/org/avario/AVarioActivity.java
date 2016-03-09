@@ -70,7 +70,7 @@ public class AVarioActivity extends Activity {
 			BeepBeeper.init();
 
 			addNotification();
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			Logger.get().log("Fail initializing ", ex);
 		}
 	}
@@ -80,25 +80,28 @@ public class AVarioActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		if (viewCreated) {
-			return;
+		try {
+			if (viewCreated) {
+				return;
+			}
+			Preferences.update(this);
+			if (Preferences.orientation == 2) {
+				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			}
+			// Keep the screen awake
+			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "AVario lock");
+			wakeLock.acquire();
+
+			viewCreated = true;
+			AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			startVolume = audio.getStreamVolume(Preferences.STREAM_TYPE);
+
+			Logger.init();
+			initializeSensors();
+		} catch (Throwable e) {
+			Logger.get().log("Fail on create ", e);
 		}
-		Preferences.update(this);
-		if (Preferences.orientation == 2) {
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		}
-		// Keep the screen awake
-		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "AVario lock");
-		wakeLock.acquire();
-
-		viewCreated = true;
-		AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-		startVolume = audio.getStreamVolume(Preferences.STREAM_TYPE);
-
-		Logger.init();
-		initializeSensors();
-
 	}
 
 	private void addNotification() {
@@ -115,7 +118,7 @@ public class AVarioActivity extends Activity {
 			notification.setLatestEventInfo(this, "AVario", "AVario", contentIntent);
 
 			notifier.notify(22313, notification);
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			Logger.get().log("Fail placing notification icon " + ex.getMessage());
 		}
 	}
@@ -214,7 +217,7 @@ public class AVarioActivity extends Activity {
 				AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 				audio.setStreamVolume(Preferences.STREAM_TYPE, startVolume, 0);
 			}
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			Logger.get().log("Fail to restore volume", ex);
 		}
 	}

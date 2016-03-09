@@ -48,13 +48,13 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 						Logger.get().log("Try initializing sensor " + sensorId);
 						isSensorActive = registerListener(sensorId, sensorSpeed);
 						if (isSensorActive) {
-							semaphore.await(30, TimeUnit.SECONDS);
+							semaphore.await(2, TimeUnit.SECONDS);
 						}
-						Logger.get().log(isSensorActive ? "DONE" : "NOT" + " Registered sensor " + sensorId);
+						Logger.get().log((isSensorActive ? "DONE" : "NOT") + " Registered sensor " + sensorId);
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			Logger.get().log("Sensors initialization fail ", e);
 		}
 	}
@@ -79,7 +79,7 @@ public abstract class SensorThread<T> implements Runnable, SensorEventListener {
 		try {
 			semaphore.countDown();
 			notifySensorChanged(sensorEvent);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			Logger.get().log("Fail sensoring changed ", e);
 		}
 

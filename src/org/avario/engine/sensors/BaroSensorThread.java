@@ -3,13 +3,14 @@ package org.avario.engine.sensors;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.SensorThread;
 import org.avario.engine.datastore.DataAccessObject;
-import org.avario.engine.prefs.Preferences;
+import org.avario.utils.Logger;
 import org.avario.utils.filters.impl.Kalman2Filter;
 import org.avario.utils.filters.impl.StabiloFilter;
 import org.avario.utils.filters.sensors.BaroSensorFilter;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
+import android.hardware.SensorManager;
 
 public class BaroSensorThread extends SensorThread<Float> {
 
@@ -23,7 +24,7 @@ public class BaroSensorThread extends SensorThread<Float> {
 
 	protected void init() {
 		sensors = new int[] { Sensor.TYPE_PRESSURE };
-		sensorSpeed = Math.round(Preferences.baro_sensitivity * 3 / 50);
+		sensorSpeed = SensorManager.SENSOR_DELAY_FASTEST;
 	}
 
 	@Override
@@ -37,7 +38,7 @@ public class BaroSensorThread extends SensorThread<Float> {
 						DataAccessObject.get().setMovementFactor(new LinearRegression());
 					}
 					float currentPresure = sensorEvent.values.clone()[0];
-					if (currentPresure < 700f || currentPresure > 1100f) {
+					if (currentPresure < 300f || currentPresure > 1100f) {
 						return;
 					}
 					final float altitude = baroFilter.toAltitude(currentPresure);
@@ -47,6 +48,8 @@ public class BaroSensorThread extends SensorThread<Float> {
 						SensorProducer.get().notifyBaroConsumers(altitude);
 					}
 				}
+			} catch (Throwable t) {
+				Logger.get().log("Error processing baro ", t);
 			} finally {
 				isSensorProcessed = false;
 			}

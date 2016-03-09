@@ -31,12 +31,13 @@ public class CompasSensorThread extends SensorThread<Float> {
 			try {
 				if (!isSensorProcessed) {
 					isSensorProcessed = true;
+					final float[] v = sensorEvent.values.clone();
 					if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-						float[] v = sensorEvent.values.clone();
 						float bearing = compasFilter.toBearing(v);
+						Logger.get().log("Bearing " + bearing);
 						compassTask.setBearing(bearing);
 					} else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-						float[] accelerometer = accFilter.doFilter(sensorEvent.values.clone());
+						float[] accelerometer = accFilter.doFilter(v);
 						compasFilter.notifyAccelerometer(accelerometer);
 
 						float x = accelerometer[0];
@@ -51,8 +52,12 @@ public class CompasSensorThread extends SensorThread<Float> {
 							gForce = (float) (Math.sqrt(gForce) - SensorManager.GRAVITY_EARTH);
 							DataAccessObject.get().setGForce(Math.abs(gForce));
 						}
+					} else {
+						Logger.get().log("Unknown compass sensor type " + sensorEvent.sensor.getType());
 					}
 				}
+			} catch (Throwable t) {
+				Logger.get().log("Error processing compass ", t);
 			} finally {
 				isSensorProcessed = false;
 			}

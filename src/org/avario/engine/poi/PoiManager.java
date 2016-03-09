@@ -96,8 +96,8 @@ public class PoiManager {
 				double poiLong = poiStream.readDouble();
 				pois.put(poiName, new POI(poiName, poiLat, poiLong, 0, 0));
 			}
-		} catch (Exception e) {
 			activePOI = pois.get(poiName);
+		} catch (Throwable e) {
 			Logger.get().log("Pois deserailized: " + poisCount + ". Active poi: " + poiName);
 		} finally {
 			close(poiStream);

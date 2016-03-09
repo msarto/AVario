@@ -63,7 +63,7 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 					}
 					DataAccessObject.get().setLastlocation(newLocation);
 					SensorProducer.get().notifyGpsConsumers(newLocation);
-				} catch (RuntimeException ex) {
+				} catch (Throwable ex) {
 					Logger.get().log("Fail to notify location changes ", ex);
 				}
 			}

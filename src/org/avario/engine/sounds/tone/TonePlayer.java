@@ -61,7 +61,7 @@ public class TonePlayer {
 					AudioFormat.ENCODING_PCM_16BIT, numSamples * 2, AudioTrack.MODE_STATIC);
 			audioTrack.write(toneSound, 0, toneSound.length);
 			audioTrack.play();
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			Logger.get().log("Fail playing track ", ex);
 		}
 	}
@@ -78,7 +78,7 @@ public class TonePlayer {
 					break;
 				}
 			}
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			Logger.get().log("Fail stopping track ", ex);
 		}
 	}

@@ -7,6 +7,7 @@ import org.avario.engine.sounds.wav.WavAlarmTone;
 import org.avario.engine.sounds.wav.WavLiftTone;
 import org.avario.engine.sounds.wav.WavPrenotifyTone;
 import org.avario.engine.sounds.wav.WavSinkTone;
+import org.avario.utils.Logger;
 
 public class ToneProducer {
 	protected static final ToneProducer THIS = new ToneProducer();
