@@ -34,7 +34,7 @@ public class Preferences {
 
 	public static volatile int baro_sensitivity = 25;
 
-	public static volatile float compass_filter_sensitivity = 2f;
+	public static volatile float compass_filter_sensitivity = 5f;
 	public static volatile int max_last_thermal_distance = 200;
 	public static volatile float min_thermal_interval = 3000;
 	public static volatile float min_thermal_gain = 3;

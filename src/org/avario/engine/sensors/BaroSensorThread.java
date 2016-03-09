@@ -14,9 +14,9 @@ import android.hardware.SensorManager;
 
 public class BaroSensorThread extends SensorThread<Float> {
 
-	private static final Object baroLock = new Object();
 	private volatile boolean bSensorOn = false;
 	private BaroSensorFilter baroFilter = new BaroSensorFilter(new StabiloFilter(), new Kalman2Filter());
+	private float lastAltitude = 0f;
 
 	public BaroSensorThread() {
 		init();
@@ -32,21 +32,20 @@ public class BaroSensorThread extends SensorThread<Float> {
 		if (!isSensorProcessed) {
 			isSensorProcessed = true;
 			try {
-				synchronized (baroLock) {
-					if (!bSensorOn) {
-						bSensorOn = true;
-						DataAccessObject.get().setMovementFactor(new LinearRegression());
-					}
-					float currentPresure = sensorEvent.values.clone()[0];
-					if (currentPresure < 300f || currentPresure > 1100f) {
-						return;
-					}
-					final float altitude = baroFilter.toAltitude(currentPresure);
-					if (altitude >= 0) {
-						DataAccessObject.get().setLastAltitude(altitude);
-						DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, altitude);
-						SensorProducer.get().notifyBaroConsumers(altitude);
-					}
+				if (!bSensorOn) {
+					bSensorOn = true;
+					DataAccessObject.get().setMovementFactor(new LinearRegression());
+				}
+				float currentPresure = sensorEvent.values.clone()[0];
+				if (currentPresure < 300f || currentPresure > 1100f) {
+					return;
+				}
+				final float altitude = baroFilter.toAltitude(currentPresure);
+				DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, altitude);
+				if (altitude >= 0 && Math.abs(lastAltitude - altitude) > 0.5) {
+					lastAltitude = altitude;
+					DataAccessObject.get().setLastAltitude(altitude);
+					SensorProducer.get().notifyBaroConsumers(altitude);
 				}
 			} catch (Throwable t) {
 				Logger.get().log("Error processing baro ", t);

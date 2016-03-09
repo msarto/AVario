@@ -15,59 +15,59 @@ import android.hardware.SensorManager;
 public class CompasSensorThread extends SensorThread<Float> {
 	private CompasSensorFilter compasFilter = new CompasSensorFilter(Preferences.compass_filter_sensitivity);
 	private SmoothCompassTask compassTask = new SmoothCompassTask();
-	private IIRFilter accFilter = new IIRFilter(0.5f);
-	protected long lastSensorTS = System.currentTimeMillis();
+	private IIRFilter accFilter = new IIRFilter(0.8f);
+
+	protected long lastMagneticTS = System.currentTimeMillis();
+	protected long lastRotationTS = System.currentTimeMillis();
+	protected final int sensorAnalyzationInterval = 500;
 
 	public CompasSensorThread() {
 		sensors = new int[] { Sensor.TYPE_MAGNETIC_FIELD, Sensor.TYPE_ACCELEROMETER };
-		sensorSpeed = SensorManager.SENSOR_DELAY_UI;
+		sensorSpeed = SensorManager.SENSOR_DELAY_NORMAL;
+	}
+
+	@Override
+	public void startSensor() {
+		super.startSensor();
 		new Thread(compassTask).start();
 	}
 
 	@Override
 	public synchronized void notifySensorChanged(final SensorEvent sensorEvent) {
-		if (System.currentTimeMillis() - lastSensorTS > 100) {
-			lastSensorTS = System.currentTimeMillis();
-			try {
-				if (!isSensorProcessed) {
-					isSensorProcessed = true;
-					final float[] v = sensorEvent.values.clone();
-					if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-						float bearing = compasFilter.toBearing(v);
-						Logger.get().log("Bearing " + bearing);
-						compassTask.setBearing(bearing);
-					} else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-						float[] accelerometer = accFilter.doFilter(v);
-						compasFilter.notifyAccelerometer(accelerometer);
+		try {
+			final float[] v = sensorEvent.values.clone();
+			if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD
+					&& (System.currentTimeMillis() - lastMagneticTS > sensorAnalyzationInterval)) {
+				lastMagneticTS = System.currentTimeMillis();
+				float bearing = compasFilter.toBearing(v);
+				Logger.get().log("Bearing " + bearing);
+				compassTask.setBearing(bearing);
+			} else if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER
+					&& (System.currentTimeMillis() - lastRotationTS > sensorAnalyzationInterval)) {
+				lastRotationTS = System.currentTimeMillis();
+				float[] accelerometer = accFilter.doFilter(v);
+				compasFilter.notifyAccelerometer(accelerometer);
 
-						float x = accelerometer[0];
-						float y = accelerometer[1];
-						float z = accelerometer[2];
-						SensorProducer.get().notifyAccelerometerConsumers(x, y, z);
+				float x = accelerometer[0];
+				float y = accelerometer[1];
+				float z = accelerometer[2];
+				SensorProducer.get().notifyAccelerometerConsumers(x, y, z);
 
-						if (DataAccessObject.get() != null) {
-							float gForce = x * x;
-							gForce += y * y;
-							gForce += z * z;
-							gForce = (float) (Math.sqrt(gForce) - SensorManager.GRAVITY_EARTH);
-							DataAccessObject.get().setGForce(Math.abs(gForce));
-						}
-					} else {
-						Logger.get().log("Unknown compass sensor type " + sensorEvent.sensor.getType());
-					}
+				if (DataAccessObject.get() != null) {
+					float gForce = x * x;
+					gForce += y * y;
+					gForce += z * z;
+					gForce = (float) (Math.sqrt(gForce) - SensorManager.GRAVITY_EARTH);
+					DataAccessObject.get().setGForce(Math.abs(gForce));
 				}
-			} catch (Throwable t) {
-				Logger.get().log("Error processing compass ", t);
-			} finally {
-				isSensorProcessed = false;
+			} else {
+				Logger.get().log("Unknown compass sensor type " + sensorEvent.sensor.getType());
 			}
+		} catch (Throwable t) {
+			Logger.get().log("Error processing compass ", t);
+		} finally {
+			isSensorProcessed = false;
 		}
-
-	}
-
-	@Override
-	public void stop() {
-		super.stop();
 	}
 
 	private class SmoothCompassTask implements Runnable {
@@ -86,8 +86,8 @@ public class CompasSensorThread extends SensorThread<Float> {
 						SensorProducer.get().notifyCompasConsumers(smoothBearing);
 					}
 
-					long wait = Math.round(80 - Math.abs(smoothBearing - bearing));
-					Thread.sleep(wait > 50 ? wait : 50);
+					long wait = Math.round(150 - Math.abs(smoothBearing - bearing));
+					Thread.sleep(wait > 100 ? wait : 100);
 				}
 			} catch (Exception ex) {
 				Logger.get().log("Compass stopped...", ex);

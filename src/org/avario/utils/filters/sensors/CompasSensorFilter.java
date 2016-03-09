@@ -19,7 +19,7 @@ public class CompasSensorFilter {
 	public float toBearing(float[] current) {
 		final float[] R = new float[16];
 		final float[] actual_orientation = new float[3];
-		SensorManager.getRotationMatrix(R, null, acclerometerValues, current);
+		SensorManager.getRotationMatrix(R, null, acclerometerValues, current.clone());
 		SensorManager.getOrientation(R, actual_orientation);
 		float actualCompasNotified = -actual_orientation[0] * 360.0f / (2 * 3.1415926535f);
 		return actualCompasNotified;

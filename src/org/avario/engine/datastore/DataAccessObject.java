@@ -34,7 +34,6 @@ public class DataAccessObject {
 	private HeadingTask headingTask = new HeadingTask();
 	private AltitudeGainTask altitudeGainTask = new AltitudeGainTask();
 	private WindCalculator windCalculator = new WindCalculator(16, 0.3, 300);
-	private NotificationTask sensorNotification = new NotificationTask();
 
 	protected DataAccessObject() {
 	}
@@ -147,10 +146,7 @@ public class DataAccessObject {
 	}
 
 	public float getSensitivity() {
-		float dec = Preferences.baro_sensitivity / 10f;
-		float dinamicSensivity = (float) (Preferences.baro_sensitivity - Math.min(Preferences.baro_sensitivity / 2f,
-				gForce * dec));
-		return Math.abs(dinamicSensivity);
+		return Preferences.baro_sensitivity;
 	}
 
 	public synchronized boolean isGPSFix() {
@@ -227,9 +223,4 @@ public class DataAccessObject {
 	public void setGForce(double gForce) {
 		this.gForce = gForce;
 	}
-
-	public float getNps() {
-		return sensorNotification.getNps();
-	}
-
 }

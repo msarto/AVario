@@ -25,21 +25,17 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 	}
 
 	@Override
-	public void run() {
-		locationManager.removeUpdates(LocationThread.this);
-		AVarioActivity.CONTEXT.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, LocationThread.this);
-					locationManager.addNmeaListener(LocationThread.this);
-				} catch (Exception e) {
-					Toast.makeText(AVarioActivity.CONTEXT,
-							AVarioActivity.CONTEXT.getApplicationContext().getString(R.string.gps_fail),
-							Toast.LENGTH_LONG).show();
-				}
-			}
-		});
+	public void startSensor() {
+		try {
+			locationManager.removeUpdates(LocationThread.this);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, LocationThread.this);
+			locationManager.addNmeaListener(LocationThread.this);
+		} catch (Throwable e) {
+			Logger.get().log("Error starting GPS listener ", e);
+			Toast.makeText(AVarioActivity.CONTEXT,
+					AVarioActivity.CONTEXT.getApplicationContext().getString(R.string.gps_fail), Toast.LENGTH_LONG)
+					.show();
+		}
 	}
 
 	@Override
@@ -50,24 +46,17 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 
 	@Override
 	public synchronized void onLocationChanged(final Location newLocation) {
-		callbackThreadPool.execute(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					if (newLocation.hasAltitude()
-							&& (DataAccessObject.get().getMovementFactor() instanceof GpsMovement)) {
-						float nowAltitude = (float) (newLocation.getAltitude() - DataAccessObject.get()
-								.getGeoidHeight());
-						DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, nowAltitude);
-						DataAccessObject.get().setLastAltitude(nowAltitude);
-					}
-					DataAccessObject.get().setLastlocation(newLocation);
-					SensorProducer.get().notifyGpsConsumers(newLocation);
-				} catch (Throwable ex) {
-					Logger.get().log("Fail to notify location changes ", ex);
-				}
+		try {
+			if (newLocation.hasAltitude() && (DataAccessObject.get().getMovementFactor() instanceof GpsMovement)) {
+				float nowAltitude = (float) (newLocation.getAltitude() - DataAccessObject.get().getGeoidHeight());
+				DataAccessObject.get().getMovementFactor().notify(System.nanoTime() / 1000000d, nowAltitude);
+				DataAccessObject.get().setLastAltitude(nowAltitude);
 			}
-		});
+			DataAccessObject.get().setLastlocation(newLocation);
+			SensorProducer.get().notifyGpsConsumers(newLocation);
+		} catch (Throwable ex) {
+			Logger.get().log("Fail to notify location changes ", ex);
+		}
 	}
 
 	@Override
