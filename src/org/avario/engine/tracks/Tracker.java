@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.avario.AVarioActivity;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.consumerdef.LocationConsumer;
 import org.avario.engine.datastore.DataAccessObject;
@@ -17,12 +18,12 @@ import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sounds.tone.TonePlayer;
 import org.avario.engine.sounds.tone.TonePlayer.ToneType;
 import org.avario.ui.NumericViewUpdater;
+import org.avario.utils.IOUtils;
 import org.avario.utils.Logger;
 
 import android.app.Activity;
 import android.location.Location;
 import android.os.Build;
-import android.os.Environment;
 import android.util.Base64;
 
 public class Tracker implements LocationConsumer {
@@ -97,10 +98,9 @@ public class Tracker implements LocationConsumer {
 		return tracking || needTracking;
 	}
 
-	protected boolean startTrack() {
+	private boolean startTrack() {
 		boolean bRet = false;
 		try {
-
 			String HEADER = "AXMP " + Build.MANUFACTURER + " " + Build.MODEL + "\r\n";
 			HEADER += "HFDTE" + String.format("%1$td%1$tm%1$ty", new GregorianCalendar(TimeZone.getTimeZone("GMT")))
 					+ "\r\n";
@@ -113,12 +113,9 @@ public class Tracker implements LocationConsumer {
 			HEADER += "HFRFWFIRMWAREVERSION: " + Preferences.getAppVersion() + "\r\n";
 			HEADER += "I013638GSP\r\n";
 			trackFileName = String.format("%1$ty%1$tm%1$td%1$tH%1$tM%1$tS", new GregorianCalendar());
-			final File trackFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
-					+ File.separator + trackFileName + ".igc");
-			if (trackFile.getParentFile().canRead() && !trackFile.getParentFile().exists()
-					&& trackFile.getParentFile().canWrite()) {
-				trackFile.getParentFile().mkdirs();
-			}
+			final File trackFile = new File(AVarioActivity.CONTEXT.getFilesDir(), trackFileName + ".igc");
+			IOUtils.createParentIfNotExists(trackFile);
+			
 			Logger.get().log("Start writting " + trackFile.getAbsolutePath());
 			trackStream = initSignature() ? new SignedOutputStream(new FileOutputStream(trackFile), sign)
 					: new BufferedOutputStream(new FileOutputStream(trackFile));
@@ -131,7 +128,7 @@ public class Tracker implements LocationConsumer {
 		return bRet;
 	}
 
-	protected synchronized void stopTrack() {
+	private void stopTrack() {
 		if (trackStream != null) {
 			try {
 
@@ -139,8 +136,7 @@ public class Tracker implements LocationConsumer {
 					metaInfo.setEndAlt((int) Math.round(lastNotification.getAltitude()));
 				}
 				if (trackFileName != null) {
-					File trackMetaFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
-							+ File.separator + trackFileName + ".meta");
+					File trackMetaFile = new File(AVarioActivity.CONTEXT.getFilesDir(), trackFileName + ".meta");
 					metaInfo.writeTo(trackMetaFile);
 				}
 

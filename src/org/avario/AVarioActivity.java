@@ -198,7 +198,7 @@ public class AVarioActivity extends Activity {
 			}
 			Logger.get().log("App terminated...");
 			Logger.get().close();
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			Logger.get().log("Fail terminating awake " + ex.getMessage());
 		}
 	}

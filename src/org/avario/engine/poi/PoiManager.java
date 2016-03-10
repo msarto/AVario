@@ -1,10 +1,8 @@
 package org.avario.engine.poi;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -15,13 +13,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.avario.AVarioActivity;
+import org.avario.utils.IOUtils;
 import org.avario.utils.Logger;
-
-import android.os.Environment;
 
 public class PoiManager {
 	private static final int MAX_POIS = 100;
 	private static PoiManager THIS;
+	private final File expernalPoi = IOUtils.getExternalStorageDirectory();
 	private final Map<String, POI> pois = new HashMap<String, POI>();
 	private final Map<String, POI> webpois = new HashMap<String, POI>();
 	private POI activePOI;
@@ -32,15 +31,18 @@ public class PoiManager {
 	public static void init() {
 		if (THIS == null) {
 			THIS = new PoiManager();
-			THIS.readPOIs();
+			THIS.reloadPOIS();
 		}
 	}
 
 	public synchronized void reloadPOIS() {
-		int v1pois = readPOIs();
-		if (v1pois == 0) {
-			readPOIsV2();
+		pois.clear();
+		if (expernalPoi != null) {
+			readPOIs(new File(expernalPoi, "pois"));
+			readPOIsV2(new File(expernalPoi, "poisV2"));
 		}
+		readPOIsV2(new File(AVarioActivity.CONTEXT.getFilesDir() + File.separator + "AVario" + File.separator
+				+ "poisV2"));
 	}
 
 	public static PoiManager get() {
@@ -48,7 +50,7 @@ public class PoiManager {
 		return THIS;
 	}
 
-	public Collection<POI> getPOIs() {
+	public synchronized Collection<POI> getPOIs() {
 		List<POI> values = new ArrayList<POI>();
 		values.addAll(pois.values());
 		values.addAll(webpois.values());
@@ -77,14 +79,11 @@ public class PoiManager {
 		writePOIs();
 	}
 
-	private int readPOIs() {
-		pois.clear();
+	private int readPOIs(File poiFile) {
 		ObjectInputStream poiStream = null;
 		String poiName = "";
 		int poisCount = 0;
 		try {
-			File poiFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
-					+ File.separator + "pois");
 			if (!poiFile.exists() || !poiFile.canRead()) {
 				Logger.get().log("No poi 1 file available...");
 				return 0;
@@ -100,22 +99,19 @@ public class PoiManager {
 		} catch (Throwable e) {
 			Logger.get().log("Pois deserailized: " + poisCount + ". Active poi: " + poiName);
 		} finally {
-			close(poiStream);
+			IOUtils.close(poiStream);
 		}
 
 		return pois.size();
 	}
 
-	private int readPOIsV2() {
-		pois.clear();
+	private int readPOIsV2(File poiFile) {
 		ObjectInputStream poiStream = null;
 		String poiName = "";
 		int poisCount = 0;
 		try {
-			File poiFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
-					+ File.separator + "poisV2");
 			if (!poiFile.exists() || !poiFile.canRead()) {
-				Logger.get().log("No poi 2 file available...");
+				Logger.get().log("No poi 2 file available on internal storage");
 				return 0;
 			}
 
@@ -133,21 +129,20 @@ public class PoiManager {
 				activePOI = pois.get(poiName);
 			}
 		} catch (Exception e) {
-
 			Logger.get().log("Pois deserailized: " + poisCount + ". Active poi: " + poiName);
 		} finally {
-			close(poiStream);
+			IOUtils.close(poiStream);
 		}
 
 		return pois.size();
 	}
 
 	private synchronized int writePOIs() {
-		File poiFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario" + File.separator
+		File poiFile = new File(AVarioActivity.CONTEXT.getFilesDir() + File.separator + "AVario" + File.separator
 				+ "poisV2");
 		ObjectOutputStream poiStream = null;
 		try {
-			if (!poiFile.canWrite()) {
+			if (!IOUtils.createParentIfNotExists(poiFile)) {
 				Logger.get().log("Can not write pois...");
 				return 0;
 			}
@@ -161,20 +156,25 @@ public class PoiManager {
 			}
 			String poiActiveName = activePOI != null ? activePOI.getName() : "";
 			poiStream.writeUTF(poiActiveName);
-
 			Logger.get().log("Pois serailized: " + poiSerialized);
-			File oldFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
-					+ File.separator + "pois");
-			if (oldFile.exists() && oldFile.canWrite()) {
-				oldFile.delete();
-			}
+			deleteOldPois();
 		} catch (Exception e) {
 			Logger.get().log("Poi write error ", e);
 		} finally {
-			close(poiStream);
+			IOUtils.close(poiStream);
+
 		}
 
 		return pois.size();
+	}
+
+	private void deleteOldPois() {
+		if (expernalPoi != null) {
+			File oldFile = new File(expernalPoi, "pois");
+			if (oldFile.exists() && oldFile.canWrite()) {
+				oldFile.delete();
+			}
+		}
 	}
 
 	public POI getActivePOI() {
@@ -188,15 +188,4 @@ public class PoiManager {
 		}
 		writePOIs();
 	}
-
-	private void close(Closeable stream) {
-		if (stream != null) {
-			try {
-				stream.close();
-			} catch (IOException e) {
-				Logger.get().log("Fail closing stream ", e);
-			}
-		}
-	}
-
 }

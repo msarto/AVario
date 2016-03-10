@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.avario.utils.IOUtils;
 import org.avario.utils.Logger;
 
 import android.app.Activity;
@@ -50,13 +51,6 @@ public class LogBaroThread extends BaroSensorThread {
 
 	@Override
 	public void stop() {
-		if (logStream != null) {
-			try {
-				logStream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		IOUtils.close(logStream);
 	}
-
 }

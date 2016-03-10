@@ -47,7 +47,7 @@ public class DataAccessObject {
 		// THIS.sensorNotification.start();
 	}
 
-	public static void clear() {
+	public static void clear() throws InterruptedException {
 		THIS.thermalTask.stop();
 		THIS.headingTask.stop();
 		THIS.altitudeGainTask.stop();

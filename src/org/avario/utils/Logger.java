@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 
-import android.os.Environment;
+import org.avario.AVarioActivity;
+
 import android.util.Log;
 
 public class Logger {
@@ -23,8 +24,9 @@ public class Logger {
 		}
 		try {
 			THIS.close();
-			File logFile = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario"
-					+ File.separator + "AVario.log");
+			File parentLogFolder = IOUtils.getExternalStorageDirectory() == null ? AVarioActivity.CONTEXT.getFilesDir()
+					: IOUtils.getExternalStorageDirectory();
+			File logFile = new File(parentLogFolder, "AVario.log");
 			if (!logFile.getParentFile().exists()) {
 				logFile.getParentFile().mkdirs();
 			}

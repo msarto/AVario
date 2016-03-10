@@ -6,26 +6,21 @@ import java.util.Queue;
 import android.location.Location;
 
 public class FlightStatusTask implements Runnable {
-	protected static final Object lock = new Object();
 
 	private volatile boolean inFlight = false;
 	protected Queue<Float> lastSpeeds = new ArrayDeque<Float>();
 	private boolean bCanGo = false;
-	private float mean = 0;
+	private long lastSpeed = 0;
+	private Thread th = new Thread(this);
 
 	public void start() {
 		bCanGo = true;
-		new Thread(this).start();
+		th.start();
 	}
 
-	public void stop() {
+	public void stop() throws InterruptedException {
 		bCanGo = false;
-	}
-
-	public void reset() {
-		synchronized (lock) {
-			lastSpeeds.clear();
-		}
+		th.join(1000);
 	}
 
 	public boolean isInFlight() {
@@ -37,13 +32,12 @@ public class FlightStatusTask implements Runnable {
 		while (bCanGo) {
 			Location lastLocation = DataAccessObject.get().getLastlocation();
 			if (lastLocation != null && lastLocation.hasSpeed()) {
-				synchronized (lock) {
-					if (lastLocation.getSpeed() > 3 && mean > 2) {
-						inFlight = true;
-					} else if (lastLocation.getSpeed() < 1 && mean < 1) {
-						inFlight = false;
-					}
-					mean = lastLocation.getSpeed() * 0.3f + mean * 0.7f;
+				if (lastLocation.getSpeed() > 3) {
+					inFlight = true;
+					lastSpeed = System.currentTimeMillis();
+				} else if (inFlight && (System.currentTimeMillis() - lastSpeed) > 60000) {
+					// The speed for 1 minute is less 8 km/h
+					inFlight = false;
 				}
 			}
 			try {
