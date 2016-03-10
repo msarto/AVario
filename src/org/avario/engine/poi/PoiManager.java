@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.avario.AVarioActivity;
 import org.avario.utils.IOUtils;
 import org.avario.utils.Logger;
 
@@ -133,8 +132,7 @@ public class PoiManager {
 	}
 
 	private synchronized int writePOIs() {
-		File poiFile = new File(AVarioActivity.CONTEXT.getFilesDir() + File.separator + "AVario" + File.separator
-				+ "poisV2");
+		File poiFile = new File(IOUtils.getStorageDirectory(), "poisV2");
 		ObjectOutputStream poiStream = null;
 		try {
 			if (!IOUtils.createParentIfNotExists(poiFile)) {

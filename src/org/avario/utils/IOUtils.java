@@ -20,22 +20,19 @@ public class IOUtils {
 	/* Checks if external storage is available for read and write */
 	public static boolean isExternalStorageWritable() {
 		String state = Environment.getExternalStorageState();
-		boolean bRights = false;
 		if (Environment.MEDIA_MOUNTED.equals(state)) {
-			bRights = Environment.getExternalStorageDirectory().canWrite();
-			if (bRights) {
-				File appFolder = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario");
-				bRights = appFolder.mkdirs() || appFolder.exists();
-			}
+			File appFolder = new File(Environment.getExternalStorageDirectory(), "AVario");
+			return appFolder.mkdirs() || (appFolder.exists() && appFolder.canWrite());
 		}
-		return bRights;
+		return false;
 	}
 
 	/* Checks if external storage is available to at least read */
 	public static boolean isExternalStorageReadable() {
 		String state = Environment.getExternalStorageState();
 		if (Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-			return Environment.getExternalStorageDirectory().canRead();
+			File appFolder = new File(Environment.getExternalStorageDirectory(), "AVario");
+			return appFolder.exists() && appFolder.canRead();
 		}
 		return false;
 	}
@@ -51,8 +48,8 @@ public class IOUtils {
 	}
 
 	public static File getStorageDirectory() {
-		return (isExternalStorageWritable()) ? new File(Environment.getExternalStorageDirectory() + File.separator
-				+ "AVario") : AVarioActivity.CONTEXT.getFilesDir();
+		File fRet = (isExternalStorageWritable()) ? new File(Environment.getExternalStorageDirectory(), "AVario")
+				: AVarioActivity.CONTEXT.getFilesDir();
+		return fRet;
 	}
-
 }

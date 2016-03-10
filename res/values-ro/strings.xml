@@ -24,7 +24,7 @@
     <string name="poiadded">Punctul %1$s a fost adaugat</string>
     <string name="poiactive">ACTIV -> %1$s</string>
     <string name="poinotactive">%1$s</string>
-    <string name="poidetail">Latitudine: %1$s \r\nLongitudine: %2$s \r\nDistanta de aici: %3$s</string>
+    <string name="poidetail">Latitudine: %1$s \r\nLongitudine: %2$s \r\nAltitudine: %3$s \r\nDistanta de aici: %4$s</string>
     <string name="poideleted">Punctul %1$s a fost sters</string>
     <string name="setactivepoi">Seteaza ACTIV</string>
     <string name="thermal_marked">Termica marcata</string>

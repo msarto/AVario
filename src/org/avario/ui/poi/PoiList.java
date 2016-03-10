@@ -115,7 +115,7 @@ public class PoiList extends ExpandableListActivity implements POIConsumer {
 			POI poi = pois.get(groupId);
 			Location lastLocation = DataAccessObject.get().getLastlocation();
 			return context.getApplicationContext().getString(R.string.poidetail, poi.getLatitude(), poi.getLongitude(),
-					UnitsConverter.normalizedDistance(poi.distanceTo(lastLocation)));
+					poi.getAltitude(), UnitsConverter.normalizedDistance(poi.distanceTo(lastLocation)));
 		}
 
 		public long getChildId(int groupId, int childPosition) {

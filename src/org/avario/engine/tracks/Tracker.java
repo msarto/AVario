@@ -10,7 +10,6 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.avario.AVarioActivity;
 import org.avario.engine.SensorProducer;
 import org.avario.engine.consumerdef.LocationConsumer;
 import org.avario.engine.datastore.DataAccessObject;
@@ -113,12 +112,9 @@ public class Tracker implements LocationConsumer {
 			HEADER += "HFRFWFIRMWAREVERSION: " + Preferences.getAppVersion() + "\r\n";
 			HEADER += "I013638GSP\r\n";
 			trackFileName = String.format("%1$ty%1$tm%1$td%1$tH%1$tM%1$tS", new GregorianCalendar());
-			final File trackFile = new File(IOUtils.getStorageDirectory(), trackFileName + ".igc");
-			IOUtils.createParentIfNotExists(trackFile);
-
-			Logger.get().log("Start writting " + trackFile.getAbsolutePath());
-			trackStream = initSignature() ? new SignedOutputStream(new FileOutputStream(trackFile), sign)
-					: new BufferedOutputStream(new FileOutputStream(trackFile));
+			File igcFile = new File(IOUtils.getStorageDirectory(), trackFileName + ".igc");
+			trackStream = initSignature() ? new SignedOutputStream(new FileOutputStream(igcFile), sign)
+					: new BufferedOutputStream(new FileOutputStream(igcFile));
 			trackStream.write(HEADER.getBytes());
 			metaInfo.setFlightStart(System.currentTimeMillis());
 			bRet = true;
@@ -136,7 +132,7 @@ public class Tracker implements LocationConsumer {
 					metaInfo.setEndAlt((int) Math.round(lastNotification.getAltitude()));
 				}
 				if (trackFileName != null) {
-					File trackMetaFile = new File(AVarioActivity.CONTEXT.getFilesDir(), trackFileName + ".meta");
+					File trackMetaFile = new File(IOUtils.getStorageDirectory(), trackFileName + ".meta");
 					metaInfo.writeTo(trackMetaFile);
 				}
 

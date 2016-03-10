@@ -24,7 +24,7 @@
     <string name="poiadded">Place %1$s added</string>
     <string name="poiactive">ACTIVE -> %1$s</string>
     <string name="poinotactive">%1$s</string>
-    <string name="poidetail">Latitude: %1$s \r\nLongitude: %2$s \r\nDistance from here: %3$s</string>
+    <string name="poidetail">Latitude: %1$s \r\nLongitude: %2$s \r\nAltitude: %3$s \r\nDistance from here: %4$s</string>
     <string name="poideleted">Place %1$s deleted</string>
     <string name="setactivepoi">Set ACTIVE</string>
     <string name="thermal_marked">Thermal marked</string>

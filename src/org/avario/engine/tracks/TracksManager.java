@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.avario.AVarioActivity;
 import org.avario.utils.IOUtils;
 import org.avario.utils.Logger;
 
@@ -31,12 +30,8 @@ public class TracksManager {
 	public int readTracks() {
 		tracks.clear();
 		try {
-			File externalTracks = IOUtils.getStorageDirectory();
-			if (externalTracks != null) {
-				File rootFolder = new File(externalTracks, "AVario");
-				readTracks(rootFolder);
-			}
-			readTracks(AVarioActivity.CONTEXT.getFilesDir());
+			File rootFolder = IOUtils.getStorageDirectory();
+			readTracks(rootFolder);
 
 			Collections.sort(tracks, new Comparator<TrackInfo>() {
 				@Override
