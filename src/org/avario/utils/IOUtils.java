@@ -2,7 +2,8 @@ package org.avario.utils;
 
 import java.io.Closeable;
 import java.io.File;
-import java.io.IOException;
+
+import org.avario.AVarioActivity;
 
 import android.os.Environment;
 
@@ -19,17 +20,22 @@ public class IOUtils {
 	/* Checks if external storage is available for read and write */
 	public static boolean isExternalStorageWritable() {
 		String state = Environment.getExternalStorageState();
+		boolean bRights = false;
 		if (Environment.MEDIA_MOUNTED.equals(state)) {
-			return true;
+			bRights = Environment.getExternalStorageDirectory().canWrite();
+			if (bRights) {
+				File appFolder = new File(Environment.getExternalStorageDirectory() + File.separator + "AVario");
+				bRights = appFolder.mkdirs() || appFolder.exists();
+			}
 		}
-		return false;
+		return bRights;
 	}
 
 	/* Checks if external storage is available to at least read */
 	public static boolean isExternalStorageReadable() {
 		String state = Environment.getExternalStorageState();
 		if (Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-			return true;
+			return Environment.getExternalStorageDirectory().canRead();
 		}
 		return false;
 	}
@@ -38,15 +44,15 @@ public class IOUtils {
 		if (io != null) {
 			try {
 				io.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				Logger.get().log("Fail closing io ", e);
 			}
 		}
 	}
 
-	public static File getExternalStorageDirectory() {
-		return (isExternalStorageReadable()) ? new File(Environment.getExternalStorageDirectory() + File.separator
-				+ "AVario") : null;
+	public static File getStorageDirectory() {
+		return (isExternalStorageWritable()) ? new File(Environment.getExternalStorageDirectory() + File.separator
+				+ "AVario") : AVarioActivity.CONTEXT.getFilesDir();
 	}
 
 }

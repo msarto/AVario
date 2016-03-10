@@ -113,9 +113,9 @@ public class Tracker implements LocationConsumer {
 			HEADER += "HFRFWFIRMWAREVERSION: " + Preferences.getAppVersion() + "\r\n";
 			HEADER += "I013638GSP\r\n";
 			trackFileName = String.format("%1$ty%1$tm%1$td%1$tH%1$tM%1$tS", new GregorianCalendar());
-			final File trackFile = new File(AVarioActivity.CONTEXT.getFilesDir(), trackFileName + ".igc");
+			final File trackFile = new File(IOUtils.getStorageDirectory(), trackFileName + ".igc");
 			IOUtils.createParentIfNotExists(trackFile);
-			
+
 			Logger.get().log("Start writting " + trackFile.getAbsolutePath());
 			trackStream = initSignature() ? new SignedOutputStream(new FileOutputStream(trackFile), sign)
 					: new BufferedOutputStream(new FileOutputStream(trackFile));

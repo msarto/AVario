@@ -31,7 +31,7 @@ public class TracksManager {
 	public int readTracks() {
 		tracks.clear();
 		try {
-			File externalTracks = IOUtils.getExternalStorageDirectory();
+			File externalTracks = IOUtils.getStorageDirectory();
 			if (externalTracks != null) {
 				File rootFolder = new File(externalTracks, "AVario");
 				readTracks(rootFolder);

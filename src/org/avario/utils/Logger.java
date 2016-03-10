@@ -8,41 +8,48 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 
-import org.avario.AVarioActivity;
 import org.avario.engine.prefs.Preferences;
 
 import android.util.Log;
 
 public class Logger {
-	public static boolean USE_LOG = Preferences.enable_logs;
 	private static final String LOG_TAG = "AVARIO";
 	private static Logger THIS = new Logger();
 	private OutputStream logStream = null;
 
 	public static void init() {
-		if (!USE_LOG) {
+		if (!Preferences.enable_logs) {
 			return;
 		}
-		try {
-			THIS.close();
-			File parentLogFolder = IOUtils.getExternalStorageDirectory() == null ? AVarioActivity.CONTEXT.getFilesDir()
-					: IOUtils.getExternalStorageDirectory();
-			File logFile = new File(parentLogFolder, "AVario.log");
-			if (!logFile.getParentFile().exists()) {
-				logFile.getParentFile().mkdirs();
-			}
-			THIS = new Logger();
-			THIS.logStream = new BufferedOutputStream(new FileOutputStream(logFile, true));
-		} catch (FileNotFoundException e) {
+		THIS.close();
+
+		File externalLogFolder = IOUtils.getStorageDirectory();
+		File logFile = new File(externalLogFolder, "AVario.log");
+		if (!logFile.getParentFile().exists()) {
+			logFile.getParentFile().mkdirs();
 		}
+		THIS = new Logger(logFile);
 	}
 
 	public static Logger get() {
 		return THIS;
 	}
 
+	protected Logger() {
+		super();
+	}
+
+	protected Logger(File logFile) {
+		super();
+		try {
+			logStream = new BufferedOutputStream(new FileOutputStream(logFile, true));
+		} catch (FileNotFoundException e) {
+			System.err.println(e);
+		}
+	}
+
 	public void close() {
-		if (!USE_LOG) {
+		if (!Preferences.enable_logs) {
 			return;
 		}
 
@@ -58,7 +65,7 @@ public class Logger {
 	}
 
 	public void log(String msg) {
-		if (!USE_LOG) {
+		if (!Preferences.enable_logs) {
 			return;
 		}
 
@@ -75,7 +82,7 @@ public class Logger {
 	}
 
 	public void log(String msg, Throwable ex) {
-		if (!USE_LOG) {
+		if (!Preferences.enable_logs) {
 			return;
 		}
 

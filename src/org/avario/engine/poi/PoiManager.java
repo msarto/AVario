@@ -20,7 +20,6 @@ import org.avario.utils.Logger;
 public class PoiManager {
 	private static final int MAX_POIS = 100;
 	private static PoiManager THIS;
-	private final File expernalPoi = IOUtils.getExternalStorageDirectory();
 	private final Map<String, POI> pois = new HashMap<String, POI>();
 	private final Map<String, POI> webpois = new HashMap<String, POI>();
 	private POI activePOI;
@@ -37,12 +36,8 @@ public class PoiManager {
 
 	public synchronized void reloadPOIS() {
 		pois.clear();
-		if (expernalPoi != null) {
-			readPOIs(new File(expernalPoi, "pois"));
-			readPOIsV2(new File(expernalPoi, "poisV2"));
-		}
-		readPOIsV2(new File(AVarioActivity.CONTEXT.getFilesDir() + File.separator + "AVario" + File.separator
-				+ "poisV2"));
+		readPOIs(new File(IOUtils.getStorageDirectory(), "pois"));
+		readPOIsV2(new File(IOUtils.getStorageDirectory(), "poisV2"));
 	}
 
 	public static PoiManager get() {
@@ -169,11 +164,9 @@ public class PoiManager {
 	}
 
 	private void deleteOldPois() {
-		if (expernalPoi != null) {
-			File oldFile = new File(expernalPoi, "pois");
-			if (oldFile.exists() && oldFile.canWrite()) {
-				oldFile.delete();
-			}
+		File oldFile = new File(IOUtils.getStorageDirectory(), "pois");
+		if (oldFile.exists() && oldFile.canWrite()) {
+			oldFile.delete();
 		}
 	}
 
