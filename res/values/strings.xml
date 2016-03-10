@@ -122,6 +122,8 @@
     <string name="sound_inflight_t">Parawaiting silent</string>
     <string name="orientation_s">Requires application restart</string>
     <string name="orientation_t">Screen orientation</string>
+    <string name="enable_logs_t">Logging</string>
+    <string name="enable_logs_s">Enable logging in case of errors</string>
 
     <string-array name="units_system_names">
         <item>Metric</item>

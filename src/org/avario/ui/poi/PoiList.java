@@ -89,8 +89,10 @@ public class PoiList extends ExpandableListActivity implements POIConsumer {
 				POI poi = pois.get(groupPos);
 				if (item.getItemId() == ACTIONDELID) {
 					PoiManager.get().delPOI(poi.getName());
-					Toast.makeText(this, getApplicationContext().getApplicationContext().getString(R.string.poideleted, poi.getName()),
-							Toast.LENGTH_SHORT).show();
+					Toast.makeText(
+							this,
+							getApplicationContext().getApplicationContext().getString(R.string.poideleted,
+									poi.getName()), Toast.LENGTH_SHORT).show();
 				} else if (item.getItemId() == ACTIONACTIVEID) {
 					PoiManager.get().setActivePOI(poi);
 				}
@@ -127,19 +129,23 @@ public class PoiList extends ExpandableListActivity implements POIConsumer {
 			return 1;
 		}
 
-		private TextView getGenericView(int height) {
-			AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+		private TextView getGenericView() {
+			AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+					ViewGroup.LayoutParams.WRAP_CONTENT);
 			TextView textView = new TextView(PoiList.this);
 			textView.setLayoutParams(lp);
 			textView.setTextSize(20);
-			textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-			textView.setPadding(40, 0, 0, 0);
+			textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.DISPLAY_CLIP_HORIZONTAL
+					| Gravity.DISPLAY_CLIP_VERTICAL | Gravity.LEFT);
+			textView.setPadding(20, 0, 0, 0);
 			return textView;
 		}
 
-		public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-			TextView textView = getGenericView(80);
-			textView.setTextSize(20);
+		public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView,
+				ViewGroup parent) {
+			TextView textView = getGenericView();
+			float density = textView.getResources().getDisplayMetrics().density;
+			textView.setPadding(Math.round(density * 20), Math.round(density), Math.round(density), Math.round(density));
 			textView.setText(getChild(groupPosition, childPosition).toString());
 			return textView;
 		}
@@ -147,7 +153,8 @@ public class PoiList extends ExpandableListActivity implements POIConsumer {
 		public Object getGroup(int groupPosition) {
 			POI poi = Arrays.asList(PoiManager.get().getPOIs().toArray(new POI[0])).get(groupPosition);
 			POI activePoi = PoiManager.get().getActivePOI();
-			int poiTextId = activePoi != null && activePoi.getName().equals(poi.getName()) ? R.string.poiactive : R.string.poinotactive;
+			int poiTextId = activePoi != null && activePoi.getName().equals(poi.getName()) ? R.string.poiactive
+					: R.string.poinotactive;
 			return context.getApplicationContext().getString(poiTextId, poi.getName());
 		}
 
@@ -163,7 +170,10 @@ public class PoiList extends ExpandableListActivity implements POIConsumer {
 
 		@Override
 		public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-			TextView textView = getGenericView(60);
+			TextView textView = getGenericView();
+			float density = textView.getResources().getDisplayMetrics().density;
+			textView.setTextSize(25);
+			textView.setPadding(Math.round(density * 40), Math.round(density), Math.round(density), Math.round(density));
 			textView.setText(getGroup(groupPosition).toString());
 			return textView;
 		}
@@ -182,7 +192,8 @@ public class PoiList extends ExpandableListActivity implements POIConsumer {
 	@Override
 	public void notifyWithPOI(POI poi) {
 		PoiManager.get().addPOI(poi);
-		Toast.makeText(this, getApplicationContext().getString(R.string.poiadded, poi.getName()), Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, getApplicationContext().getString(R.string.poiadded, poi.getName()), Toast.LENGTH_SHORT)
+				.show();
 		refreshList();
 	}
 }

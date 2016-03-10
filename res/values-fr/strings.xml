@@ -120,6 +120,9 @@
     <string name="sink_alarm_t">Alarme de descendance</string>
     <string name="sound_inflight_s">Sound only when inflight</string>
     <string name="sound_inflight_t">Parawaiting silent</string>
+    <string name="enable_logs_t">Logging</string>
+    <string name="enable_logs_s">Enable logging in case of errors</string>
+    
     
     <string-array name="units_system_names">
         <item>Métrique</item>

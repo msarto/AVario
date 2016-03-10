@@ -89,17 +89,15 @@ public class TracksList extends ExpandableListActivity {
 			return 1;
 		}
 
-		private TextView getGenericView(int height) {
+		private TextView getGenericView() {
 			// Layout parameters for the ExpandableListView
-			AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-
+			AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+					ViewGroup.LayoutParams.WRAP_CONTENT);
 			TextView textView = new TextView(TracksList.this);
 			textView.setLayoutParams(lp);
 			textView.setTextSize(20);
-			// Center the text vertically
-			textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-			// Set the text starting position
-			textView.setPadding(36, 0, 0, 0);
+			textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.DISPLAY_CLIP_HORIZONTAL
+					| Gravity.DISPLAY_CLIP_VERTICAL | Gravity.LEFT);
 			return textView;
 		}
 
@@ -109,9 +107,11 @@ public class TracksList extends ExpandableListActivity {
 		 * @see android.widget.ExpandableListAdapter#getChildView(int, int,
 		 * boolean, android.view.View, android.view.ViewGroup)
 		 */
-		public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-			TextView textView = getGenericView(200);
-			textView.setTextSize(18);
+		public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView,
+				ViewGroup parent) {
+			TextView textView = getGenericView();
+			float density = textView.getResources().getDisplayMetrics().density;
+			textView.setPadding(Math.round(density * 20), Math.round(density), Math.round(density), Math.round(density));
 			textView.setText(getChild(groupPosition, childPosition).toString());
 			return textView;
 		}
@@ -155,7 +155,10 @@ public class TracksList extends ExpandableListActivity {
 		 */
 		@Override
 		public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-			TextView textView = getGenericView(60);
+			TextView textView = getGenericView();
+			float density = textView.getResources().getDisplayMetrics().density;
+			textView.setTextSize(25);
+			textView.setPadding(Math.round(density * 40), Math.round(density), Math.round(density), Math.round(density));
 			textView.setText(getGroup(groupPosition).toString());
 			return textView;
 		}
@@ -186,12 +189,14 @@ public class TracksList extends ExpandableListActivity {
 		 */
 		private String buildTrackInfoStr(TrackInfo track) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(context.getString(R.string.trkstart, UnitsConverter.humanTime(track.getFlightStart()))).append("\r\n");
-			sb.append(context.getString(R.string.trkdur, UnitsConverter.humanTimeSpan(track.getFlightDuration()))).append("\r\n");
+			sb.append(context.getString(R.string.trkstart, UnitsConverter.humanTime(track.getFlightStart()))).append(
+					"\r\n");
+			sb.append(context.getString(R.string.trkdur, UnitsConverter.humanTimeSpan(track.getFlightDuration())))
+					.append("\r\n");
 			sb.append(
-					context.getString(R.string.trkdist,
-							StringFormatter.twoDecimals(UnitsConverter.toPreferredLong(track.getFlightLenght() / 1000f)),
-							UnitsConverter.preferredDistLong())).append("\r\n");
+					context.getString(R.string.trkdist, StringFormatter.twoDecimals(UnitsConverter
+							.toPreferredLong(track.getFlightLenght() / 1000f)), UnitsConverter.preferredDistLong()))
+					.append("\r\n");
 			sb.append(
 					context.getString(R.string.trkstartalt,
 							StringFormatter.noDecimals(UnitsConverter.toPreferredShort(track.getStartAlt())),
@@ -210,9 +215,11 @@ public class TracksList extends ExpandableListActivity {
 							UnitsConverter.preferredDistShort())).append("\r\n");
 			float speed = UnitsConverter.msTokmh(track.getMaxSpeed());
 			sb.append(
-					context.getString(R.string.trkmaxspeed, StringFormatter.noDecimals(UnitsConverter.toPreferredLong(speed)),
+					context.getString(R.string.trkmaxspeed,
+							StringFormatter.noDecimals(UnitsConverter.toPreferredLong(speed)),
 							UnitsConverter.preferredDistLong())).append("\r\n");
-			sb.append(context.getString(R.string.trkendalt, StringFormatter.noDecimals(UnitsConverter.toPreferredShort(track.getEndAlt())),
+			sb.append(context.getString(R.string.trkendalt,
+					StringFormatter.noDecimals(UnitsConverter.toPreferredShort(track.getEndAlt())),
 					UnitsConverter.preferredDistShort()));
 			return sb.toString();
 		}

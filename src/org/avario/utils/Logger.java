@@ -9,11 +9,12 @@ import java.io.OutputStream;
 import java.util.Date;
 
 import org.avario.AVarioActivity;
+import org.avario.engine.prefs.Preferences;
 
 import android.util.Log;
 
 public class Logger {
-	public static boolean USE_LOG = false;
+	public static boolean USE_LOG = Preferences.enable_logs;
 	private static final String LOG_TAG = "AVARIO";
 	private static Logger THIS = new Logger();
 	private OutputStream logStream = null;

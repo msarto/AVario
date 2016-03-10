@@ -21,6 +21,8 @@ public class Preferences {
 	public static volatile boolean auto_track = true;
 	public static volatile boolean use_sensbox = false;
 	public static volatile boolean sound_inflight = false;
+	
+	public static volatile boolean enable_logs = false;
 
 	public static volatile int beep_interval = 500;
 	public static volatile float sink_start = -1.5f;
@@ -124,6 +126,7 @@ public class Preferences {
 		use_speach = getBool("use_speach", use_speach);
 		auto_track = getBool("auto_track", auto_track);
 		use_sensbox = getBool("use_sensbox", use_sensbox);
+		enable_logs = getBool("enable_logs", enable_logs);
 		sound_inflight = getBool("sound_inflight", sound_inflight);
 
 		beep_interval = Math.round(1000f * getFloat("beep_interval", 0.5f));

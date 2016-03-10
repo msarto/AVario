@@ -148,6 +148,11 @@
             android:key="use_sensbox"
             android:summary="@string/use_sensbox_s"
             android:title="@string/use_sensbox_t" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_logs"
+            android:summary="@string/enable_logs_s"
+            android:title="@string/enable_logs_t" />
 
         <android.preference.Preference
             android:defaultValue=""

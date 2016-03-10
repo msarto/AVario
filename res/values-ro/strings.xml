@@ -120,6 +120,9 @@
     <string name="sink_alarm_t">Alarma coborare</string>
     <string name="sound_inflight_s">Sunet doar in zbor</string>
     <string name="sound_inflight_t">Parawaiting linistit</string>
+    <string name="enable_logs_t">Loguri</string>
+    <string name="enable_logs_s">In caz de erori</string>
+    
     
     <string-array name="units_system_names">
         <item>Metric</item>
