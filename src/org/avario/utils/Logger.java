@@ -35,6 +35,10 @@ public class Logger {
 		return THIS;
 	}
 
+	public static boolean useLog() {
+		return Preferences.enable_logs;
+	}
+
 	protected Logger() {
 		super();
 	}

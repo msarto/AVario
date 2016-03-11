@@ -18,7 +18,7 @@
             </fileset>
 		</copy>
 		<echo>Optimize logger...</echo>
-		<replaceregexp byline="true" match="Logger\.get\(\).log" replace="if \(!Logger\.get\(\).USE_LOG\); else Logger\.get\(\).log" flags="g">
+		<replaceregexp byline="true" match="Logger\.get\(\).log" replace="if \(!Logger\.get\(\).useLog\(\)\); else Logger\.get\(\).log" flags="g">
             <fileset dir="./src.release" includes="**/*.java" />
 		</replaceregexp>
 	</target>
