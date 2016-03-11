@@ -5,7 +5,7 @@ import java.util.List;
 
 import android.location.Location;
 
-public abstract class MockLocation {
+public abstract class MockLocation implements Runnable {
 
 	public static final List<Double[]> points = new ArrayList<Double[]>();
 	static {
@@ -32,21 +32,28 @@ public abstract class MockLocation {
 
 	public abstract void notifyLocation(Location location);
 
+	public void start() {
+		new Thread(this).start();
+	}
+
 	public void run() {
-		for (Double[] point : points) {
-			Location location = new Location("mock");
-			location.setAccuracy(1);
-			location.setLongitude(point[0]);
-			location.setLatitude(point[1]);
-			location.setAltitude(point[2]);
-			location.setSpeed(10);
-			location.setTime(System.currentTimeMillis());
-			notifyLocation(location);
-			try {
+		try {
+			Thread.sleep(5000);
+			for (Double[] point : points) {
+				Location location = new Location("mock");
+				location.setAccuracy(1);
+				location.setLongitude(point[0]);
+				location.setLatitude(point[1]);
+				location.setAltitude(point[2]);
+				location.setSpeed(Math.round(Math.random() * 20));
+				location.setTime(System.currentTimeMillis());
+				notifyLocation(location);
+
 				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				break;
+
 			}
+		} catch (InterruptedException e) {
+
 		}
 	}
 }

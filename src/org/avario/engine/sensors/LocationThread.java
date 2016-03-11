@@ -30,6 +30,14 @@ public class LocationThread extends SensorThread<Location> implements LocationLi
 			locationManager.removeUpdates(LocationThread.this);
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, LocationThread.this);
 			locationManager.addNmeaListener(LocationThread.this);
+			/*
+			 * new MockLocation() {
+			 * 
+			 * @Override public void notifyLocation(Location location) {
+			 * onLocationChanged(location);
+			 * 
+			 * } }.start();
+			 */
 		} catch (Throwable e) {
 			Logger.get().log("Error starting GPS listener ", e);
 			Toast.makeText(AVarioActivity.CONTEXT,

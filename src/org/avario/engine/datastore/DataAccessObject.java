@@ -79,7 +79,7 @@ public class DataAccessObject {
 		return lastVSpeed;
 	}
 
-	public synchronized void upadteVSpeed() {
+	public void upadteVSpeed() {
 		lastVSpeed = movementFactor.getValue();
 	}
 

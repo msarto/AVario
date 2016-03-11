@@ -5,7 +5,7 @@ import org.avario.engine.sounds.AsyncTone;
 import org.avario.utils.Logger;
 
 public class SinkTone extends AsyncTone {
-	protected TonePlayer tonePlayer = new TonePlayer();
+	protected TonePlayer tonePlayer = TonePlayer.get();
 	protected float beepHz;
 
 	public void setSpeed(float beepSpeed) {

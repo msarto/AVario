@@ -165,7 +165,7 @@ public class Tracker implements LocationConsumer {
 			if (needTracking || (Preferences.auto_track && !isTracking())) {
 				boolean trackSound = startTracking();
 				if (trackSound) {
-					TonePlayer startTrack = new TonePlayer();
+					TonePlayer startTrack = TonePlayer.get();
 					for (int i = 0; i < 3; i++) {
 						startTrack.play(400f, ToneType.HIGH);
 						startTrack.stop();
@@ -178,7 +178,7 @@ public class Tracker implements LocationConsumer {
 			if (tracking && !DataAccessObject.get().isInFlight()) {
 				// Not in flight anymore
 				stopTracking();
-				TonePlayer startTrack = new TonePlayer();
+				TonePlayer startTrack = TonePlayer.get();
 				for (int i = 0; i < 3; i++) {
 					startTrack.play(400f, ToneType.HIGH);
 					startTrack.stop();
