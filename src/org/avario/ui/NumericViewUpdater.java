@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
@@ -58,7 +59,11 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 
 	public static void init() {
 		THIS = new NumericViewUpdater();
-		THIS.execute();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			THIS.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		else
+			THIS.execute();
+
 		SensorProducer.get().registerConsumer(THIS);
 	}
 

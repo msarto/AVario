@@ -12,13 +12,14 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.SparseArray;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
-	private static VarioMeterScaleUpdater THIS;
+	private static AsyncTask<Integer, Float, Integer> THIS;
 	protected final SparseArray<MarkedLayout> scaleView = new SparseArray<MarkedLayout>();
 	protected TextView varioView = null;
 	protected int scaleHeight = 6;
@@ -92,14 +93,19 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 
 	public static void init() {
 		THIS = new VarioMeterScaleUpdater();
-		THIS.execute();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			THIS = THIS.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		else
+			THIS = THIS.execute();
+
 	}
 
-	public static VarioMeterScaleUpdater getInstance() {
-		return THIS;
-	}
+	// public static VarioMeterScaleUpdater getInstance() {
+	// return THIS;
+	// }
 
 	public static void clear() {
+		Logger.get().log("cancel scale");
 		if (THIS != null) {
 			THIS.cancel(true);
 		}
@@ -111,7 +117,6 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 			float displaySpeed = UnitsConverter.toPreferredVSpeed(vSpeed);
 			varioView.setText(Preferences.units_system == 2 ? StringFormatter.noDecimals(displaySpeed)
 					: StringFormatter.oneDecimal(displaySpeed));
-
 			int unitsMarked = Math.round(4 * vSpeed);
 			if (currentUnitsMark == unitsMarked) {
 				// Nothing to do, just return
@@ -164,6 +169,8 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 	@Override
 	protected Integer doInBackground(Integer... arg0) {
 		float prevSpeed = 0f;
+		Logger.get().log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Start scalling");
+
 		while (!THIS.isCancelled()) {
 			try {
 				Thread.sleep(200);

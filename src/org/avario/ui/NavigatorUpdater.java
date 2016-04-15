@@ -10,7 +10,6 @@ import org.avario.engine.prefs.Preferences;
 import org.avario.ui.poi.PoiView;
 import org.avario.ui.view.NavigationView;
 import org.avario.utils.StringFormatter;
-import org.avario.utils.UnitsConverter;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
