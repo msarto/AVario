@@ -169,7 +169,7 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 	@Override
 	protected Integer doInBackground(Integer... arg0) {
 		float prevSpeed = 0f;
-		Logger.get().log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Start scalling");
+		Logger.get().log("Start scalling");
 
 		while (!THIS.isCancelled()) {
 			try {

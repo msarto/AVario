@@ -116,7 +116,7 @@ public class SensorProducer {
 		baroThread.startSensor();
 		locationThread.startSensor();
 
-		Toast.makeText(activity, R.string.initalizing_sensors, Toast.LENGTH_LONG).show();
+		//-- Toast.makeText(activity, R.string.initalizing_sensors, Toast.LENGTH_LONG).show();
 	}
 
 	public void notifyGpsConsumers(Location location) {

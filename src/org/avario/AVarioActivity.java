@@ -6,6 +6,7 @@ import org.avario.engine.poi.PoiManager;
 import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sounds.BeepBeeper;
 import org.avario.engine.tracks.Tracker;
+import org.avario.inappbilling.Donate;
 import org.avario.ui.NavigatorUpdater;
 import org.avario.ui.NumericViewUpdater;
 import org.avario.ui.VarioMeterScaleUpdater;
@@ -99,6 +100,7 @@ public class AVarioActivity extends Activity {
 
 			Logger.init();
 			initializeSensors();
+			Donate.get().init();
 		} catch (Throwable e) {
 			Logger.get().log("Fail on create ", e);
 		}
@@ -171,6 +173,7 @@ public class AVarioActivity extends Activity {
 	public void onBackPressed() {
 		// To disable back button
 		Toast.makeText(this, R.string.exit_from_menu, Toast.LENGTH_SHORT).show();
+		openOptionsMenu();
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

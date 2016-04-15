@@ -122,6 +122,7 @@
     <string name="sound_inflight_t">Parawaiting linistit</string>
     <string name="enable_logs_t">Loguri</string>
     <string name="enable_logs_s">In caz de erori</string>
+	<string name="dont_forget_to_donate">Donatiile sunt apreciate</string>
     
     
     <string-array name="units_system_names">
