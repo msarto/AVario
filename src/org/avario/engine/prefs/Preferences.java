@@ -21,7 +21,6 @@ public class Preferences {
 	public static volatile boolean auto_track = true;
 	public static volatile boolean use_sensbox = false;
 	public static volatile boolean sound_inflight = false;
-	
 	public static volatile boolean enable_logs = false;
 
 	public static volatile int beep_interval = 500;
