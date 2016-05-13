@@ -1,6 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/donate"
+        android:title="@string/donate"/>
+    <item
         android:id="@+id/ontrack"
         android:title="@string/starttracking"/>
     <item

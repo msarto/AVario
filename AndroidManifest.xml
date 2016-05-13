@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.avario"
-    android:versionCode="40"
-    android:versionName="@string/versionName" >
+    android:versionCode="1000"
+    android:versionName="0.1" >
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -24,6 +24,7 @@
     <application
         android:icon="@drawable/icon"
         android:label="@string/AVario" >
+        
         <activity
             android:name=".AVarioActivity"
             android:launchMode="singleTop"
@@ -34,6 +35,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".inappbilling.DonateList"
+            android:label="@string/donate"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ui.prefs.PreferencesMenu"

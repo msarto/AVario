@@ -125,7 +125,8 @@
     <string name="enable_logs_t">Logging</string>
     <string name="enable_logs_s">Enable logging in case of errors</string>
     <string name="dont_forget_to_donate">You may donate if you like the application</string>
-    
+    <string name="thanks">Thank you!</string>
+    <string name="donate">Donate</string>
     <string-array name="units_system_names">
         <item>Metric</item>
         <item>Imperial</item>

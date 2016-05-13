@@ -7,6 +7,7 @@ import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sounds.BeepBeeper;
 import org.avario.engine.tracks.Tracker;
 import org.avario.inappbilling.Donate;
+import org.avario.inappbilling.DonateList;
 import org.avario.ui.NavigatorUpdater;
 import org.avario.ui.NumericViewUpdater;
 import org.avario.ui.VarioMeterScaleUpdater;
@@ -147,8 +148,11 @@ public class AVarioActivity extends Activity {
 		case R.id.tracks:
 			startActivityForResult(new Intent(this, TracksList.class), 2);
 			return true;
+		case R.id.donate:
+			startActivityForResult(new Intent(this, DonateList.class), 3);
+			return true;
 		case R.id.poi:
-			startActivityForResult(new Intent(this, PoiList.class), 3);
+			startActivityForResult(new Intent(this, PoiList.class), 4);
 			return true;
 		case R.id.ontrack:
 			if (Tracker.get().isTracking()) {
@@ -196,6 +200,7 @@ public class AVarioActivity extends Activity {
 			BeepBeeper.clear();
 			NumericViewUpdater.clear();
 			DataAccessObject.clear();
+			Donate.get().clear();
 			if (Preferences.use_sensbox) {
 				BTScanner.get().clear();
 			}
@@ -229,7 +234,9 @@ public class AVarioActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == BTScanner.INTENT_ID) {
 			BTScanner.get().onActivityResult(requestCode, resultCode, data);
+		} else if (!Donate.get().handleActivityResult(requestCode, resultCode, data)) {
+		} else {
+			super.onActivityResult(requestCode, resultCode, data);
 		}
 	}
-
 }

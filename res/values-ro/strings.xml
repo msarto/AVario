@@ -123,8 +123,8 @@
     <string name="enable_logs_t">Loguri</string>
     <string name="enable_logs_s">In caz de erori</string>
 	<string name="dont_forget_to_donate">Donatiile sunt apreciate</string>
-    
-    
+    <string name="thanks">Mare domn!</string>
+    <string name="donate">Donate</string>
     <string-array name="units_system_names">
         <item>Metric</item>
         <item>Imperial</item>
