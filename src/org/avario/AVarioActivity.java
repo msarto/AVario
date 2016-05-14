@@ -149,6 +149,10 @@ public class AVarioActivity extends Activity {
 			startActivityForResult(new Intent(this, TracksList.class), 2);
 			return true;
 		case R.id.donate:
+			if (Donate.get().getItems().size() == 0) {
+				Toast.makeText(this, R.string.donate_not_available, Toast.LENGTH_SHORT).show();				
+				return true;
+			}
 			startActivityForResult(new Intent(this, DonateList.class), 3);
 			return true;
 		case R.id.poi:
@@ -176,7 +180,6 @@ public class AVarioActivity extends Activity {
 	@Override
 	public void onBackPressed() {
 		// To disable back button
-		Toast.makeText(this, R.string.exit_from_menu, Toast.LENGTH_SHORT).show();
 		openOptionsMenu();
 	}
 

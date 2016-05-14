@@ -125,6 +125,7 @@
     <string name="dont_forget_to_donate">You may donate if you like the application</string>
     <string name="thanks">Merci!</string>
     <string name="donate">Donate</string>
+    <string name="donate_not_available">Donate service is currently not available</string>
     <string-array name="units_system_names">
         <item>Métrique</item>
         <item>Impérial</item>
