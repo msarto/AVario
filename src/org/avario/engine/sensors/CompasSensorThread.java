@@ -53,8 +53,7 @@ public class CompasSensorThread extends SensorThread<Float> {
 				SensorProducer.get().notifyAccelerometerConsumers(x, y, z);
 
 				if (DataAccessObject.get() != null) {
-					float gForce = x * x;
-					gForce += y * y;
+					float gForce = Math.abs(x * y);
 					gForce += z * z;
 					gForce = (float) (Math.sqrt(gForce) - SensorManager.GRAVITY_EARTH);
 					DataAccessObject.get().setGForce(Math.abs(gForce));

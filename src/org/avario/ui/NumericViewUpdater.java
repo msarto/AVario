@@ -159,6 +159,10 @@ public class NumericViewUpdater extends AsyncTask<Integer, Integer, Integer> imp
 		}
 	}
 
+	public void dummy(double value) {
+		altitudeView.setText(StringFormatter.twoDecimals(value));
+	}
+
 	public static void clear() {
 		THIS.cancel(true);
 	}

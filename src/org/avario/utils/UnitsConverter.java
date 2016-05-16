@@ -8,10 +8,16 @@ import org.avario.engine.prefs.Preferences;
 public class UnitsConverter {
 
 	public static double msTokmh(double msSpeed) {
+		if (Double.isNaN(msSpeed) || Double.isInfinite(msSpeed)) {
+			return 0.0;
+		}
 		return msSpeed * 3.6d;
 	}
 
 	public static float msTokmh(float msSpeed) {
+		if (Float.isNaN(msSpeed) || Float.isInfinite(msSpeed)) {
+			return 0f;
+		}
 		return msSpeed * 3.6f;
 	}
 
@@ -41,7 +47,11 @@ public class UnitsConverter {
 		}
 		float timeSpan = (newAltitudeTimestamp - lastAltitudeTimestamp) / 1000f;
 		float distSpan = (newAltitude - lastAltitudeValue);
-		return (distSpan == 0f) ? 0f : (distSpan / timeSpan);
+		float ret = (distSpan == 0f) ? 0f : (distSpan / timeSpan);
+		if (Float.isNaN(ret) || Float.isInfinite(ret)) {
+			return 0f;
+		}
+		return ret;
 	}
 
 	public static String humanTime(long timeInMillis) {
@@ -51,22 +61,37 @@ public class UnitsConverter {
 	}
 
 	public static float m2feets(float meters) {
+		if (Float.isNaN(meters) || Float.isInfinite(meters)) {
+			return 0f;
+		}
 		return 3.280839895f * meters;
 	}
 
 	public static float feets2m(float feets) {
+		if (Float.isNaN(feets) || Float.isInfinite(feets)) {
+			return 0f;
+		}
 		return feets / 3.280839895f;
 	}
 
 	public static float km2miles(float km) {
+		if (Float.isNaN(km) || Float.isInfinite(km)) {
+			return 0f;
+		}
 		return 0.621371f * km;
 	}
 
 	public static float mps2fpm(float speed) {
+		if (Float.isNaN(speed) || Float.isInfinite(speed)) {
+			return 0f;
+		}
 		return 196.850394f * speed;
 	}
 
 	public static float toPreferredVSpeed(float speed) {
+		if (Float.isNaN(speed) || Float.isInfinite(speed)) {
+			return 0f;
+		}
 		float ret = speed;
 		switch (Preferences.units_system) {
 		case 1: // Metric
@@ -79,6 +104,9 @@ public class UnitsConverter {
 	}
 
 	public static float toPreferredLong(float km) {
+		if (Float.isNaN(km) || Float.isInfinite(km)) {
+			return 0f;
+		}
 		float ret = km;
 		switch (Preferences.units_system) {
 		case 1: // Metric
@@ -91,6 +119,9 @@ public class UnitsConverter {
 	}
 
 	public static float toPreferredShort(float meters) {
+		if (Float.isNaN(meters) || Float.isInfinite(meters)) {
+			return 0f;
+		}
 		float ret = meters;
 		switch (Preferences.units_system) {
 		case 1: // Metric
@@ -103,6 +134,9 @@ public class UnitsConverter {
 	}
 
 	public static float fromPreferredShort(float preferred) {
+		if (Float.isNaN(preferred) || Float.isInfinite(preferred)) {
+			return 0f;
+		}
 		float ret = preferred;
 		switch (Preferences.units_system) {
 		case 1: // Metric

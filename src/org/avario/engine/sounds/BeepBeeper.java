@@ -34,7 +34,6 @@ public class BeepBeeper implements Runnable {
 	@Override
 	public void run() {
 		try {
-
 			while (doBeep) {
 				try {
 					DataAccessObject.get().upadteVSpeed();
@@ -110,7 +109,7 @@ public class BeepBeeper implements Runnable {
 	private void start() {
 		doBeep = true;
 		new Thread(this).start();
-		SensorProducer.get().registerConsumer(accelerationBeep);
+		//-- SensorProducer.get().registerConsumer(accelerationBeep);
 	}
 
 	public void stop() {

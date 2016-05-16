@@ -6,6 +6,7 @@ import org.avario.engine.prefs.Preferences;
 import org.avario.engine.sensors.GpsMovement;
 import org.avario.engine.sensors.MovementFactor;
 import org.avario.engine.wind.WindCalculator;
+import org.avario.ui.NumericViewUpdater;
 import org.avario.utils.Logger;
 
 import android.location.Location;
@@ -146,7 +147,8 @@ public class DataAccessObject {
 	}
 
 	public float getSensitivity() {
-		return Preferences.baro_sensitivity;
+		float dynamicSensitivity = (float) Math.max(5f, Preferences.baro_sensitivity - gForce * 2f);
+		return Float.isNaN(dynamicSensitivity) || dynamicSensitivity > 50 ? 25f : dynamicSensitivity;
 	}
 
 	public synchronized boolean isGPSFix() {
@@ -221,6 +223,7 @@ public class DataAccessObject {
 	}
 
 	public void setGForce(double gForce) {
+		// NumericViewUpdater.getInstance().dummy(getSensitivity());
 		this.gForce = gForce;
 	}
 }

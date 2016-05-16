@@ -3,7 +3,6 @@ package org.avario.engine;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.avario.R;
 import org.avario.engine.consumerdef.AccelerometerConsumer;
 import org.avario.engine.consumerdef.BarometerConsumer;
 import org.avario.engine.consumerdef.CompasConsumer;
@@ -16,7 +15,6 @@ import org.avario.utils.Logger;
 
 import android.app.Activity;
 import android.location.Location;
-import android.widget.Toast;
 
 public class SensorProducer {
 	private static SensorProducer THIS = new SensorProducer();
