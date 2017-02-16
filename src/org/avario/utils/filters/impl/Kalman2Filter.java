@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import org.avario.engine.datastore.DataAccessObject;
+import org.avario.utils.Logger;
 import org.avario.utils.StringFormatter;
 import org.avario.utils.filters.Filter;
 
@@ -41,14 +42,17 @@ public class Kalman2Filter implements Filter {
 	private void trimSamples() {
 		float sensitivity = DataAccessObject.get().getSensitivity() * 100;
 		boolean canSample = true;
-		while (canSample && history.size() > 3) {
+		while (canSample && history.size() * 10 > DataAccessObject.get().getSensitivity()) {
 			// while (history.size() > Math.max(3, medianInterval)) {
+
 			Sample item = history.peek();
-			if (SystemClock.elapsedRealtime() - item.timestamp > sensitivity) {
+			if (SystemClock.elapsedRealtime() - item.timestamp > sensitivity*0.5) {
 				history.poll();
 			} else {
 				canSample = false;
 			}
+			//Logger.get().log("Hist size: "+history.size()+" s: "+sensitivity);
+			sensitivity = DataAccessObject.get().getSensitivity() * 100;
 		}
 	}
 

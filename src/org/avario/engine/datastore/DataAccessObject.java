@@ -147,8 +147,8 @@ public class DataAccessObject {
 	}
 
 	public float getSensitivity() {
-		float dynamicSensitivity = (float) Math.max(5f, Preferences.baro_sensitivity - gForce * 2f);
-		return Float.isNaN(dynamicSensitivity) || dynamicSensitivity > 50 ? 25f : dynamicSensitivity;
+		float dynamicSensitivity = (float) Math.max(5f, Preferences.baro_sensitivity  - gForce * 2f);
+		return Float.isNaN(dynamicSensitivity) || dynamicSensitivity > 50 ? 50f : dynamicSensitivity;
 	}
 
 	public synchronized boolean isGPSFix() {
