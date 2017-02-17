@@ -12,76 +12,72 @@ import android.os.SystemClock;
 
 public class Kalman2Filter implements Filter {
 
-	static class Sample {
-		public long timestamp;
-		public float value;
+    static class Sample {
+        public long timestamp;
+        public float value;
 
-		public Sample(float value) {
-			this.value = value;
-			this.timestamp = SystemClock.elapsedRealtime();
-		}
+        public Sample(float value) {
+            this.value = value;
+            this.timestamp = SystemClock.elapsedRealtime();
+        }
 
-		public String toString() {
-			return "value: x " + StringFormatter.multipleDecimals(value);
-		}
-	}
+        public String toString() {
+            return "value: x " + StringFormatter.multipleDecimals(value);
+        }
+    }
 
-	protected Queue<Sample> history = new ArrayDeque<Sample>();
+    protected Queue<Sample> history = new ArrayDeque<Sample>();
 
-	public Kalman2Filter() {
-	}
+    @Override
+    public synchronized float[] doFilter(final float... value) {
+        history.add(new Sample(value[0]));
+        float[] result = new float[]{doKalman2()};
+        trimSamples();
+        return result;
+    }
 
-	@Override
-	public synchronized float[] doFilter(final float... value) {
-		history.add(new Sample(value[0]));
-		float[] result = new float[] { doKalman2() };
-		trimSamples();
-		return result;
-	}
+    private void trimSamples() {
+        float sensitivity = DataAccessObject.get().getSensitivity();
+        boolean canSample = true;
+        while (canSample) {
+            // while (history.size() > Math.max(3, medianInterval)) {
+            Sample item = history.peek();
+            if (SystemClock.elapsedRealtime() - item.timestamp > sensitivity*50)
+                history.poll();
+            else {
+                canSample = false;
+            }
+            //Logger.get().log("Hist size: " + history.size() + " s: " + sensitivity);
+            sensitivity = DataAccessObject.get().getSensitivity();
+        }
+    }
 
-	private void trimSamples() {
-		float sensitivity = DataAccessObject.get().getSensitivity() * 100;
-		boolean canSample = true;
-		while (canSample && history.size() * 10 > DataAccessObject.get().getSensitivity()) {
-			// while (history.size() > Math.max(3, medianInterval)) {
+    protected float doKalman2() {
+        float median = 0;
+        int N = history.size();
+        if (N == 1) {
+            return history.peek().value;
+        }
+        float I = 0;
+        for (Sample item : history) {
+            median += item.value * I;
+            I = I + 1f / (N * (N - 1));
+        }
+        return median * 2;
+    }
 
-			Sample item = history.peek();
-			if (SystemClock.elapsedRealtime() - item.timestamp > sensitivity*0.5) {
-				history.poll();
-			} else {
-				canSample = false;
-			}
-			//Logger.get().log("Hist size: "+history.size()+" s: "+sensitivity);
-			sensitivity = DataAccessObject.get().getSensitivity() * 100;
-		}
-	}
+    public synchronized void reset() {
+        history.clear();
+    }
 
-	protected float doKalman2() {
-		float median = 0;
-		int N = history.size();
-		if (N == 1) {
-			return history.peek().value;
-		}
-		float I = 0;
-		for (Sample item : history) {
-			median += item.value * I;
-			I = I + 1f / (N * (N - 1));
-		}
-		return median * 2;
-	}
-
-	public synchronized void reset() {
-		history.clear();
-	}
-
-	public static void main(String[] args) {
-		Kalman2Filter filter = new Kalman2Filter();
-		filter.doFilter(1);
-		filter.doFilter(3);
-		filter.doFilter(5);
-		filter.doFilter(1);
-		filter.doFilter(1);
-		filter.doFilter(1);
-	}
+    public static void main(String[] args) {
+        Kalman2Filter filter = new Kalman2Filter();
+        filter.doFilter(1);
+        filter.doFilter(3);
+        filter.doFilter(5);
+        filter.doFilter(1);
+        filter.doFilter(1);
+        filter.doFilter(1);
+    }
 
 }

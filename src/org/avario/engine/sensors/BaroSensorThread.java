@@ -18,8 +18,6 @@ public class BaroSensorThread extends SensorThread<Float> {
     private volatile boolean bSensorOn = false;
     private BaroSensorFilter baroFilter = new BaroSensorFilter(new StabiloFilter(), new Kalman2Filter());
     private float lastAltitude = 0f;
-    private long notifs = 0;
-    long now = System.currentTimeMillis();
 
     public BaroSensorThread() {
         init();
@@ -32,12 +30,6 @@ public class BaroSensorThread extends SensorThread<Float> {
 
     @Override
     public void notifySensorChanged(final SensorEvent sensorEvent) {
-
-       // if (notifs++ % 100 == 0) {
-       //     Logger.get().log("100 notifs in " + (System.currentTimeMillis() - now));
-       //     now = System.currentTimeMillis();
-
-       // }
 
         if (!isSensorProcessed && (sensorEvent.sensor.getType() == Sensor.TYPE_PRESSURE)) {
             isSensorProcessed = true;
