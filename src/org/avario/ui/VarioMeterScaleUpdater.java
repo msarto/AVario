@@ -99,11 +99,7 @@ public class VarioMeterScaleUpdater extends AsyncTask<Integer, Float, Integer> {
 			THIS = THIS.execute();
 
 	}
-
-	// public static VarioMeterScaleUpdater getInstance() {
-	// return THIS;
-	// }
-
+	
 	public static void clear() {
 		Logger.get().log("cancel scale");
 		if (THIS != null) {
