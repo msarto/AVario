@@ -44,7 +44,7 @@ public class BeepBeeper implements Runnable {
 
 					if (!validateThisSpeed(beepSpeed)) {
 						isLift = false;
-						Thread.sleep(Math.round(5f * sensitivity));
+						Thread.sleep(Math.round(2f * sensitivity));
 					} else {
 						boolean bAlarm = beepSpeed < Math.min(Preferences.sink_start, Preferences.sink_alarm);
 						if (bAlarm) {
