@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/donate"
+        android:title="@string/donate"/>
+    <item
+        android:id="@+id/ontrack"
+        android:title="@string/starttracking"/>
+    <item
+        android:id="@+id/tracks"
+        android:title="@string/tracks"/>
+    <item
+        android:id="@+id/poi"
+        android:title="@string/poi"/>
+    <item
+        android:id="@+id/preferences"
+        android:title="@string/preferences"/>
+    <item
+        android:id="@+id/exit"
+        android:title="@string/exit"/>
+
+</menu>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="AVario">AVario</string>
+    <string name="preferences">Setari</string>
+    <string name="tracks">Zboruri</string>
+    <string name="exit">Iesire</string>
+    <string name="tracks_list">Lista zboruri</string>
+    <string name="tracks_del">Sterge zbor</string>
+    <string name="alt">Alt:</string>
+    <string name="gspeed">Viteza:</string>
+    <string name="gspeedvaluekmh">%1$s</string>
+    <string name="gainedlastmin">Castig in %1$s sec:</string>
+    <string name="lastgainvalue">%1$s</string>
+    <string name="nan"><b>--</b></string>
+    <string name="ms">m/s</string>
+    <string name="fs">f/s</string>
+    <string name="rec">Inreg</string>
+    <string name="starttracking">Start inreg</string>
+    <string name="stoptracking">Stop inreg</string>
+    <string name="poi">Puncte</string>
+    <string name="delpoi">Sterge punct</string>
+    <string name="addpoi">Adauga punct</string>
+    <string name="poiadded">Punctul %1$s a fost adaugat</string>
+    <string name="poiactive">ACTIV -> %1$s</string>
+    <string name="poinotactive">%1$s</string>
+    <string name="poidetail">Latitudine: %1$s \r\nLongitudine: %2$s \r\nAltitudine: %3$s \r\nDistanta de aici: %4$s</string>
+    <string name="poideleted">Punctul %1$s a fost sters</string>
+    <string name="setactivepoi">Seteaza ACTIV</string>
+    <string name="thermal_marked">Termica marcata</string>
+    <string name="trkstart">Start zbor: %1$s</string>
+    <string name="trkdur">Durata zbor: %1$s</string>
+    <string name="trkdist">Distanta zbor: %1$s %2$s</string>
+    <string name="trkstartalt">Altitudine start: %1$s %2$s</string>
+    <string name="trkendalt">Altitudine aterizare: %1$s %2$s</string>
+    <string name="trkmaxalt">Altitudine maxima: %1$s %2$s</string>
+    <string name="trkmaxvario">Viteza urcare max: %1$s %2$s/s</string>
+    <string name="trkminvario">Viteza coborare max: %1$s %2$s/s</string>
+    <string name="trkmaxspeed">Viteza maxima: %1$s %2$s/h</string>
+    <string name="barosensorna">Nu este senzor de baro</string>
+    <string name="gpsensorna">Nu este GPS</string>
+    <string name="compsensorna">Nu este compas</string>
+    <string name="trkdeleted">Zborul a fost sters</string>
+    <string name="exit_from_menu">Foloseste iesirea din meniu …</string>
+    <string name="speaker_fail">Vocea nu-i disponibila</string>
+    <string name="gps_fail">GPS-ul nu este disponibil</string>
+    <string name="span">00h00m00s</string>
+    <string name="north">N</string>
+    <string name="south">S</string>
+    <string name="east">E</string>
+    <string name="west">V</string>
+    <string name="poi_name">Nume punct:</string>
+    <string name="poilatitude">Latitudine:</string>
+    <string name="poilongitude">Longitudine:</string>
+    <string name="save">Salveaza</string>
+    <string name="cancel">Da-i pace</string>
+    <string name="kmh">km/h</string>
+    <string name="meters">metri</string>
+    <string name="feet">feet</string>
+    <string name="units_system_summary">Alege sistemul de unitati</string>
+    <string name="units_system">Sistem unitati</string>
+    <string name="prefs_title">Preferinte</string>
+    <string name="sound_prefs_s">Setari de sunet pentru vario</string>
+    <string name="sound_prefs_t">Sunete</string>
+    <string name="volume_t">Volum</string>
+    <string name="volume_s">Volum sunet vario</string>
+    <string name="use_speach_s">Foloseste voce la vario</string>
+    <string name="use_speach_t">Foloseste voce</string>
+    <string name="beep_interval_s">Interval de sunete pentru vario (secunde)</string>
+    <string name="beep_interval_t">Interval sunet</string>
+    <string name="prenotify_interval_t">Interval prenotificare</string>
+    <string name="prenotify_interval_s">Interval sunet langa termica</string>
+    <string name="sink_start_s">Viteza de coborare pentru sunet (m/s)</string>
+    <string name="sink_start_t">Viteza coborare</string>
+    <string name="lift_start_s">Viteza de urcare pentru sunet (m/s)</string>
+    <string name="lift_start_t">Viteza urcare</string>
+    <string name="lift_hz_s">Ton urcre in Hz</string>
+    <string name="lift_hz_t">Ton urcare</string>
+    <string name="sink_hz_s">Ton coborare in Hz</string>
+    <string name="sink_hz_t">Ton coborare</string>
+    <string name="tone_variation_s">Variatiea sunetului pe ms (Hz)</string>
+    <string name="tone_variation_t">Variatia sunetului</string>
+    <string name="thermal_prefs_s">Seteri termica</string>
+    <string name="thermal_prefs_t">Termica</string>
+    <string name="max_last_thermal_distance_s">Distanta maxima pt termica (metri)</string>
+    <string name="max_last_thermal_distance_t">Distanta termica</string>
+    <string name="min_thermal_interval_s">Timp sa consideram termica</string>
+    <string name="min_thermal_interval_t">Timp termica</string>
+    <string name="min_thermal_gain_s">Castig de altitudine pt marcat termica</string>
+    <string name="min_thermal_gain_t">Castig altitudine</string>
+    <string name="filters_s">Filtre pentru senzori</string>
+    <string name="filters_t">Filtre</string>
+    <string name="baro_filter_sensitivity_s">Senzitivitate pentru barometru [1;50]</string>
+    <string name="baro_filter_sensitivity_t">Senzitivitate baro</string>
+    <string name="compass_filter_sensitivity_s">Senzitivitate pentru compas [1;10]</string>
+    <string name="compass_filter_sensitivity_t">Senzitivitate compas</string>
+    <string name="location_history_s">Secunde de memorat castigul de alt</string>
+    <string name="location_history_t">Secunde istoric</string>
+    <string name="heading_interval_s">Interval de recalculare directie</string>
+    <string name="heading_interval_t">Recalculare directie</string>
+    <string name="auto_track_s">Porneste inregistrarea automat</string>
+    <string name="auto_track_t">Inregistrare automata</string>
+    <string name="yes">Da</string>
+    <string name="no">Nu</string>
+    <string name="recordTrack_q">Pornesc inregistratea traseului?</string>
+    <string name="altitude_from_gps">Altitudea de la GPS: %1$s</string>
+    <string name="use_sensbox_s">Foloseste BT Flytec SensBox</string>
+    <string name="use_sensbox_t">Foloseste SensBox</string>
+    <string name="initalizing_sensors">Initializing sensors</string>
+    <string name="sensbox_not_found">SensBox BT device was not found</string>
+    <string name="sensbox_not_supported">SensBox BT is not supported by your device</string>
+    <string name="sensbox_found">SensBox BT found</string>
+    <string name="qnh_s">QNH</string>
+    <string name="qnh_t">Presiunea de referinta</string>
+    <string name="ref_alt_title">Current altitude</string>
+    <string name="ref_alt_description">Setting current altitude will make automatic computaion of QNH value. Please insert current altitude in meters.</string>
+    <string name="sound_type_s">Tip de sunet vario</string>
+    <string name="sound_type_t">Tip sunet</string>
+    <string name="sink_alarm_s">Alarma coborare (m/s))</string>
+    <string name="sink_alarm_t">Alarma coborare</string>
+    <string name="sound_inflight_s">Sunet doar in zbor</string>
+    <string name="sound_inflight_t">Parawaiting linistit</string>
+    <string name="enable_logs_t">Loguri</string>
+    <string name="enable_logs_s">In caz de erori</string>
+	<string name="dont_forget_to_donate">Donatiile sunt apreciate</string>
+    <string name="thanks">Mare domn!</string>
+    <string name="donate">Donate</string>
+    <string name="donate_not_available">Serviciul nu merge momentan</string>
+    <string-array name="units_system_names">
+        <item>Metric</item>
+        <item>Imperial</item>
+    </string-array>
+    <string-array name="units_system_vals">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="sound_types_names">
+        <item>Static</item>
+        <item>Dynamic</item>
+    </string-array>
+
+</resources>

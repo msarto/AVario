@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+    package="org.avario" >
+
+    <uses-sdk
+        android:minSdkVersion="9"
+        android:targetSdkVersion="19"
+        tools:overrideLibrary="android.support.v4,
+        android.support.mediacompat,
+        android.support.fragment,
+        android.support.coreui,
+        android.support.coreutils,
+        android.support.compat,android.arch.lifecycle" />
+
+    <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="com.android.vending.BILLING" />
+
+    <application
+        android:icon="@drawable/icon"
+        android:label="@string/AVario" >
+        
+        <activity
+            android:name=".AVarioActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/lightStyle" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".inappbilling.DonateList"
+            android:label="@string/donate"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ui.prefs.PreferencesMenu"
+            android:label="@string/preferences"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ui.tracks.TracksList"
+            android:label="@string/tracks_list"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ui.poi.PoiList"
+            android:label="@string/poi"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ui.poi.PoiActivity"
+            android:label="@string/poi"
+            android:screenOrientation="portrait" >
+        </activity>
+    </application>
+
+</manifest>

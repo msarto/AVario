@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="AVario">AVario</string>
+    <string name="preferences">Paramètre</string>
+    <string name="tracks">Traces</string>
+    <string name="exit">Sortie</string>
+    <string name="tracks_list">Liste des traces</string>
+    <string name="tracks_del">Effacer traces</string>
+    <string name="alt">Altitude:</string>
+    <string name="gspeed">Vitesse sol:</string>
+    <string name="gspeedvaluekmh">%1$s</string>
+    <string name="gainedlastmin">%1$s sec gain d\'altitude:</string>
+    <string name="lastgainvalue">%1$s</string>
+    <string name="nan"><b>--</b></string>
+    <string name="ms">m/s</string>
+    <string name="fs">f/m</string>
+    <string name="rec">Rec</string>
+    <string name="starttracking">Débuter l\'enregistrement</string>
+    <string name="stoptracking">Arrêter l\'enregistrement</string>
+    <string name="poi">Lieux</string>
+    <string name="delpoi">Effacer lieu</string>
+    <string name="addpoi">Ajouter lieu</string>
+    <string name="poiadded">Lieu %1$s ajouté</string>
+    <string name="poiactive">ACTIVE -> %1$s</string>
+    <string name="poinotactive">%1$s</string>
+    <string name="poidetail">Latitude: %1$s \r\nLongitude: %2$s \r\nAltitude: %3$s \r\nDistance depuis ici: %4$s</string>
+    <string name="poideleted">Lieu %1$s supprimé</string>
+    <string name="setactivepoi">Mettre ACTIVE</string>
+    <string name="thermal_marked">Thermique marqué</string>
+    <string name="trkstart">Début du vol: %1$s</string>
+    <string name="trkdur">Durée du vol: %1$s</string>
+    <string name="trkdist">Distance de vol: %1$s %2$s</string>
+    <string name="trkstartalt">Altitude de décollage: %1$s %2$s</string>
+    <string name="trkendalt">Altitude d\'aterrissage: %1$s %2$s</string>
+    <string name="trkmaxalt">Altitude max: %1$s %2$s</string>
+    <string name="trkmaxvario">Ascendance max: %1$s %2$s/s</string>
+    <string name="trkminvario">Descendance max: %1$s %2$s/s</string>
+    <string name="trkmaxspeed">Vitesse max: %1$s %2$s/h</string>
+    <string name="barosensorna">Capteur barométrique non disponible</string>
+    <string name="gpsensorna">Capteur GPS non disponible</string>
+    <string name="compsensorna">Boussole nin disponible</string>
+    <string name="trkdeleted">Trace effacée</string>
+    <string name="exit_from_menu">Utilisez Sortie depuis le menu …</string>
+    <string name="speaker_fail">Haut-parleurs non disponibles</string>
+    <string name="gps_fail">GPS non disponible</string>
+    <string name="span">00h00m00s</string>
+    <string name="north">N</string>
+    <string name="south">S</string>
+    <string name="east">E</string>
+    <string name="west">W</string>
+    <string name="poi_name">Nom du point:</string>
+    <string name="poilatitude">Latitude:</string>
+    <string name="poilongitude">Longitude:</string>
+    <string name="save">Enregistrer</string>
+    <string name="cancel">Annuler</string>
+    <string name="kmh">km/h</string>
+    <string name="meters">mètres</string>
+    <string name="feet">pieds</string>
+    <string name="units_system_summary">Chosissez le système d\'unités</string>
+    <string name="units_system">Système d\'unités</string>
+    <string name="prefs_title">Préférences</string>
+    <string name="sound_prefs_s">Réglages son du vario</string>
+    <string name="sound_prefs_t">Sons</string>
+    <string name="volume_t">Volume</string>
+    <string name="volume_s">Volume du vario</string>
+    <string name="use_speach_s">Utiliser la voix pour la vitesse vario</string>
+    <string name="use_speach_t">Utiliser la voix</string>
+    <string name="beep_interval_s">Intervalle des bips sonores (secondes)</string>
+    <string name="beep_interval_t">Intervalle des bips</string>
+    <string name="prenotify_interval_t">Intervalle de prénotification</string>
+    <string name="prenotify_interval_s">Discrete sound around thermal interval</string>
+    <string name="sink_start_s">Seuil de descendance minimum (m/s)</string>
+    <string name="sink_start_t">Début de la descendance</string>
+    <string name="lift_start_s">Seuil d\'ascendance minimum (m/s)</string>
+    <string name="lift_start_t">Début d\'ascendance</string>
+    <string name="lift_hz_s">Tonalité d\'ascendance en Hz</string>
+    <string name="lift_hz_t">Tonalité d\'ascendance</string>
+    <string name="sink_hz_s">Tonalité de descendance en Hz</string>
+    <string name="sink_hz_t">Tonalité de descendance</string>
+    <string name="tone_variation_s">Variation de toanlité pour les bips (Hz)</string>
+    <string name="tone_variation_t">Variation de tonalité</string>
+    <string name="thermal_prefs_s">Réglages Thermiques</string>
+    <string name="thermal_prefs_t">Thermique</string>
+    <string name="max_last_thermal_distance_s">Distance pour conserver les thermiques (mètres)</string>
+    <string name="max_last_thermal_distance_t">Distance des thermiques</string>
+    <string name="min_thermal_interval_s">Durée pour mesurer un thermique</string>
+    <string name="min_thermal_interval_t">Durée du thermique</string>
+    <string name="min_thermal_gain_s">Gain minimum pour définir un thermique</string>
+    <string name="min_thermal_gain_t">Gain du thermique</string>
+    <string name="filters_s">Filtres pour les capteurs</string>
+    <string name="filters_t">Filtres</string>
+    <string name="baro_filter_sensitivity_s">Sensibilité du baromètre [1;50]</string>
+    <string name="baro_filter_sensitivity_t">Sensibilité du baromètre</string>
+    <string name="compass_filter_sensitivity_s">Sensibilité de la bousolle [1;10]</string>
+    <string name="compass_filter_sensitivity_t">Sensibilté de la boussole</string>
+    <string name="location_history_s">Durée de l\'historique du vario</string>
+    <string name="location_history_t">Localisation de l\'historique</string>
+    <string name="heading_interval_s">Intervalle pour recalculer l\'orientation</string>
+    <string name="heading_interval_t">Intervalle de l\'orientation</string>
+    <string name="auto_track_s">Auto débuter l\'enregistrement</string>
+    <string name="auto_track_t">Auto débuter l\'enregistrement</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="recordTrack_q">Débuter l\'enregistrement?</string>
+    <string name="altitude_from_gps">Altitude de la GPS: %1$s</string>
+    <string name="use_sensbox_s">Utiliser le BT Flytec SensBox</string>
+    <string name="use_sensbox_t">Utiliser SensBox</string>
+    <string name="initalizing_sensors">Initializing sensors</string>
+    <string name="sensbox_not_found">SensBox BT device was not found</string>
+    <string name="sensbox_not_supported">SensBox BT is not supported by your device</string>
+    <string name="sensbox_found">SensBox BT found</string>
+    <string name="qnh_s">QNH</string>
+    <string name="qnh_t">Reference pressure</string>
+    <string name="ref_alt_title">Current altitude</string>
+    <string name="ref_alt_description">Setting current altitude will make automatic computaion of QNH value. Please insert current altitude in meters.</string>
+    <string name="sound_type_s">Vario sound type</string>
+    <string name="sound_type_t">Sound type</string>
+    <string name="sink_alarm_s">Alarme de descendance (m/s))</string>
+    <string name="sink_alarm_t">Alarme de descendance</string>
+    <string name="sound_inflight_s">Sound only when inflight</string>
+    <string name="sound_inflight_t">Parawaiting silent</string>
+    <string name="enable_logs_t">Logging</string>
+    <string name="enable_logs_s">Enable logging in case of errors</string>
+    <string name="dont_forget_to_donate">You may donate if you like the application</string>
+    <string name="thanks">Merci!</string>
+    <string name="donate">Donate</string>
+    <string name="donate_not_available">Donate service is currently not available</string>
+    <string-array name="units_system_names">
+        <item>Métrique</item>
+        <item>Impérial</item>
+    </string-array>
+    <string-array name="units_system_vals">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="sound_types_names">
+        <item>Static</item>
+        <item>Dynamic</item>
+    </string-array>
+
+</resources>

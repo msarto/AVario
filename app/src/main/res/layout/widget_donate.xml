@@ -1,0 +1,37 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center|center_vertical" >
+
+   <TextView
+       android:id="@+id/textdonate"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_centerVertical="true"
+       android:textColor="#ffffff"
+       android:focusable="false"
+       android:focusableInTouchMode="false"
+       android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+       android:text="@string/meters"
+       android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    <LinearLayout
+        android:id="@+id/donate_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right|center_vertical" >
+
+        <Button
+            android:id="@+id/donatebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_centerVertical="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="right|center_vertical"
+            android:text="Add"
+            android:textSize="12dp" />
+    </LinearLayout>
+   
+
+</RelativeLayout>
